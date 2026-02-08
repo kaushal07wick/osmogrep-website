@@ -1,0 +1,186 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import Logo from './Logo';
+
+const REPO_URL = 'https://github.com/kaushal07wick/OsmoGrep';
+
+type RepoStats = {
+  stars: number;
+  forks: number;
+  commits: number;
+};
+
+export default function NavbarClient() {
+  const pathname = usePathname();
+  const [stats, setStats] = useState<RepoStats | null>(null);
+  const [openMenu, setOpenMenu] = useState<'products' | 'resources' | null>(null);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    fetch('/api/github')
+      .then((res) => res.json())
+      .then((data: RepoStats) => {
+        if (mounted) setStats(data);
+      })
+      .catch(() => {
+        if (mounted) setStats({ stars: 0, forks: 0, commits: 0 });
+      });
+    return () => { mounted = false; };
+  }, []);
+
+  useEffect(() => {
+    setMobileMenuOpen(false);
+    setOpenMenu(null);
+  }, [pathname]);
+
+  const isActive = (href: string) => {
+    if (href === '/') return pathname === '/';
+    return pathname.startsWith(href);
+  };
+
+  const linkClass = (href: string) =>
+    `relative transition-colors decoration-accent hover:underline hover:decoration-2 underline-offset-4 ${isActive(href) ? 'text-accent font-semibold underline decoration-2' : 'text-ink-light hover:text-accent'}`;
+
+  const mobileLinkClass = (href: string) =>
+    `${isActive(href) ? 'text-accent' : 'text-ink hover:text-accent'} transition-colors`;
+
+  const productsActive = pathname.startsWith('/install') || pathname.startsWith('/web');
+  const resourcesActive = pathname.startsWith('/docs') || pathname.startsWith('/blog') || pathname.startsWith('/changelog');
+
+  const closeAndNavigate = () => {
+    setOpenMenu(null);
+    setMobileMenuOpen(false);
+  };
+
+  return (
+    <nav className="sticky top-0 z-[1200] isolate w-full border-b border-grid bg-white/90 backdrop-blur-md transition-all duration-300">
+      <div className="container mx-auto max-w-[1200px] px-6 h-16 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-2 group z-50">
+          <Logo className="h-8 w-auto text-accent" />
+        </Link>
+
+        <button
+          className="md:hidden z-50 p-2 text-ink hover:text-accent active:text-accent transition-colors"
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+        >
+          {mobileMenuOpen ? (
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+          ) : (
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" /></svg>
+          )}
+        </button>
+
+        <div className={`fixed inset-0 bg-paper z-40 flex flex-col pt-24 px-6 md:hidden transition-all duration-300 ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
+          <div className="flex flex-col gap-6 text-lg font-space font-bold">
+            <Link href="/" className={mobileLinkClass('/')}>Home</Link>
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-mono text-ink-light uppercase">Products</span>
+              <Link href="/web" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/web')}`}>Web Shell</Link>
+              <Link href="/install" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/install')}`}>TUI Agent</Link>
+            </div>
+            <div className="flex flex-col gap-2">
+              <span className="text-sm font-mono text-ink-light uppercase">Resources</span>
+              <Link href="/docs" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/docs')}`}>Documentation</Link>
+              <Link href="/blog" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/blog')}`}>Blog</Link>
+              <Link href="/changelog" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/changelog')}`}>Changelog</Link>
+            </div>
+            <Link href="/pricing" onClick={closeAndNavigate} className={mobileLinkClass('/pricing')}>Pricing</Link>
+            <Link href="/get-started" onClick={closeAndNavigate} className="btn-primary text-center mt-4">Get Started</Link>
+          </div>
+        </div>
+
+        <div className="hidden md:flex items-center flex-1 justify-end gap-10">
+          <div className="flex items-center gap-8 font-medium text-sm relative z-[1210]">
+            <div
+              className="relative group"
+              onMouseEnter={() => setOpenMenu('products')}
+              onMouseLeave={() => setOpenMenu((current) => (current === 'products' ? null : current))}
+            >
+              <button
+                type="button"
+                onClick={() => setOpenMenu(openMenu === 'products' ? null : 'products')}
+                className={`flex items-center gap-1 px-2 py-1 rounded-sm transition-colors ${productsActive ? 'text-accent font-semibold bg-accent/5' : 'text-ink-light hover:text-accent hover:bg-accent/5 active:bg-accent/10'}`}
+              >
+                Products
+                <svg className={`w-3 h-3 opacity-50 transition-transform ${openMenu === 'products' ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M5.25 7.5l4.75 4.75L14.75 7.5" />
+                </svg>
+              </button>
+              <div className={`absolute left-0 top-full w-56 transition-all duration-200 z-[1300] ${openMenu === 'products' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-2 pointer-events-none'}`}>
+                <div className="rounded-md border border-grid bg-white/95 backdrop-blur-xl shadow-xl shadow-black/5 overflow-hidden p-2">
+                  <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-ink-light/70 font-bold">Products</div>
+                  <Link href="/install" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5 cursor-pointer hover:underline decoration-accent underline-offset-4">
+                    <div className="text-sm font-bold text-ink">TUI Agent</div>
+                    <div className="text-[10px] text-ink-light">Local terminal interface</div>
+                  </Link>
+                  <Link href="/web" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5 cursor-pointer hover:underline decoration-accent underline-offset-4">
+                    <div className="text-sm font-bold text-ink">Web Shell</div>
+                    <div className="text-[10px] text-ink-light">Cloud environment</div>
+                  </Link>
+                </div>
+              </div>
+            </div>
+
+            <Link href="/pricing" className={linkClass('/pricing')}>Pricing</Link>
+            <Link href="/blog" className={linkClass('/blog')}>Blogs</Link>
+
+            <div
+              className="relative group"
+              onMouseEnter={() => setOpenMenu('resources')}
+              onMouseLeave={() => setOpenMenu((current) => (current === 'resources' ? null : current))}
+            >
+              <button
+                type="button"
+                onClick={() => setOpenMenu(openMenu === 'resources' ? null : 'resources')}
+                className={`flex items-center gap-1 px-2 py-1 rounded-sm transition-colors ${resourcesActive ? 'text-accent font-semibold bg-accent/5' : 'text-ink-light hover:text-accent hover:bg-accent/5 active:bg-accent/10'}`}
+              >
+                Resources
+                <svg className={`w-3 h-3 opacity-50 transition-transform ${openMenu === 'resources' ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M5.25 7.5l4.75 4.75L14.75 7.5" />
+                </svg>
+              </button>
+              <div className={`absolute left-0 top-full w-64 transition-all duration-200 z-[1300] ${openMenu === 'resources' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-2 pointer-events-none'}`}>
+                <div className="rounded-md border border-grid bg-white/95 backdrop-blur-xl shadow-xl shadow-black/5 overflow-hidden p-2">
+                  <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-ink-light/70 font-bold">Resources</div>
+                  <Link href="/docs" onClick={closeAndNavigate} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:text-accent">
+                    <div className="text-sm font-bold text-ink">Documentation</div>
+                    <div className="text-[10px] text-ink-light">Guides & API</div>
+                  </Link>
+                  <Link href="/blog" onClick={closeAndNavigate} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:text-accent">
+                    <div className="text-sm font-bold text-ink">Blog</div>
+                    <div className="text-[10px] text-ink-light">Engineering stories</div>
+                  </Link>
+                  <Link href="/changelog" onClick={closeAndNavigate} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:text-accent">
+                    <div className="text-sm font-bold text-ink">Changelog</div>
+                    <div className="text-[10px] text-ink-light">Latest updates</div>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            <a
+              href={REPO_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-sm border border-grid bg-white/60 backdrop-blur-sm hover:bg-accent/5 transition-colors hover:border-accent hover:text-accent text-xs text-ink-light font-mono"
+            >
+              <svg className="w-3.5 h-3.5 text-ink" viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                <path d="M8 0C3.58 0 0 3.67 0 8.2c0 3.63 2.29 6.7 5.47 7.79.4.08.55-.18.55-.39 0-.2-.01-.72-.01-1.42-2.01.38-2.53-.5-2.69-.96-.09-.24-.48-.96-.82-1.15-.28-.16-.68-.56-.01-.57.63-.01 1.08.59 1.23.84.72 1.24 1.87.89 2.33.68.07-.53.28-.89.51-1.1-1.78-.21-3.64-.92-3.64-4.1 0-.91.32-1.66.84-2.24-.08-.21-.37-1.06.08-2.2 0 0 .69-.23 2.26.86A7.6 7.6 0 0 1 8 3.8c.68 0 1.37.09 2.01.27 1.57-1.09 2.26-.86 2.26-.86.45 1.14.16 1.99.08 2.2.52.58.84 1.33.84 2.24 0 3.19-1.87 3.89-3.65 4.1.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.19 0 .21.14.47.55.39A8.24 8.24 0 0 0 16 8.2C16 3.67 12.42 0 8 0Z" />
+              </svg>
+              <span className="text-ink">★</span> {stats ? stats.stars : '-'}
+            </a>
+            <Link href="/get-started" className="btn-primary text-sm font-medium px-4 py-2">
+              Get Started
+            </Link>
+          </div>
+        </div>
+      </div>
+    </nav>
+  );
+}
