@@ -63,13 +63,35 @@ function escapeHtml(input: string): string {
     .replace(/>/g, '&gt;');
 }
 
+function safeUrl(raw: string): string {
+  const url = raw.trim();
+
+  if (
+    url.startsWith('/') ||
+    url.startsWith('#') ||
+    /^https?:\/\//i.test(url) ||
+    /^mailto:/i.test(url)
+  ) {
+    return url;
+  }
+
+  return '#';
+}
+
 function formatInline(input: string): string {
   const escaped = escapeHtml(input);
   return escaped
     .replace(/`([^`]+)`/g, '<code>$1</code>')
     .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
     .replace(/\*([^*]+)\*/g, '<em>$1</em>')
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, (_m, label: string, href: string) => {
+      const safeHref = safeUrl(href);
+      const external = /^https?:\/\//i.test(safeHref);
+      const attrs = external
+        ? ' target="_blank" rel="noopener noreferrer"'
+        : '';
+      return `<a href="${safeHref}"${attrs}>${label}</a>`;
+    });
 }
 
 export function markdownToHtml(markdown: string): string {
@@ -127,7 +149,8 @@ export function markdownToHtml(markdown: string): string {
     const image = trimmed.match(/^!\[([^\]]*)\]\(([^)]+)\)$/);
     if (image) {
       flushList();
-      html.push(`<figure><img src="${image[2]}" alt="${escapeHtml(image[1])}" /><figcaption>${escapeHtml(image[1])}</figcaption></figure>`);
+      const src = safeUrl(image[2]);
+      html.push(`<figure><img src="${src}" alt="${escapeHtml(image[1])}" /><figcaption>${escapeHtml(image[1])}</figcaption></figure>`);
       continue;
     }
 

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 64" fill="none">
+  <g transform="translate(2,8)">
+    <path d="M23 2C23 2 8 20 8 31C8 40 14 46 23 46C33 46 38 40 38 31C38 20 23 2 23 2Z" fill="#EA580C"/>
+    <path d="M14 31C14 24 19 19 26 19C30 19 33 21 35 24L30 26L35 29C33 35 28 39 22 39H17L14 31Z" fill="#fff"/>
+    <circle cx="26" cy="26" r="2.1" fill="#EA580C"/>
+    <circle cx="18.5" cy="35" r="3.8" fill="#EA580C"/>
+    <circle cx="18.5" cy="35" r="1.9" fill="#fff"/>
+    <rect x="21.5" y="38" width="6.8" height="2.6" transform="rotate(36 21.5 38)" fill="#fff"/>
+  </g>
+  <text x="62" y="45" fill="#EA580C" font-family="JetBrains Mono, monospace" font-size="34" font-weight="700" letter-spacing="-1">osmogrep</text>
+</svg>

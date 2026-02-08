@@ -9,10 +9,10 @@ interface FeatureCardProps {
 
 export default function FeatureCard({ children, className = '', title, icon }: FeatureCardProps) {
     return (
-        <div className={`bg-white/60 backdrop-blur-sm border border-grid p-7 md:p-8 flex flex-col h-full shadow-sm hover:shadow-md transition-all rounded-xl ${className}`}>
+        <div className={`bg-white/60 backdrop-blur-sm border border-grid p-7 md:p-8 flex flex-col h-full shadow-sm hover:shadow-md transition-all rounded-sm ${className}`}>
             {/* Header */}
             <div className="mb-5 flex items-center justify-between">
-                {icon && <div className="p-2.5 bg-paper rounded-lg border border-grid text-accent">{icon}</div>}
+                {icon && <div className="p-2.5 bg-paper rounded-sm border border-grid text-accent">{icon}</div>}
             </div>
 
             <h3 className="text-xl md:text-2xl font-bold text-ink mb-3 font-space leading-tight">

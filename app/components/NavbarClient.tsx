@@ -1,9 +1,8 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import Logo from './Logo';
 
 const REPO_URL = 'https://github.com/kaushal07wick/OsmoGrep';
 
@@ -15,9 +14,13 @@ type RepoStats = {
 
 export default function NavbarClient() {
   const pathname = usePathname();
+  const navRef = useRef<HTMLElement | null>(null);
+  const productsButtonRef = useRef<HTMLButtonElement | null>(null);
+  const resourcesButtonRef = useRef<HTMLButtonElement | null>(null);
   const [stats, setStats] = useState<RepoStats | null>(null);
   const [openMenu, setOpenMenu] = useState<'products' | 'resources' | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuCoords, setMenuCoords] = useState({ top: 72, left: 24, width: 260 });
 
   useEffect(() => {
     let mounted = true;
@@ -36,6 +39,19 @@ export default function NavbarClient() {
     setMobileMenuOpen(false);
     setOpenMenu(null);
   }, [pathname]);
+
+  useEffect(() => {
+    const onDocPointerDown = (event: MouseEvent) => {
+      const target = event.target as Node | null;
+      if (!target) return;
+      if (navRef.current && !navRef.current.contains(target)) {
+        setOpenMenu(null);
+      }
+    };
+
+    document.addEventListener('mousedown', onDocPointerDown);
+    return () => document.removeEventListener('mousedown', onDocPointerDown);
+  }, []);
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
@@ -56,11 +72,28 @@ export default function NavbarClient() {
     setMobileMenuOpen(false);
   };
 
+  const openAnchoredMenu = (
+    menu: 'products' | 'resources',
+    anchorEl: HTMLButtonElement | null,
+    panelWidth: number,
+  ) => {
+    if (!anchorEl || typeof window === 'undefined') {
+      setOpenMenu(menu);
+      return;
+    }
+
+    const rect = anchorEl.getBoundingClientRect();
+    const left = Math.max(12, Math.min(rect.left, window.innerWidth - panelWidth - 12));
+    const top = rect.bottom + 8;
+    setMenuCoords({ left, top, width: panelWidth });
+    setOpenMenu(menu);
+  };
+
   return (
-    <nav className="sticky top-0 z-[1200] isolate w-full border-b border-grid bg-white/90 backdrop-blur-md transition-all duration-300">
+    <nav ref={navRef} className="sticky top-0 z-[2147483000] isolate overflow-visible w-full border-b border-grid bg-white/90 backdrop-blur-md transition-all duration-300">
       <div className="container mx-auto max-w-[1200px] px-6 h-16 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2 group z-50">
-          <Logo className="h-8 w-auto text-accent" />
+          <img src="/brand/logo-current.svg" alt="osmogrep" className="h-8 w-auto" />
         </Link>
 
         <button
@@ -94,15 +127,19 @@ export default function NavbarClient() {
         </div>
 
         <div className="hidden md:flex items-center flex-1 justify-end gap-10">
-          <div className="flex items-center gap-8 font-medium text-sm relative z-[1210]">
+          <div className="flex items-center gap-8 font-medium text-sm relative z-[2147483001]">
             <div
-              className="relative group"
-              onMouseEnter={() => setOpenMenu('products')}
-              onMouseLeave={() => setOpenMenu((current) => (current === 'products' ? null : current))}
+              className="relative"
             >
               <button
+                ref={productsButtonRef}
                 type="button"
-                onClick={() => setOpenMenu(openMenu === 'products' ? null : 'products')}
+                onMouseEnter={() => openAnchoredMenu('products', productsButtonRef.current, 248)}
+                onClick={() =>
+                  openMenu === 'products'
+                    ? setOpenMenu(null)
+                    : openAnchoredMenu('products', productsButtonRef.current, 248)
+                }
                 className={`flex items-center gap-1 px-2 py-1 rounded-sm transition-colors ${productsActive ? 'text-accent font-semibold bg-accent/5' : 'text-ink-light hover:text-accent hover:bg-accent/5 active:bg-accent/10'}`}
               >
                 Products
@@ -110,32 +147,23 @@ export default function NavbarClient() {
                   <path d="M5.25 7.5l4.75 4.75L14.75 7.5" />
                 </svg>
               </button>
-              <div className={`absolute left-0 top-full w-56 transition-all duration-200 z-[1300] ${openMenu === 'products' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-2 pointer-events-none'}`}>
-                <div className="rounded-md border border-grid bg-white/95 backdrop-blur-xl shadow-xl shadow-black/5 overflow-hidden p-2">
-                  <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-ink-light/70 font-bold">Products</div>
-                  <Link href="/install" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5 cursor-pointer hover:underline decoration-accent underline-offset-4">
-                    <div className="text-sm font-bold text-ink">TUI Agent</div>
-                    <div className="text-[10px] text-ink-light">Local terminal interface</div>
-                  </Link>
-                  <Link href="/web" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5 cursor-pointer hover:underline decoration-accent underline-offset-4">
-                    <div className="text-sm font-bold text-ink">Web Shell</div>
-                    <div className="text-[10px] text-ink-light">Cloud environment</div>
-                  </Link>
-                </div>
-              </div>
             </div>
 
             <Link href="/pricing" className={linkClass('/pricing')}>Pricing</Link>
             <Link href="/blog" className={linkClass('/blog')}>Blogs</Link>
 
             <div
-              className="relative group"
-              onMouseEnter={() => setOpenMenu('resources')}
-              onMouseLeave={() => setOpenMenu((current) => (current === 'resources' ? null : current))}
+              className="relative"
             >
               <button
+                ref={resourcesButtonRef}
                 type="button"
-                onClick={() => setOpenMenu(openMenu === 'resources' ? null : 'resources')}
+                onMouseEnter={() => openAnchoredMenu('resources', resourcesButtonRef.current, 286)}
+                onClick={() =>
+                  openMenu === 'resources'
+                    ? setOpenMenu(null)
+                    : openAnchoredMenu('resources', resourcesButtonRef.current, 286)
+                }
                 className={`flex items-center gap-1 px-2 py-1 rounded-sm transition-colors ${resourcesActive ? 'text-accent font-semibold bg-accent/5' : 'text-ink-light hover:text-accent hover:bg-accent/5 active:bg-accent/10'}`}
               >
                 Resources
@@ -143,23 +171,6 @@ export default function NavbarClient() {
                   <path d="M5.25 7.5l4.75 4.75L14.75 7.5" />
                 </svg>
               </button>
-              <div className={`absolute left-0 top-full w-64 transition-all duration-200 z-[1300] ${openMenu === 'resources' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 translate-y-2 pointer-events-none'}`}>
-                <div className="rounded-md border border-grid bg-white/95 backdrop-blur-xl shadow-xl shadow-black/5 overflow-hidden p-2">
-                  <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-ink-light/70 font-bold">Resources</div>
-                  <Link href="/docs" onClick={closeAndNavigate} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:text-accent">
-                    <div className="text-sm font-bold text-ink">Documentation</div>
-                    <div className="text-[10px] text-ink-light">Guides & API</div>
-                  </Link>
-                  <Link href="/blog" onClick={closeAndNavigate} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:text-accent">
-                    <div className="text-sm font-bold text-ink">Blog</div>
-                    <div className="text-[10px] text-ink-light">Engineering stories</div>
-                  </Link>
-                  <Link href="/changelog" onClick={closeAndNavigate} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:text-accent">
-                    <div className="text-sm font-bold text-ink">Changelog</div>
-                    <div className="text-[10px] text-ink-light">Latest updates</div>
-                  </Link>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -179,6 +190,44 @@ export default function NavbarClient() {
               Get Started
             </Link>
           </div>
+        </div>
+      </div>
+
+      <div
+        className={`${openMenu === 'products' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none'} hidden md:block fixed transition-all duration-150 z-[2147483647]`}
+        style={{ top: `${menuCoords.top}px`, left: `${menuCoords.left}px`, width: `${menuCoords.width}px` }}
+      >
+        <div className="rounded-md border border-grid bg-white shadow-xl shadow-black/10 overflow-hidden p-2">
+          <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-ink-light/70 font-bold">Products</div>
+          <Link href="/install" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5 cursor-pointer hover:underline decoration-accent underline-offset-4">
+            <div className="text-sm font-bold text-ink">TUI Agent</div>
+            <div className="text-[10px] text-ink-light">Local terminal interface</div>
+          </Link>
+          <Link href="/web" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5 cursor-pointer hover:underline decoration-accent underline-offset-4">
+            <div className="text-sm font-bold text-ink">Web Shell</div>
+            <div className="text-[10px] text-ink-light">Cloud environment</div>
+          </Link>
+        </div>
+      </div>
+
+      <div
+        className={`${openMenu === 'resources' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none'} hidden md:block fixed transition-all duration-150 z-[2147483647]`}
+        style={{ top: `${menuCoords.top}px`, left: `${menuCoords.left}px`, width: `${menuCoords.width}px` }}
+      >
+        <div className="rounded-md border border-grid bg-white shadow-xl shadow-black/10 overflow-hidden p-2">
+          <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-ink-light/70 font-bold">Resources</div>
+          <Link href="/docs" onClick={closeAndNavigate} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:text-accent">
+            <div className="text-sm font-bold text-ink">Documentation</div>
+            <div className="text-[10px] text-ink-light">Guides & API</div>
+          </Link>
+          <Link href="/blog" onClick={closeAndNavigate} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:text-accent">
+            <div className="text-sm font-bold text-ink">Blog</div>
+            <div className="text-[10px] text-ink-light">Engineering stories</div>
+          </Link>
+          <Link href="/changelog" onClick={closeAndNavigate} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:text-accent">
+            <div className="text-sm font-bold text-ink">Changelog</div>
+            <div className="text-[10px] text-ink-light">Latest updates</div>
+          </Link>
         </div>
       </div>
     </nav>

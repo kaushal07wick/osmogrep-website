@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import ContactForm from '../components/ContactForm';
 
 type Plan = {
   id: string;
@@ -129,18 +130,28 @@ export default function PricingPage() {
       </section>
 
       <section className="container mx-auto max-w-[1200px] px-6 mt-16">
-        <div className="border border-grid rounded-sm bg-white/60 p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-bold text-accent">Need deployment advice?</h2>
-            <p className="text-sm text-ink-light mt-1">We can help map the right plan for your runtime and CI usage.</p>
-          </div>
-          <div className="flex gap-3">
-            <Link href="/get-started" className="btn-primary px-5 py-2.5">
-              Get Started
-            </Link>
-            <Link href="/docs" className="btn-outline px-5 py-2.5">
-              View Docs
-            </Link>
+        <div className="border border-grid rounded-sm bg-white/60 p-6 md:p-8">
+          <div className="grid gap-6 md:grid-cols-[1.3fr_0.7fr]">
+            <div>
+              <h2 className="text-2xl font-bold text-accent">Need deployment advice?</h2>
+              <p className="text-sm text-ink-light mt-1">
+                Send your email and message. We review each request and reply with plan and rollout recommendations.
+              </p>
+              <ContactForm source="pricing-contact" />
+            </div>
+            <aside className="border border-grid rounded-sm bg-white/70 p-4 h-fit">
+              <h3 className="text-sm uppercase tracking-wide text-ink-light">What to include</h3>
+              <ul className="mt-3 space-y-2 text-sm text-ink-light">
+                <li>- Team size and active repos</li>
+                <li>- CI/CD stack and cloud provider</li>
+                <li>- Current testing bottlenecks</li>
+              </ul>
+              <div className="mt-5">
+                <Link href="/docs" className="btn-outline px-5 py-2.5">
+                  View Docs
+                </Link>
+              </div>
+            </aside>
           </div>
         </div>
       </section>

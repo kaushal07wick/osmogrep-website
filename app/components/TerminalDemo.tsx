@@ -1,9 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { JetBrains_Mono } from 'next/font/google';
-
-const mono = JetBrains_Mono({ subsets: ['latin'] });
 
 const logSequence = [
   '[watch] auth.ts changed',
@@ -27,7 +24,7 @@ export default function TerminalDemo() {
   const visible = logSequence.slice(0, lineCount);
 
   return (
-    <div className={`w-full max-w-3xl mx-auto border border-[#2d2d30] bg-[#0f0f10] shadow-2xl shadow-black/40 ${mono.className}`}>
+    <div className="w-full max-w-3xl mx-auto border border-[#2d2d30] bg-[#0f0f10] shadow-2xl shadow-black/40">
       <div className="h-10 border-b border-[#222327] px-4 flex items-center justify-between">
         <div className="text-sm tracking-wide text-accent font-mono">OSMOGREP</div>
         <div className="text-[10px] uppercase tracking-widest text-slate-500">runtime monitor</div>

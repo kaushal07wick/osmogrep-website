@@ -149,6 +149,70 @@
   75% { transform: rotate(2deg); }
 }
 
+@keyframes word-rotator {
+  0%, 18% { transform: translateY(0%); }
+  22%, 38% { transform: translateY(-25%); }
+  42%, 58% { transform: translateY(-50%); }
+  62%, 78% { transform: translateY(-75%); }
+  82%, 100% { transform: translateY(0%); }
+}
+
+@keyframes scan-sweep {
+  0% { transform: translateY(-105%); opacity: 0; }
+  8% { opacity: 0.9; }
+  50% { opacity: 0.55; }
+  100% { transform: translateY(260%); opacity: 0; }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { transform: scale(1); opacity: 0.55; }
+  50% { transform: scale(1.6); opacity: 1; }
+}
+
+@keyframes home-queue-scan {
+  0% { transform: translateX(-130%); opacity: 0; }
+  20% { opacity: 0.6; }
+  80% { opacity: 0.6; }
+  100% { transform: translateX(520%); opacity: 0; }
+}
+
+@keyframes index-edge-flow {
+  0% { stroke-dashoffset: 140; opacity: 0.18; }
+  30% { opacity: 0.95; }
+  100% { stroke-dashoffset: 0; opacity: 0.35; }
+}
+
+@keyframes index-node-breathe {
+  0%, 100% { transform: scale(1); opacity: 0.72; }
+  50% { transform: scale(1.16); opacity: 1; }
+}
+
+@keyframes index-scan-ring {
+  0% { transform: scale(0.95); opacity: 0.18; }
+  50% { transform: scale(1.02); opacity: 0.34; }
+  100% { transform: scale(0.95); opacity: 0.18; }
+}
+
+@keyframes blog-title-rise {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blog-link-row {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes blog-link-arrow {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(2px, -2px); }
+}
+
+@keyframes blog-wire-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 .float-y {
   animation: float-y 7s ease-in-out infinite;
 }
@@ -167,6 +231,59 @@
 
 .wiggle-soft {
   animation: wiggle-soft 2.8s ease-in-out infinite;
+}
+
+.word-rotator {
+  animation: word-rotator 10s cubic-bezier(0.76, 0, 0.24, 1) infinite;
+}
+
+.scan-sweep {
+  animation: scan-sweep 4.6s linear infinite;
+}
+
+.pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+.home-queue-scan {
+  animation: home-queue-scan 3.1s linear infinite;
+}
+
+.index-edge-flow {
+  stroke-dasharray: 20 120;
+  stroke-dashoffset: 140;
+  animation: index-edge-flow 2.4s linear infinite;
+}
+
+.index-node-breathe {
+  transform-origin: center;
+  animation: index-node-breathe 2s ease-in-out infinite;
+}
+
+.index-scan-ring {
+  transform-origin: center;
+  animation: index-scan-ring 3.8s ease-in-out infinite;
+}
+
+.index-packet {
+  filter: drop-shadow(0 0 2px rgba(234, 88, 12, 0.45));
+}
+
+.blog-title-rise {
+  animation: blog-title-rise 460ms ease-out both;
+}
+
+.blog-link-row {
+  animation: blog-link-row 420ms ease-out both;
+}
+
+.blog-link-arrow {
+  animation: blog-link-arrow 1.8s ease-in-out infinite;
+}
+
+.blog-wire-spin {
+  transform-origin: center;
+  animation: blog-wire-spin 16s linear infinite;
 }
 
 /* Grain overlay */

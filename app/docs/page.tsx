@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import CopyCommandBlock from '../components/CopyCommandBlock';
 
 export default function Docs() {
@@ -90,6 +91,13 @@ Patch the flaky test and explain what changed.`;
             <h2 className="text-2xl font-space font-bold text-accent mb-3">Quickstart</h2>
             <p className="text-ink-light mb-4">Install and launch inside any git repository:</p>
             <CopyCommandBlock code={quickstartCmd} />
+            <p className="mt-4 text-sm text-ink-light">
+              For proper installation details, see{' '}
+              <Link href="/install" className="text-accent font-semibold underline underline-offset-4 hover:text-ink transition-colors">
+                Install page
+              </Link>
+              .
+            </p>
           </section>
 
           <section id="interaction" className="rounded-sm border border-grid bg-white/70 backdrop-blur-sm p-6">
