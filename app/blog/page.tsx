@@ -58,17 +58,6 @@ export default function BlogPage() {
         <section className="border border-grid bg-white/52">
           <div className="px-6 md:px-8 py-5 md:py-6 border-b border-grid bg-accent/8 flex items-center justify-between gap-4">
             <h3 className="text-2xl md:text-3xl font-bold text-accent">All Posts</h3>
-            <div className="hidden md:block h-14 w-28 border border-grid bg-white/60">
-              <svg viewBox="0 0 140 70" className="w-full h-full" fill="none" aria-hidden="true">
-                <g className="blog-wire-spin" stroke="#EA580C" strokeOpacity="0.32" strokeWidth="0.9">
-                  <ellipse cx="98" cy="35" rx="34" ry="15" />
-                  <ellipse cx="98" cy="35" rx="34" ry="15" transform="rotate(20 98 35)" />
-                  <ellipse cx="98" cy="35" rx="34" ry="15" transform="rotate(40 98 35)" />
-                  <ellipse cx="98" cy="35" rx="34" ry="15" transform="rotate(60 98 35)" />
-                  <ellipse cx="98" cy="35" rx="34" ry="15" transform="rotate(80 98 35)" />
-                </g>
-              </svg>
-            </div>
           </div>
 
           <div>
@@ -76,28 +65,26 @@ export default function BlogPage() {
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className={`group grid grid-cols-1 md:grid-cols-[180px_1fr_auto] gap-3 md:gap-6 px-6 md:px-8 py-5 border-b border-grid last:border-b-0 hover:bg-white/80 transition-colors blog-link-row ${idx % 2 === 0 ? 'bg-white/40' : 'bg-white/55'}`}
+                className={`group grid grid-cols-1 items-start gap-3 border-b border-grid px-6 py-4 transition-colors hover:bg-white/80 last:border-b-0 md:grid-cols-[96px_1fr_220px] md:items-start md:gap-5 md:px-8 md:py-5 blog-link-row ${idx % 2 === 0 ? 'bg-white/40' : 'bg-white/55'}`}
                 style={{ animationDelay: `${idx * 80}ms` }}
               >
-                <div className="space-y-3">
-                  <div className="text-xs font-mono text-ink-light">{post.date}</div>
-                  <div className="w-[104px] h-[46px] border border-grid bg-white/70 px-2 py-1.5">
-                    <svg viewBox="0 0 90 34" className="w-full h-full" fill="none" aria-hidden="true">
-                      <path d="M6 26C16 20 20 24 29 18C37 13 43 20 51 15C59 10 65 16 73 13C79 11 83 13 86 12" stroke="#EA580C" strokeOpacity="0.45" strokeWidth="1.2" />
-                      <circle cx="18" cy="19" r="1.8" fill="#EA580C" />
-                      <circle cx="34" cy="16" r="1.6" fill="#EA580C" />
-                      <circle cx="52" cy="14" r="1.7" fill="#EA580C" />
-                      <circle cx="70" cy="13" r="1.6" fill="#EA580C" />
-                    </svg>
+                <div className="hidden md:flex items-center pt-1">
+                  <div className="flex items-center">
+                    <div className="blog-orb">
+                      <span className="blog-orb-core" />
+                    </div>
                   </div>
                 </div>
                 <div>
-                  <h4 className="text-xl md:text-2xl font-bold text-ink group-hover:text-accent transition-colors">{post.title}</h4>
+                  <h4 className="text-xl font-bold text-ink transition-colors group-hover:text-accent md:text-2xl">{post.title}</h4>
                   <p className="mt-1 text-sm text-ink-light">{post.excerpt}</p>
                 </div>
-                <div className="text-xs font-mono text-accent md:text-right flex items-center md:justify-end gap-2">
-                  <span>by {post.author}</span>
-                  <span className="blog-link-arrow">↗</span>
+                <div className="flex flex-col items-start text-xs font-mono md:h-full md:items-end md:justify-between md:text-right">
+                  <div className="flex items-center gap-2 text-accent">
+                    <span>by {post.author}</span>
+                    <span className="blog-link-arrow">↗</span>
+                  </div>
+                  <div className="mt-1 text-ink-light md:mt-0">{post.date}</div>
                 </div>
               </Link>
             ))}

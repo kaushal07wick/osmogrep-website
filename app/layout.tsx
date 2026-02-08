@@ -8,9 +8,9 @@ export const metadata: Metadata = {
   description: 'Proactive runtime analysis for high-velocity teams.',
   icons: {
     icon: [
-      { url: '/brand/favicon-e.svg', type: 'image/svg+xml' },
+      { url: '/brand/favicon-terminal.svg', type: 'image/svg+xml' },
     ],
-    shortcut: ['/brand/favicon-e.svg'],
+    shortcut: ['/brand/favicon-terminal.svg'],
   },
 };
 

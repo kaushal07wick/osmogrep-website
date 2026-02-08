@@ -15,6 +15,7 @@ type RepoStats = {
 export default function NavbarClient() {
   const pathname = usePathname();
   const navRef = useRef<HTMLElement | null>(null);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
   const productsButtonRef = useRef<HTMLButtonElement | null>(null);
   const resourcesButtonRef = useRef<HTMLButtonElement | null>(null);
   const [stats, setStats] = useState<RepoStats | null>(null);
@@ -32,7 +33,9 @@ export default function NavbarClient() {
       .catch(() => {
         if (mounted) setStats({ stars: 0, forks: 0, commits: 0 });
       });
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   useEffect(() => {
@@ -41,16 +44,34 @@ export default function NavbarClient() {
   }, [pathname]);
 
   useEffect(() => {
+    if (!mobileMenuOpen) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [mobileMenuOpen]);
+
+  useEffect(() => {
     const onDocPointerDown = (event: MouseEvent) => {
       const target = event.target as Node | null;
       if (!target) return;
-      if (navRef.current && !navRef.current.contains(target)) {
+      const inNav = navRef.current?.contains(target) ?? false;
+      const inDropdown = dropdownRef.current?.contains(target) ?? false;
+      if (!inNav && !inDropdown) {
         setOpenMenu(null);
       }
     };
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setOpenMenu(null);
+    };
 
     document.addEventListener('mousedown', onDocPointerDown);
-    return () => document.removeEventListener('mousedown', onDocPointerDown);
+    document.addEventListener('keydown', onEscape);
+    return () => {
+      document.removeEventListener('mousedown', onDocPointerDown);
+      document.removeEventListener('keydown', onEscape);
+    };
   }, []);
 
   const isActive = (href: string) => {
@@ -59,7 +80,9 @@ export default function NavbarClient() {
   };
 
   const linkClass = (href: string) =>
-    `relative transition-colors decoration-accent hover:underline hover:decoration-2 underline-offset-4 ${isActive(href) ? 'text-accent font-semibold underline decoration-2' : 'text-ink-light hover:text-accent'}`;
+    `relative transition-colors decoration-accent hover:underline hover:decoration-2 underline-offset-4 ${
+      isActive(href) ? 'text-accent font-semibold underline decoration-2' : 'text-ink-light hover:text-accent'
+    }`;
 
   const mobileLinkClass = (href: string) =>
     `${isActive(href) ? 'text-accent' : 'text-ink hover:text-accent'} transition-colors`;
@@ -81,23 +104,27 @@ export default function NavbarClient() {
       setOpenMenu(menu);
       return;
     }
-
     const rect = anchorEl.getBoundingClientRect();
     const left = Math.max(12, Math.min(rect.left, window.innerWidth - panelWidth - 12));
-    const top = rect.bottom + 8;
-    setMenuCoords({ left, top, width: panelWidth });
+    setMenuCoords({ left, top: rect.bottom + 8, width: panelWidth });
     setOpenMenu(menu);
   };
 
   return (
-    <nav ref={navRef} className="sticky top-0 z-[2147483000] isolate overflow-visible w-full border-b border-grid bg-white/90 backdrop-blur-md transition-all duration-300">
-      <div className="container mx-auto max-w-[1200px] px-6 h-16 flex items-center justify-between">
-        <Link href="/" className="flex items-center gap-2 group z-50">
-          <img src="/brand/logo-current.svg" alt="osmogrep" className="h-8 w-auto" />
+    <nav ref={navRef} className="sticky top-0 z-[250] isolate w-full border-b border-grid bg-white/95 backdrop-blur-md transition-all duration-300">
+      <div className="container mx-auto flex h-14 max-w-[1200px] items-center justify-between px-4 sm:px-6 md:h-16 relative z-[251]">
+        <Link href="/" className="flex items-center gap-3 group z-50">
+          <span className="inline-flex items-center justify-center text-accent">
+            <svg viewBox="0 0 28 28" className="h-7 w-7 md:h-8 md:w-8" fill="currentColor" aria-hidden="true">
+              <path d="M6.7 8.8a1.1 1.1 0 0 1 1.55-.06l4.3 3.99a1.1 1.1 0 0 1 0 1.62l-4.3 3.99a1.1 1.1 0 1 1-1.49-1.61l3.43-3.18-3.43-3.18a1.1 1.1 0 0 1-.06-1.57Z" />
+              <path d="M13.9 17.7c0-.61.49-1.1 1.1-1.1h6.3a1.1 1.1 0 1 1 0 2.2H15c-.61 0-1.1-.49-1.1-1.1Z" />
+            </svg>
+          </span>
+          <span className="text-2xl leading-none font-bold tracking-tight text-accent md:text-3xl">Osmogrep</span>
         </Link>
 
         <button
-          className="md:hidden z-50 p-2 text-ink hover:text-accent active:text-accent transition-colors"
+          className="md:hidden z-[202] p-2 text-ink hover:text-accent active:text-accent transition-colors"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
         >
           {mobileMenuOpen ? (
@@ -107,71 +134,69 @@ export default function NavbarClient() {
           )}
         </button>
 
-        <div className={`fixed inset-0 bg-paper z-40 flex flex-col pt-24 px-6 md:hidden transition-all duration-300 ${mobileMenuOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}>
-          <div className="flex flex-col gap-6 text-lg font-space font-bold">
-            <Link href="/" className={mobileLinkClass('/')}>Home</Link>
-            <div className="flex flex-col gap-2">
-              <span className="text-sm font-mono text-ink-light uppercase">Products</span>
-              <Link href="/web" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/web')}`}>Web Shell</Link>
-              <Link href="/install" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/install')}`}>TUI Agent</Link>
+        {mobileMenuOpen && (
+          <div className="fixed inset-x-0 top-14 z-[260] border-t border-grid bg-paper md:hidden max-h-[calc(100dvh-3.5rem)] overflow-y-auto shadow-lg">
+            <div className="flex flex-col gap-6 px-5 py-6 text-base font-space font-bold sm:text-lg">
+              <Link href="/" onClick={closeAndNavigate} className={mobileLinkClass('/')}>Home</Link>
+              <div className="flex flex-col gap-2">
+                <span className="text-sm font-mono text-ink-light uppercase">Products</span>
+                <Link href="/web" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/web')}`}>Web Shell</Link>
+                <Link href="/install" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/install')}`}>TUI Agent</Link>
+              </div>
+              <div className="flex flex-col gap-2">
+                <span className="text-sm font-mono text-ink-light uppercase">Resources</span>
+                <Link href="/docs" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/docs')}`}>Documentation</Link>
+                <Link href="/blog" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/blog')}`}>Blog</Link>
+                <Link href="/changelog" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/changelog')}`}>Changelog</Link>
+              </div>
+              <Link href="/pricing" onClick={closeAndNavigate} className={mobileLinkClass('/pricing')}>Pricing</Link>
+              <Link href="/get-started" onClick={closeAndNavigate} className="btn-primary mt-2 text-center">Get Started</Link>
             </div>
-            <div className="flex flex-col gap-2">
-              <span className="text-sm font-mono text-ink-light uppercase">Resources</span>
-              <Link href="/docs" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/docs')}`}>Documentation</Link>
-              <Link href="/blog" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/blog')}`}>Blog</Link>
-              <Link href="/changelog" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/changelog')}`}>Changelog</Link>
-            </div>
-            <Link href="/pricing" onClick={closeAndNavigate} className={mobileLinkClass('/pricing')}>Pricing</Link>
-            <Link href="/get-started" onClick={closeAndNavigate} className="btn-primary text-center mt-4">Get Started</Link>
           </div>
-        </div>
+        )}
 
-        <div className="hidden md:flex items-center flex-1 justify-end gap-10">
-          <div className="flex items-center gap-8 font-medium text-sm relative z-[2147483001]">
-            <div
-              className="relative"
+        <div className="hidden md:flex items-center flex-1 justify-end gap-10 pointer-events-auto">
+          <div className="flex items-center gap-8 font-medium text-sm relative z-[201]">
+            <button
+              ref={productsButtonRef}
+              type="button"
+              onClick={() =>
+                openMenu === 'products'
+                  ? setOpenMenu(null)
+                  : openAnchoredMenu('products', productsButtonRef.current, 248)
+              }
+              aria-expanded={openMenu === 'products'}
+              aria-haspopup="menu"
+              aria-controls="desktop-products-menu"
+              className={`flex items-center gap-1 px-2 py-1 rounded-sm transition-colors ${productsActive ? 'text-accent font-semibold bg-accent/5' : 'text-ink-light hover:text-accent hover:bg-accent/5 active:bg-accent/10'}`}
             >
-              <button
-                ref={productsButtonRef}
-                type="button"
-                onMouseEnter={() => openAnchoredMenu('products', productsButtonRef.current, 248)}
-                onClick={() =>
-                  openMenu === 'products'
-                    ? setOpenMenu(null)
-                    : openAnchoredMenu('products', productsButtonRef.current, 248)
-                }
-                className={`flex items-center gap-1 px-2 py-1 rounded-sm transition-colors ${productsActive ? 'text-accent font-semibold bg-accent/5' : 'text-ink-light hover:text-accent hover:bg-accent/5 active:bg-accent/10'}`}
-              >
-                Products
-                <svg className={`w-3 h-3 opacity-50 transition-transform ${openMenu === 'products' ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M5.25 7.5l4.75 4.75L14.75 7.5" />
-                </svg>
-              </button>
-            </div>
+              Products
+              <svg className={`w-3 h-3 opacity-50 transition-transform ${openMenu === 'products' ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor">
+                <path d="M5.25 7.5l4.75 4.75L14.75 7.5" />
+              </svg>
+            </button>
 
             <Link href="/pricing" className={linkClass('/pricing')}>Pricing</Link>
             <Link href="/blog" className={linkClass('/blog')}>Blogs</Link>
 
-            <div
-              className="relative"
+            <button
+              ref={resourcesButtonRef}
+              type="button"
+              onClick={() =>
+                openMenu === 'resources'
+                  ? setOpenMenu(null)
+                  : openAnchoredMenu('resources', resourcesButtonRef.current, 286)
+              }
+              aria-expanded={openMenu === 'resources'}
+              aria-haspopup="menu"
+              aria-controls="desktop-resources-menu"
+              className={`flex items-center gap-1 px-2 py-1 rounded-sm transition-colors ${resourcesActive ? 'text-accent font-semibold bg-accent/5' : 'text-ink-light hover:text-accent hover:bg-accent/5 active:bg-accent/10'}`}
             >
-              <button
-                ref={resourcesButtonRef}
-                type="button"
-                onMouseEnter={() => openAnchoredMenu('resources', resourcesButtonRef.current, 286)}
-                onClick={() =>
-                  openMenu === 'resources'
-                    ? setOpenMenu(null)
-                    : openAnchoredMenu('resources', resourcesButtonRef.current, 286)
-                }
-                className={`flex items-center gap-1 px-2 py-1 rounded-sm transition-colors ${resourcesActive ? 'text-accent font-semibold bg-accent/5' : 'text-ink-light hover:text-accent hover:bg-accent/5 active:bg-accent/10'}`}
-              >
-                Resources
-                <svg className={`w-3 h-3 opacity-50 transition-transform ${openMenu === 'resources' ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor">
-                  <path d="M5.25 7.5l4.75 4.75L14.75 7.5" />
-                </svg>
-              </button>
-            </div>
+              Resources
+              <svg className={`w-3 h-3 opacity-50 transition-transform ${openMenu === 'resources' ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor">
+                <path d="M5.25 7.5l4.75 4.75L14.75 7.5" />
+              </svg>
+            </button>
           </div>
 
           <div className="flex items-center gap-4">
@@ -193,43 +218,55 @@ export default function NavbarClient() {
         </div>
       </div>
 
-      <div
-        className={`${openMenu === 'products' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none'} hidden md:block fixed transition-all duration-150 z-[2147483647]`}
-        style={{ top: `${menuCoords.top}px`, left: `${menuCoords.left}px`, width: `${menuCoords.width}px` }}
-      >
-        <div className="rounded-md border border-grid bg-white shadow-xl shadow-black/10 overflow-hidden p-2">
-          <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-ink-light/70 font-bold">Products</div>
-          <Link href="/install" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5 cursor-pointer hover:underline decoration-accent underline-offset-4">
-            <div className="text-sm font-bold text-ink">TUI Agent</div>
-            <div className="text-[10px] text-ink-light">Local terminal interface</div>
-          </Link>
-          <Link href="/web" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5 cursor-pointer hover:underline decoration-accent underline-offset-4">
-            <div className="text-sm font-bold text-ink">Web Shell</div>
-            <div className="text-[10px] text-ink-light">Cloud environment</div>
-          </Link>
-        </div>
-      </div>
+      {openMenu && (
+        <>
+          <button
+            type="button"
+            className="fixed inset-0 z-[270] hidden md:block bg-transparent"
+            onClick={() => setOpenMenu(null)}
+            aria-label="Close menu"
+          />
+          <div
+            ref={dropdownRef}
+            className="fixed z-[280] hidden md:block"
+            style={{ top: `${menuCoords.top}px`, left: `${menuCoords.left}px`, width: `${menuCoords.width}px` }}
+          >
+            <div className="pointer-events-auto rounded-md border border-grid bg-white shadow-xl shadow-black/10 overflow-hidden p-2">
+              <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-ink-light/70 font-bold">
+                {openMenu === 'products' ? 'Products' : 'Resources'}
+              </div>
 
-      <div
-        className={`${openMenu === 'resources' ? 'opacity-100 translate-y-0 pointer-events-auto' : 'opacity-0 -translate-y-1 pointer-events-none'} hidden md:block fixed transition-all duration-150 z-[2147483647]`}
-        style={{ top: `${menuCoords.top}px`, left: `${menuCoords.left}px`, width: `${menuCoords.width}px` }}
-      >
-        <div className="rounded-md border border-grid bg-white shadow-xl shadow-black/10 overflow-hidden p-2">
-          <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-ink-light/70 font-bold">Resources</div>
-          <Link href="/docs" onClick={closeAndNavigate} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:text-accent">
-            <div className="text-sm font-bold text-ink">Documentation</div>
-            <div className="text-[10px] text-ink-light">Guides & API</div>
-          </Link>
-          <Link href="/blog" onClick={closeAndNavigate} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:text-accent">
-            <div className="text-sm font-bold text-ink">Blog</div>
-            <div className="text-[10px] text-ink-light">Engineering stories</div>
-          </Link>
-          <Link href="/changelog" onClick={closeAndNavigate} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:text-accent">
-            <div className="text-sm font-bold text-ink">Changelog</div>
-            <div className="text-[10px] text-ink-light">Latest updates</div>
-          </Link>
-        </div>
-      </div>
+              {openMenu === 'products' ? (
+                <>
+                  <Link href="/install" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:underline decoration-accent underline-offset-4">
+                    <div className="text-sm font-bold text-ink">TUI Agent</div>
+                    <div className="text-[10px] text-ink-light">Local terminal interface</div>
+                  </Link>
+                  <Link href="/web" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:underline decoration-accent underline-offset-4">
+                    <div className="text-sm font-bold text-ink">Web Shell</div>
+                    <div className="text-[10px] text-ink-light">Cloud environment</div>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="/docs" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5">
+                    <div className="text-sm font-bold text-ink">Documentation</div>
+                    <div className="text-[10px] text-ink-light">Guides & API</div>
+                  </Link>
+                  <Link href="/blog" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5">
+                    <div className="text-sm font-bold text-ink">Blog</div>
+                    <div className="text-[10px] text-ink-light">Engineering stories</div>
+                  </Link>
+                  <Link href="/changelog" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5">
+                    <div className="text-sm font-bold text-ink">Changelog</div>
+                    <div className="text-[10px] text-ink-light">Latest updates</div>
+                  </Link>
+                </>
+              )}
+            </div>
+          </div>
+        </>
+      )}
     </nav>
   );
 }

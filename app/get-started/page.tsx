@@ -9,8 +9,8 @@ export default function GetStarted() {
           <div className="page-chip">Get Started</div>
           <h1 className="text-4xl md:text-5xl font-bold font-space text-accent mb-4">Install Osmogrep</h1>
           <p className="text-lg text-ink-light max-w-2xl">
-            Osmogrep runs locally in your terminal. Install, initialize, and let the agent take over test creation,
-            repair, and parallel runs.
+            Osmogrep runs locally in your terminal. Install with Cargo or the shell script, then run
+            `osmogrep` to open the interactive TUI and start sending input.
           </p>
         </div>
       </section>
@@ -18,16 +18,16 @@ export default function GetStarted() {
       <section className="container mx-auto px-6 mt-10 grid grid-cols-1 lg:grid-cols-12 gap-8">
         <div className="lg:col-span-8 space-y-6">
           <div className="rounded-xl border border-grid bg-white/60 backdrop-blur-sm p-6">
-            <h2 className="text-2xl font-space font-bold text-ink mb-3">Install</h2>
-            <CopyCommandBlock code="$ cargo install osmogrep" />
+            <h2 className="text-2xl font-space font-bold text-ink mb-3">Install (Cargo)</h2>
+            <CopyCommandBlock code="cargo install osmogrep" />
           </div>
           <div className="rounded-xl border border-grid bg-white/60 backdrop-blur-sm p-6">
-            <h2 className="text-2xl font-space font-bold text-ink mb-3">Initialize</h2>
-            <CopyCommandBlock code="$ osmogrep init" />
+            <h2 className="text-2xl font-space font-bold text-ink mb-3">Install (.sh)</h2>
+            <CopyCommandBlock code="curl -fsSL https://osmogrep.com/install.sh | sh" />
           </div>
           <div className="rounded-xl border border-grid bg-white/60 backdrop-blur-sm p-6">
-            <h2 className="text-2xl font-space font-bold text-ink mb-3">Run</h2>
-            <CopyCommandBlock code="$ osmogrep watch ./src" />
+            <h2 className="text-2xl font-space font-bold text-ink mb-3">Run (Opens TUI)</h2>
+            <CopyCommandBlock code="osmogrep" />
           </div>
         </div>
 
