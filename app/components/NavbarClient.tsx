@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -14,14 +14,8 @@ type RepoStats = {
 
 export default function NavbarClient() {
   const pathname = usePathname();
-  const navRef = useRef<HTMLElement | null>(null);
-  const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const productsButtonRef = useRef<HTMLButtonElement | null>(null);
-  const resourcesButtonRef = useRef<HTMLButtonElement | null>(null);
   const [stats, setStats] = useState<RepoStats | null>(null);
-  const [openMenu, setOpenMenu] = useState<'products' | 'resources' | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [menuCoords, setMenuCoords] = useState({ top: 72, left: 24, width: 260 });
 
   useEffect(() => {
     let mounted = true;
@@ -40,7 +34,6 @@ export default function NavbarClient() {
 
   useEffect(() => {
     setMobileMenuOpen(false);
-    setOpenMenu(null);
   }, [pathname]);
 
   useEffect(() => {
@@ -51,28 +44,6 @@ export default function NavbarClient() {
       document.body.style.overflow = previous;
     };
   }, [mobileMenuOpen]);
-
-  useEffect(() => {
-    const onDocPointerDown = (event: MouseEvent) => {
-      const target = event.target as Node | null;
-      if (!target) return;
-      const inNav = navRef.current?.contains(target) ?? false;
-      const inDropdown = dropdownRef.current?.contains(target) ?? false;
-      if (!inNav && !inDropdown) {
-        setOpenMenu(null);
-      }
-    };
-    const onEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpenMenu(null);
-    };
-
-    document.addEventListener('mousedown', onDocPointerDown);
-    document.addEventListener('keydown', onEscape);
-    return () => {
-      document.removeEventListener('mousedown', onDocPointerDown);
-      document.removeEventListener('keydown', onEscape);
-    };
-  }, []);
 
   const isActive = (href: string) => {
     if (href === '/') return pathname === '/';
@@ -87,31 +58,12 @@ export default function NavbarClient() {
   const mobileLinkClass = (href: string) =>
     `${isActive(href) ? 'text-accent' : 'text-ink hover:text-accent'} transition-colors`;
 
-  const productsActive = pathname.startsWith('/install') || pathname.startsWith('/web');
-  const resourcesActive = pathname.startsWith('/docs') || pathname.startsWith('/blog') || pathname.startsWith('/changelog');
-
   const closeAndNavigate = () => {
-    setOpenMenu(null);
     setMobileMenuOpen(false);
   };
 
-  const openAnchoredMenu = (
-    menu: 'products' | 'resources',
-    anchorEl: HTMLButtonElement | null,
-    panelWidth: number,
-  ) => {
-    if (!anchorEl || typeof window === 'undefined') {
-      setOpenMenu(menu);
-      return;
-    }
-    const rect = anchorEl.getBoundingClientRect();
-    const left = Math.max(12, Math.min(rect.left, window.innerWidth - panelWidth - 12));
-    setMenuCoords({ left, top: rect.bottom + 8, width: panelWidth });
-    setOpenMenu(menu);
-  };
-
   return (
-    <nav ref={navRef} className="sticky top-0 z-[250] isolate w-full border-b border-grid bg-white/95 backdrop-blur-md transition-all duration-300">
+    <nav className="sticky top-0 z-[250] isolate w-full border-b border-grid bg-white/95 backdrop-blur-md transition-all duration-300">
       <div className="container mx-auto flex h-14 max-w-[1200px] items-center justify-between px-4 sm:px-6 md:h-16 relative z-[251]">
         <Link href="/" className="flex items-center gap-3 group z-50">
           <span className="inline-flex items-center justify-center text-accent">
@@ -138,17 +90,9 @@ export default function NavbarClient() {
           <div className="fixed inset-x-0 top-14 z-[260] border-t border-grid bg-paper md:hidden max-h-[calc(100dvh-3.5rem)] overflow-y-auto shadow-lg">
             <div className="flex flex-col gap-6 px-5 py-6 text-base font-space font-bold sm:text-lg">
               <Link href="/" onClick={closeAndNavigate} className={mobileLinkClass('/')}>Home</Link>
-              <div className="flex flex-col gap-2">
-                <span className="text-sm font-mono text-ink-light uppercase">Products</span>
-                <Link href="/web" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/web')}`}>Web Shell</Link>
-                <Link href="/install" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/install')}`}>TUI Agent</Link>
-              </div>
-              <div className="flex flex-col gap-2">
-                <span className="text-sm font-mono text-ink-light uppercase">Resources</span>
-                <Link href="/docs" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/docs')}`}>Documentation</Link>
-                <Link href="/blog" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/blog')}`}>Blog</Link>
-                <Link href="/changelog" onClick={closeAndNavigate} className={`pl-4 ${mobileLinkClass('/changelog')}`}>Changelog</Link>
-              </div>
+              <Link href="/install" onClick={closeAndNavigate} className={mobileLinkClass('/install')}>CLI</Link>
+              <Link href="/docs" onClick={closeAndNavigate} className={mobileLinkClass('/docs')}>Documentation</Link>
+              <Link href="/blog" onClick={closeAndNavigate} className={mobileLinkClass('/blog')}>Blogs</Link>
               <Link href="/pricing" onClick={closeAndNavigate} className={mobileLinkClass('/pricing')}>Pricing</Link>
               <Link href="/get-started" onClick={closeAndNavigate} className="btn-primary mt-2 text-center">Get Started</Link>
             </div>
@@ -157,46 +101,10 @@ export default function NavbarClient() {
 
         <div className="hidden md:flex items-center flex-1 justify-end gap-10 pointer-events-auto">
           <div className="flex items-center gap-8 font-medium text-sm relative z-[201]">
-            <button
-              ref={productsButtonRef}
-              type="button"
-              onClick={() =>
-                openMenu === 'products'
-                  ? setOpenMenu(null)
-                  : openAnchoredMenu('products', productsButtonRef.current, 248)
-              }
-              aria-expanded={openMenu === 'products'}
-              aria-haspopup="menu"
-              aria-controls="desktop-products-menu"
-              className={`flex items-center gap-1 px-2 py-1 rounded-sm transition-colors ${productsActive ? 'text-accent font-semibold bg-accent/5' : 'text-ink-light hover:text-accent hover:bg-accent/5 active:bg-accent/10'}`}
-            >
-              Products
-              <svg className={`w-3 h-3 opacity-50 transition-transform ${openMenu === 'products' ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor">
-                <path d="M5.25 7.5l4.75 4.75L14.75 7.5" />
-              </svg>
-            </button>
-
+            <Link href="/install" className={linkClass('/install')}>CLI</Link>
             <Link href="/pricing" className={linkClass('/pricing')}>Pricing</Link>
             <Link href="/blog" className={linkClass('/blog')}>Blogs</Link>
-
-            <button
-              ref={resourcesButtonRef}
-              type="button"
-              onClick={() =>
-                openMenu === 'resources'
-                  ? setOpenMenu(null)
-                  : openAnchoredMenu('resources', resourcesButtonRef.current, 286)
-              }
-              aria-expanded={openMenu === 'resources'}
-              aria-haspopup="menu"
-              aria-controls="desktop-resources-menu"
-              className={`flex items-center gap-1 px-2 py-1 rounded-sm transition-colors ${resourcesActive ? 'text-accent font-semibold bg-accent/5' : 'text-ink-light hover:text-accent hover:bg-accent/5 active:bg-accent/10'}`}
-            >
-              Resources
-              <svg className={`w-3 h-3 opacity-50 transition-transform ${openMenu === 'resources' ? 'rotate-180' : ''}`} viewBox="0 0 20 20" fill="currentColor">
-                <path d="M5.25 7.5l4.75 4.75L14.75 7.5" />
-              </svg>
-            </button>
+            <Link href="/docs" className={linkClass('/docs')}>Documentation</Link>
           </div>
 
           <div className="flex items-center gap-4">
@@ -218,55 +126,6 @@ export default function NavbarClient() {
         </div>
       </div>
 
-      {openMenu && (
-        <>
-          <button
-            type="button"
-            className="fixed inset-0 z-[270] hidden md:block bg-transparent"
-            onClick={() => setOpenMenu(null)}
-            aria-label="Close menu"
-          />
-          <div
-            ref={dropdownRef}
-            className="fixed z-[280] hidden md:block"
-            style={{ top: `${menuCoords.top}px`, left: `${menuCoords.left}px`, width: `${menuCoords.width}px` }}
-          >
-            <div className="pointer-events-auto rounded-md border border-grid bg-white shadow-xl shadow-black/10 overflow-hidden p-2">
-              <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-widest text-ink-light/70 font-bold">
-                {openMenu === 'products' ? 'Products' : 'Resources'}
-              </div>
-
-              {openMenu === 'products' ? (
-                <>
-                  <Link href="/install" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:underline decoration-accent underline-offset-4">
-                    <div className="text-sm font-bold text-ink">TUI Agent</div>
-                    <div className="text-[10px] text-ink-light">Local terminal interface</div>
-                  </Link>
-                  <Link href="/web" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5 hover:underline decoration-accent underline-offset-4">
-                    <div className="text-sm font-bold text-ink">Web Shell</div>
-                    <div className="text-[10px] text-ink-light">Cloud environment</div>
-                  </Link>
-                </>
-              ) : (
-                <>
-                  <Link href="/docs" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5">
-                    <div className="text-sm font-bold text-ink">Documentation</div>
-                    <div className="text-[10px] text-ink-light">Guides & API</div>
-                  </Link>
-                  <Link href="/blog" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5">
-                    <div className="text-sm font-bold text-ink">Blog</div>
-                    <div className="text-[10px] text-ink-light">Engineering stories</div>
-                  </Link>
-                  <Link href="/changelog" onClick={() => setOpenMenu(null)} className="block px-3 py-2 rounded-sm hover:bg-accent/5">
-                    <div className="text-sm font-bold text-ink">Changelog</div>
-                    <div className="text-[10px] text-ink-light">Latest updates</div>
-                  </Link>
-                </>
-              )}
-            </div>
-          </div>
-        </>
-      )}
     </nav>
   );
 }

@@ -40,7 +40,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold text-accent mb-4">Product</h4>
+            <h4 className="font-semibold text-accent mb-4">Products</h4>
             <ul className="space-y-2 text-sm text-ink-light">
               <li><Link href="/install" className="hover:text-accent transition-colors">TUI</Link></li>
               <li><Link href="/web" className="hover:text-accent transition-colors">Web Shell</Link></li>

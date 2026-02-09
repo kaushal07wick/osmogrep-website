@@ -55,8 +55,8 @@
   body {
     @apply font-mono bg-paper text-ink;
     background-image:
-      radial-gradient(circle at 1px 1px, #ddd8cf 1px, transparent 0);
-    background-size: 5px 5px;
+      radial-gradient(circle at 1px 1px, rgba(221, 216, 207, 0.55) 0.85px, transparent 0);
+    background-size: 7px 7px;
   }
 
   h1,
