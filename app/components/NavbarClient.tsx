@@ -63,7 +63,7 @@ export default function NavbarClient() {
   };
 
   return (
-    <nav className="sticky top-0 z-[250] isolate w-full border-b border-grid bg-white/95 backdrop-blur-md transition-all duration-300">
+    <nav className="sticky top-0 z-[250] isolate w-full border-b border-grid bg-paper md:bg-white/95 md:backdrop-blur-md transition-all duration-300">
       <div className="container mx-auto flex h-14 max-w-[1200px] items-center justify-between px-4 sm:px-6 md:h-16 relative z-[251]">
         <Link href="/" className="flex items-center gap-3 group z-50">
           <span className="inline-flex items-center justify-center text-accent">
@@ -76,8 +76,9 @@ export default function NavbarClient() {
         </Link>
 
         <button
-          className="md:hidden z-[202] p-2 text-ink hover:text-accent active:text-accent transition-colors"
+          className="md:hidden z-[202] inline-flex h-10 w-10 items-center justify-center rounded-sm border border-grid bg-white text-ink hover:text-accent active:text-accent transition-colors"
           onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label={mobileMenuOpen ? 'Close mobile menu' : 'Open mobile menu'}
         >
           {mobileMenuOpen ? (
             <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
@@ -87,8 +88,8 @@ export default function NavbarClient() {
         </button>
 
         {mobileMenuOpen && (
-          <div className="fixed inset-x-0 top-14 z-[260] border-t border-grid bg-paper md:hidden max-h-[calc(100dvh-3.5rem)] overflow-y-auto shadow-lg">
-            <div className="flex flex-col gap-6 px-5 py-6 text-base font-space font-bold sm:text-lg">
+          <div className="fixed left-0 right-0 bottom-0 top-14 z-[400] border-t border-grid bg-paper md:hidden shadow-lg">
+            <div className="flex h-full flex-col gap-5 overflow-y-auto overscroll-contain px-5 py-6 text-base font-space font-bold sm:text-lg">
               <Link href="/" onClick={closeAndNavigate} className={mobileLinkClass('/')}>Home</Link>
               <Link href="/install" onClick={closeAndNavigate} className={mobileLinkClass('/install')}>CLI</Link>
               <Link href="/docs" onClick={closeAndNavigate} className={mobileLinkClass('/docs')}>Documentation</Link>

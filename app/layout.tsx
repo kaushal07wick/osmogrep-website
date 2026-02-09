@@ -5,7 +5,16 @@ import Footer from './components/Footer';
 
 const siteName = 'Osmogrep';
 const siteDescription = 'Proactive runtime analysis for high-velocity teams.';
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://osmogrep.com';
+const defaultSiteUrl = 'https://osmogrep.com';
+const rawSiteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL ??
+  process.env.VERCEL_PROJECT_PRODUCTION_URL ??
+  process.env.VERCEL_URL;
+const siteUrl = rawSiteUrl
+  ? rawSiteUrl.startsWith('http')
+    ? rawSiteUrl
+    : `https://${rawSiteUrl}`
+  : defaultSiteUrl;
 const ogImagePath = '/opengraph-image';
 
 export const metadata: Metadata = {

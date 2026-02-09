@@ -399,6 +399,13 @@ body > * {
   z-index: 1;
 }
 
+@media (max-width: 767px) {
+  body::before {
+    opacity: 0.05;
+    mix-blend-mode: normal;
+  }
+}
+
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
