@@ -119,12 +119,13 @@ export default function Home() {
       <section className="w-full py-24 bg-white/18 border-y border-grid/40">
         <div className="container mx-auto max-w-[1200px] px-6 grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
           <div>
+            <div className="page-chip mb-4">Runtime Coverage</div>
             <h2 className="text-3xl font-bold font-space text-accent mb-4">Works where you work</h2>
             <p className="max-w-xl text-ink-light text-sm mb-6">
               Built as a terminal-first runtime tool that runs cleanly across operating systems and editor workflows.
             </p>
-            <div className="inline-flex items-center gap-3 text-xs text-ink-light border border-grid rounded-full px-3 py-1 bg-white/40 backdrop-blur-sm">
-              <span className="w-2 h-2 rounded-full bg-accent"></span>
+            <div className="inline-flex items-center gap-2.5 text-xs text-ink-light border border-grid rounded-sm px-3 py-2 bg-white/55 backdrop-blur-sm">
+              <span className="w-2 h-2 rounded-[2px] bg-accent"></span>
               Terminal-first and cross-platform
             </div>
           </div>

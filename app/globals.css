@@ -228,6 +228,13 @@
   100% { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes hero-word-seq {
+  0%, 100% { opacity: 0.9; transform: translateY(0); }
+  12% { opacity: 1; transform: translateY(-1px); }
+  28% { opacity: 1; transform: translateY(0); }
+  40% { opacity: 0.94; transform: translateY(0); }
+}
+
 @keyframes blog-orb-spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
@@ -320,6 +327,11 @@
   animation-delay: 120ms;
 }
 
+.hero-word-seq {
+  display: inline-block;
+  animation: hero-word-seq 2.6s ease-in-out infinite;
+}
+
 .blog-mini-orb {
   position: relative;
   width: 26px;
@@ -394,15 +406,19 @@ body::before {
   mix-blend-mode: darken;
 }
 
-body > * {
+body > *:not(.mobile-menu-overlay) {
   position: relative;
   z-index: 1;
 }
 
+.mobile-menu-overlay {
+  position: fixed !important;
+  z-index: 2147483000 !important;
+}
+
 @media (max-width: 767px) {
   body::before {
-    opacity: 0.05;
-    mix-blend-mode: normal;
+    display: none;
   }
 }
 

@@ -27,8 +27,7 @@ export default function Hero() {
       <div className="container relative z-10 mx-auto max-w-[1200px] px-4 sm:px-6">
         <div className="grid grid-cols-1 items-start gap-6 sm:gap-7 md:grid-cols-2 lg:gap-8">
           <div className="animate-slide-up md:pr-2" style={{ animationDelay: '100ms' }}>
-            <div className="page-chip">Live Runtime Agent</div>
-            <h1 className="hero-title-fade text-[2rem] font-bold leading-[0.98] tracking-tight text-accent sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="hero-title-fade text-[2.7rem] font-bold leading-[0.95] tracking-tight text-accent sm:text-5xl md:text-6xl lg:text-7xl">
               Build.
               <br />
               Break.
@@ -40,17 +39,6 @@ export default function Hero() {
               Talk to Osmogrep, inspect your repo, patch risky paths, run tests, and ship with verification in one flow.
             </p>
 
-            <div className="mt-4 grid grid-cols-1 gap-2.5 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-2 md:gap-3">
-              <div className="rounded-sm border border-grid bg-white p-3 md:bg-white/75 md:p-4">
-                <div className="mb-2 text-[10px] font-bold uppercase tracking-widest text-ink-light">Session Mode</div>
-                <div className="text-xs text-accent md:text-sm">Interactive + Streaming</div>
-              </div>
-              <div className="rounded-sm border border-grid bg-white p-3 md:bg-white/75 md:p-4">
-                <div className="mb-2 text-[10px] font-bold uppercase tracking-widest text-ink-light">Command Modes</div>
-                <div className="text-xs text-accent md:text-sm">Chat • !Shell • / Control</div>
-              </div>
-            </div>
-
             <div className="mt-5 hidden gap-3 md:flex md:flex-row md:items-center">
               <Link href="/get-started" className="btn-primary w-auto px-6 py-2.5 text-sm font-medium md:px-8 md:py-3.5 md:text-base">
                 Get Started
@@ -59,7 +47,7 @@ export default function Hero() {
                 Read the Docs
               </Link>
             </div>
-            <p className="mt-3 text-xs tracking-wide text-ink-light md:mt-4 md:text-sm">No credit card required • Free local install</p>
+            <p className="mt-3 hidden text-xs tracking-wide text-ink-light md:mt-4 md:block md:text-sm">No credit card required • Free local install</p>
           </div>
 
           <div className="animate-slide-up w-full md:justify-self-end md:max-w-[520px] lg:max-w-[560px]" style={{ animationDelay: '200ms' }}>
@@ -74,7 +62,7 @@ export default function Hero() {
                 <span className="hidden text-xs text-slate-500 sm:inline">runtime monitor</span>
               </div>
 
-              <div className="grid min-h-[150px] grid-cols-1 border-t border-[#1d1f25] sm:min-h-[220px] md:min-h-[260px] md:grid-cols-[150px_1fr] lg:min-h-[320px] lg:grid-cols-[190px_1fr]">
+              <div className="grid min-h-[240px] grid-cols-1 border-t border-[#1d1f25] sm:min-h-[260px] md:min-h-[260px] md:grid-cols-[150px_1fr] lg:min-h-[320px] lg:grid-cols-[190px_1fr]">
                 <div className="hidden border-r border-[#2d2d30] bg-[#1b1d24] p-3 text-xs text-slate-400 md:block">
                   <div className="mb-3 text-[10px] uppercase tracking-widest text-slate-500">Explorer</div>
                   <div className="space-y-1">
@@ -107,20 +95,20 @@ export default function Hero() {
               </div>
             </div>
 
-            <div className="mt-2 grid grid-cols-2 gap-2 md:grid-cols-2 lg:grid-cols-4">
-              <div className="hidden rounded-sm border border-grid bg-white p-2 transition-colors hover:border-accent/50 md:block md:bg-white/80 md:p-2.5">
+            <div className="mt-2 grid grid-cols-4 gap-1.5 md:grid-cols-2 md:gap-2 lg:grid-cols-4">
+              <div className="rounded-sm border border-grid bg-white p-1.5 transition-colors hover:border-accent/50 md:bg-white/80 md:p-2.5">
                 <div className="mb-1 text-[9px] font-bold uppercase tracking-widest text-ink-light">Avg Patch Loop</div>
                 <div className="text-xs font-bold text-accent md:text-base">18s</div>
               </div>
-              <div className="rounded-sm border border-grid bg-white p-2 transition-colors hover:border-accent/50 md:bg-white/80 md:p-2.5">
+              <div className="rounded-sm border border-grid bg-white p-1.5 transition-colors hover:border-accent/50 md:bg-white/80 md:p-2.5">
                 <div className="mb-1 text-[9px] font-bold uppercase tracking-widest text-ink-light">Parallel Jobs</div>
                 <div className="text-xs font-bold text-accent md:text-base">32</div>
               </div>
-              <div className="hidden rounded-sm border border-grid bg-white p-2 transition-colors hover:border-accent/50 md:block md:bg-white/80 md:p-2.5">
+              <div className="rounded-sm border border-grid bg-white p-1.5 transition-colors hover:border-accent/50 md:bg-white/80 md:p-2.5">
                 <div className="mb-1 text-[9px] font-bold uppercase tracking-widest text-ink-light">Session Visibility</div>
                 <div className="text-xs font-bold text-accent md:text-base">100%</div>
               </div>
-              <div className="rounded-sm border border-grid bg-white p-2 transition-colors hover:border-accent/50 md:bg-white/80 md:p-2.5">
+              <div className="rounded-sm border border-grid bg-white p-1.5 transition-colors hover:border-accent/50 md:bg-white/80 md:p-2.5">
                 <div className="mb-1 text-[9px] font-bold uppercase tracking-widest text-ink-light">Command Latency</div>
                 <div className="text-xs font-bold text-accent md:text-base">{'<100ms'}</div>
               </div>
@@ -135,6 +123,7 @@ export default function Hero() {
           <Link href="/docs" className="btn-outline w-full px-3 py-2 text-xs font-medium">
             Read the Docs
           </Link>
+          <p className="col-span-2 pt-1 text-[10px] tracking-wide text-ink-light">No credit card required • Free local install</p>
         </div>
       </div>
     </section>
