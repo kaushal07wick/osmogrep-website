@@ -68,12 +68,12 @@ export default function PricingPage() {
 
   return (
     <main className="min-h-screen pt-24 pb-28">
-      <section className="container mx-auto max-w-[1200px] px-6">
+      <section className="zone zone-dither container mx-auto max-w-[1200px] px-6">
         <div className="max-w-3xl mb-10">
           <div className="page-chip mb-4">
             Pricing
           </div>
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight text-accent">
+          <h1 className="text-4xl md:text-6xl font-bold leading-tight text-ink">
             Select your plan
           </h1>
           <p className="mt-4 text-lg text-ink-light">
@@ -81,21 +81,21 @@ export default function PricingPage() {
           </p>
         </div>
 
-        <div className="inline-flex border border-grid bg-surface rounded-sm p-1 gap-1 mb-8">
+        <div className="inline-flex border border-grid bg-surface p-1 gap-1 mb-8">
           <button
-            className={`px-4 py-2 text-sm rounded-sm transition-colors ${selected === 'solo' ? 'bg-accent text-white' : 'text-ink-light hover:text-accent hover:bg-accent/10 active:bg-accent/15'}`}
+            className={`px-4 py-2 text-sm transition-colors ${selected === 'solo' ? 'bg-accent text-white' : 'text-ink-light hover:text-accent hover:bg-accent/10 active:bg-accent/15'}`}
             onClick={() => setSelected('solo')}
           >
             Solo
           </button>
           <button
-            className={`px-4 py-2 text-sm rounded-sm transition-colors ${selected === 'team' ? 'bg-accent text-white' : 'text-ink-light hover:text-accent hover:bg-accent/10 active:bg-accent/15'}`}
+            className={`px-4 py-2 text-sm transition-colors ${selected === 'team' ? 'bg-accent text-white' : 'text-ink-light hover:text-accent hover:bg-accent/10 active:bg-accent/15'}`}
             onClick={() => setSelected('team')}
           >
             Team
           </button>
           <button
-            className={`px-4 py-2 text-sm rounded-sm transition-colors ${selected === 'enterprise' ? 'bg-accent text-white' : 'text-ink-light hover:text-accent hover:bg-accent/10 active:bg-accent/15'}`}
+            className={`px-4 py-2 text-sm transition-colors ${selected === 'enterprise' ? 'bg-accent text-white' : 'text-ink-light hover:text-accent hover:bg-accent/10 active:bg-accent/15'}`}
             onClick={() => setSelected('enterprise')}
           >
             Enterprise
@@ -104,8 +104,8 @@ export default function PricingPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {visiblePlans.map((plan) => (
-            <div key={plan.id} className="border border-grid rounded-sm p-6 bg-surface backdrop-blur-sm">
-              <h2 className="text-2xl font-bold text-accent">{plan.name}</h2>
+            <div key={plan.id} className="frame p-6 bg-surface">
+              <h2 className="text-2xl font-bold text-ink">{plan.name}</h2>
               <div className="mt-3">
                 <span className="text-4xl font-bold text-ink">{plan.price}</span>
                 <span className="text-sm text-ink-light ml-1">{plan.period}</span>
@@ -130,16 +130,16 @@ export default function PricingPage() {
       </section>
 
       <section className="container mx-auto max-w-[1200px] px-6 mt-16">
-        <div className="border border-grid rounded-sm bg-surface p-6 md:p-8">
+        <div className="frame bg-surface p-6 md:p-8">
           <div className="grid gap-6 md:grid-cols-[1.3fr_0.7fr]">
             <div>
-              <h2 className="text-2xl font-bold text-accent">Need deployment advice?</h2>
+              <h2 className="text-2xl font-bold text-ink">Need deployment advice?</h2>
               <p className="text-sm text-ink-light mt-1">
                 Send your email and message. We review each request and reply with plan and rollout recommendations.
               </p>
               <ContactForm source="pricing-contact" />
             </div>
-            <aside className="border border-grid rounded-sm bg-surface p-4 h-fit">
+            <aside className="frame bg-surface p-4 h-fit">
               <h3 className="text-sm uppercase tracking-wide text-ink-light">What to include</h3>
               <ul className="mt-3 space-y-2 text-sm text-ink-light">
                 <li>- Team size and active repos</li>
@@ -147,7 +147,7 @@ export default function PricingPage() {
                 <li>- Current testing bottlenecks</li>
               </ul>
               <div className="mt-5">
-                <Link href="/docs" className="btn-outline px-5 py-2.5">
+                <Link href="/docs" className="frame btn-outline px-5 py-2.5">
                   View Docs
                 </Link>
               </div>

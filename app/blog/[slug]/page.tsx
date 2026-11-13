@@ -25,7 +25,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               ← Back to Engineering Notes
             </Link>
             <p className="mt-4 text-xs font-mono text-ink-light">{post.date} • {post.author}</p>
-            <h1 className="mt-3 text-3xl md:text-5xl leading-[0.95] font-bold text-accent blog-title-rise">{post.title}</h1>
+            <h1 className="mt-3 text-3xl md:text-5xl leading-[0.95] font-bold text-ink blog-title-rise">{post.title}</h1>
             <p className="mt-3 text-base md:text-lg text-ink-light max-w-3xl">{post.excerpt}</p>
           </div>
           <div className="px-6 md:px-8 py-3 text-[11px] uppercase tracking-[0.16em] text-ink-light border-b border-grid">
@@ -57,12 +57,11 @@ export default async function BlogPostPage({ params }: PageProps) {
               [&_p]:text-base [&_p]:text-ink-light [&_p]:my-4
               [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-4 [&_ul]:text-ink-light
               [&_li]:my-1.5
-              [&_pre]:bg-[#0f0f10] [&_pre]:text-slate-200 [&_pre]:border [&_pre]:border-grid [&_pre]:p-4 [&_pre]:rounded-sm [&_pre]:overflow-x-auto [&_pre]:my-6
+              [&_pre]:bg-[#0f0f10] [&_pre]:text-slate-200 [&_pre]:border [&_pre]:border-grid [&_pre]:p-4 [&_pre]:[&_pre]:overflow-x-auto [&_pre]:my-6
               [&_code]:font-mono
               [&_a]:text-accent [&_a]:underline
               [&_figure]:my-8
-              [&_figure_img]:w-full [&_figure_img]:border [&_figure_img]:border-grid [&_figure_img]:rounded-sm
-              [&_figcaption]:text-xs [&_figcaption]:text-ink-light [&_figcaption]:mt-2
+              [&_figure_img]:w-full [&_figure_img]:border [&_figure_img]:border-grid [&_figure_img]:[&_figcaption]:text-xs [&_figcaption]:text-ink-light [&_figcaption]:mt-2
               [&_blockquote]:border-l-2 [&_blockquote]:border-accent [&_blockquote]:pl-4 [&_blockquote]:text-ink-light [&_blockquote]:my-5
             "
             dangerouslySetInnerHTML={{ __html: post.html }}
@@ -74,7 +73,7 @@ export default async function BlogPostPage({ params }: PageProps) {
               <div className="border border-grid bg-surface px-2 py-1.5">author: {post.author}</div>
               <div className="border border-grid bg-surface px-2 py-1.5">date: {post.date}</div>
             </div>
-            <Link href="/blog" className="btn-outline mt-4 w-full py-2.5">
+            <Link href="/blog" className="frame btn-outline mt-4 w-full py-2.5">
               More Entries
             </Link>
           </aside>

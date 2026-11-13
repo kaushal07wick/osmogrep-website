@@ -14,7 +14,8 @@ export const barLinks: NavItem[] = [
 
 /** Rows in the search menu before anything is typed. Also the whole menu on mobile. */
 export const menuLinks: NavItem[] = [
-  { cmd: 'install', href: '/#install', desc: 'Get the CLI for macOS, Linux and Windows' },
+  { cmd: 'install', href: '/docs#quickstart', desc: 'Get the CLI for macOS, Linux and Windows' },
+  { cmd: 'integrations', href: '/#coding-agents', desc: 'Connect Codex or Claude Code with MCP and skills' },
   ...barLinks,
   { cmd: 'changelog', href: '/changelog', desc: 'What shipped, version by version' },
   { cmd: 'about', href: '/about', desc: 'Who builds Osmogrep' },

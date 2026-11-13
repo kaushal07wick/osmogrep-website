@@ -1,19 +1,20 @@
-import Link from 'next/link';
+import Link from "next/link";
+import BugRunner from "./components/BugRunner";
+import "./bug-runner.css";
 
 export default function NotFound() {
   return (
-    <main className="min-h-[60vh] flex items-center justify-center px-6">
-      <div className="max-w-xl w-full border border-grid bg-surface rounded-sm p-8 text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-accent">Page not found</h1>
-        <p className="mt-3 text-ink-light">
-          The page you are looking for does not exist or was moved.
-        </p>
-        <div className="mt-6">
-          <Link href="/" className="btn-primary px-5 py-2.5">
-            Back to Home
-          </Link>
-        </div>
+    <main className="missing-page">
+      <div className="missing-heading">
+        <span>404 // ROUTE_NOT_FOUND</span>
+        <h1>Well. That’s a bug.</h1>
+        <p>This page is missing. Your reflexes don’t have to be.</p>
       </div>
+      <BugRunner />
+      <nav className="missing-exits" aria-label="Leave the missing page">
+        <Link href="/" aria-label="Back to home">← Back to home</Link>
+        <Link href="/web">Open the console ↗</Link>
+      </nav>
     </main>
   );
 }

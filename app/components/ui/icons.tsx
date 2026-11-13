@@ -34,3 +34,10 @@ export const PixelStar = ({ className = 'h-3 w-[15px]', lit = false }: { classNa
     )}
   </svg>
 );
+
+/** 7x5 pixel arrow pointing right; inherits the text color. */
+export const PixelArrow = ({ className = 'h-2.5 w-3.5' }: { className?: string }) => (
+  <svg viewBox="0 0 7 5" shapeRendering="crispEdges" className={className} aria-hidden="true">
+    <path d="M0 2h6v1H0zM4 0h1v1H4zM5 1h1v1H5zM5 3h1v1H5zM4 4h1v1H4z" fill="currentColor" />
+  </svg>
+);

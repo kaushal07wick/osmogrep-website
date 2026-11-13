@@ -1,12 +1,14 @@
 import './globals.css';
+import './textures.css';
 import type { Metadata, Viewport } from 'next';
-import { Bricolage_Grotesque, Hanken_Grotesk, JetBrains_Mono } from 'next/font/google';
+import { Share_Tech_Mono, Space_Mono } from 'next/font/google';
 import Navbar from './components/navbar/Navbar';
 import Footer from './components/Footer';
 
-const display = Bricolage_Grotesque({ subsets: ['latin'], variable: '--font-display', display: 'swap' });
-const sans = Hanken_Grotesk({ subsets: ['latin'], variable: '--font-body', display: 'swap' });
-const mono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-code', display: 'swap' });
+
+// Space Mono: headings and body text. Share Tech Mono: UI chrome, labels, code, terminal.
+const body = Space_Mono({ subsets: ['latin'], weight: ['400', '700'], style: ['normal', 'italic'], variable: '--font-body', display: 'swap' });
+const ui = Share_Tech_Mono({ subsets: ['latin'], weight: '400', variable: '--font-code', display: 'swap' });
 
 const siteName = 'Osmogrep';
 const siteDescription = 'Proactive runtime analysis for high-velocity teams.';
@@ -64,12 +66,12 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
-  themeColor: '#FBFBF9',
+  themeColor: '#F9F8F5',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" data-theme="light" className={`${display.variable} ${sans.variable} ${mono.variable}`}>
+    <html lang="en" data-theme="light" className={`${body.variable} ${ui.variable}`}>
       <body className="antialiased min-h-screen flex flex-col">
         <Navbar />
         <div className="flex-1">{children}</div>

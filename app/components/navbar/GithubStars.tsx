@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { GithubIcon, PixelStar } from './icons';
+import { GithubIcon, PixelStar } from '../ui/icons';
 import { REPO, REPO_URL } from './links';
 
 /** GitHub cell: live star count, pixel star that lights up on hover, and a .frame tooltip. */
@@ -38,7 +38,7 @@ export default function GithubStars() {
         <span className="frame flex items-center gap-3 px-3.5 py-2.5 shadow-lg shadow-black/5">
           <PixelStar className="h-[14px] w-[18px]" lit />
           <span className="leading-tight">
-            <span className="block font-sans text-[13px] font-semibold text-ink">Star us on GitHub</span>
+            <span className="block font-inter text-[13px] font-bold text-ink">Star us on GitHub</span>
             <span className="block text-[11px] text-ink-light">
               {REPO}
               {stars ? ` · ${stars} ★` : ''}

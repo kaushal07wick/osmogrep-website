@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import LogoMark from '../LogoMark';
 import FeaturesPanel from './FeaturesPanel';
 import GithubStars from './GithubStars';
-import { SearchIcon } from './icons';
+import { SearchIcon } from '../ui/icons';
 import { barLinks } from './links';
 import { CellLabel, cellClass } from './NavCell';
 import SearchMenu from './SearchMenu';
@@ -53,6 +53,12 @@ export default function Navbar() {
 
   useEffect(closeAll, [pathname]);
 
+  // Shortcut hint matches the platform: ⌘K on Apple devices, Ctrl K elsewhere.
+  const [shortcut, setShortcut] = useState('⌘K');
+  useEffect(() => {
+    if (!/Mac|iPhone|iPad/.test(navigator.platform)) setShortcut('Ctrl K');
+  }, []);
+
   // A click anywhere outside the header closes whatever is open.
   useEffect(() => {
     if (!search && !features) return;
@@ -63,10 +69,14 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', onDown);
   }, [search, features]);
 
-  // Esc closes; `/` opens search from anywhere except form fields.
+  // ⌘K / Ctrl+K toggles search anywhere; `/` opens it outside form fields; Esc closes.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && (search || features)) {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        if (search) closeAll();
+        else openSearch();
+      } else if (e.key === 'Escape' && (search || features)) {
         if (search) searchButton.current?.focus();
         closeAll();
       } else if (e.key === '/' && !search && !(e.target as HTMLElement).closest('input, textarea, select, [contenteditable="true"]')) {
@@ -134,10 +144,12 @@ export default function Navbar() {
           onClick={() => (search && !justHoverOpened() ? closeAll() : openSearch())}
           aria-expanded={search}
           aria-controls="nav-terminal"
-          aria-label="Search and menu (press /)"
-          className={`flex w-14 items-center justify-center border-l border-grid transition-colors ${search ? 'bg-ink text-white' : 'text-ink-light hover:text-ink'}`}
+          aria-label={`Search the site (${shortcut})`}
+          aria-keyshortcuts="Meta+K Control+K /"
+          className={`flex items-center justify-center gap-2.5 border-l border-grid px-4 transition-colors ${search ? 'bg-ink text-white' : 'text-ink-light hover:text-ink'}`}
         >
           <SearchIcon />
+          <kbd className={`hidden font-mono text-[11px] lg:inline ${search ? 'text-white/50' : 'text-ink-light/80'}`}>{shortcut}</kbd>
         </button>
 
         <GithubStars />

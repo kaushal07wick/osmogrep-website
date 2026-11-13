@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState, type ReactNode, type RefObject } from 're
 import Link from 'next/link';
 import type { SearchDoc } from '../../../lib/search';
 import { prefersReducedMotion } from '../../../lib/motion';
-import { SearchIcon } from './icons';
+import { SearchIcon } from '../ui/icons';
 import { menuLinks } from './links';
 import { loadIndex, mark, queryTerms, searchDocs, snippet } from './searchHelpers';
 

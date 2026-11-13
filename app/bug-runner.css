@@ -1,0 +1,482 @@
+.missing-page {
+  --run-ink: #18181b;
+  --run-muted: #787166;
+  --run-line: #d9d2c4;
+  --run-orange: #c64a08;
+  min-height: 85svh;
+  max-width: 1020px;
+  width: calc(100% - 64px);
+  margin: auto;
+  padding: clamp(64px, 10vh, 120px) 0 64px;
+  color: var(--run-ink);
+}
+.missing-heading {
+  margin-bottom: 44px;
+}
+.missing-heading > span {
+  color: var(--run-orange);
+  font:
+    11px var(--font-code),
+    monospace;
+  letter-spacing: 1.7px;
+}
+.missing-heading h1 {
+  font:
+    400 clamp(30px, 4.5vw, 52px)/1.2 var(--font-body),
+    monospace;
+  letter-spacing: -2px;
+  margin: 17px 0 16px;
+}
+.missing-heading p {
+  font:
+    13px/1.8 var(--font-code),
+    monospace;
+  color: var(--run-muted);
+  margin: 0;
+}
+.bug-runner {
+  border: 1px solid var(--run-line);
+  background: #f9f8f5;
+  position: relative;
+}
+.bug-runner:before,
+.bug-runner:after {
+  content: "";
+  position: absolute;
+  width: 15px;
+  height: 15px;
+  pointer-events: none;
+  z-index: 2;
+}
+.bug-runner:before {
+  left: -1px;
+  top: -1px;
+  border-left: 2px solid var(--run-ink);
+  border-top: 2px solid var(--run-ink);
+}
+.bug-runner:after {
+  right: -1px;
+  bottom: -1px;
+  border-right: 2px solid var(--run-ink);
+  border-bottom: 2px solid var(--run-ink);
+}
+.bug-runner-hud {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  border-bottom: 1px dashed var(--run-line);
+  font:
+    11px var(--font-code),
+    monospace;
+  letter-spacing: 1px;
+}
+.bug-runner-hud i {
+  font-style: normal;
+  letter-spacing: 0;
+  color: var(--run-muted);
+  margin-left: 8px;
+}
+.bug-runner-hud > div {
+  display: flex;
+  gap: 26px;
+  color: var(--run-muted);
+}
+.bug-runner-hud output {
+  color: var(--run-ink);
+  margin-left: 8px;
+  font-variant-numeric: tabular-nums;
+}
+.bug-runner-stage {
+  position: relative;
+}
+.bug-runner canvas {
+  display: block;
+  width: 100%;
+  height: 260px;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+.bug-runner canvas:focus-visible {
+  outline: 2px solid var(--run-orange);
+  outline-offset: -4px;
+}
+.bug-runner-overlay {
+  position: absolute;
+  inset: 32px 12px auto;
+  text-align: center;
+  pointer-events: none;
+}
+.bug-runner-overlay p {
+  color: var(--run-muted);
+  font:
+    12px var(--font-code),
+    monospace;
+  margin: 0 0 16px;
+}
+.bug-runner-overlay button {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 28px;
+  border: 1px solid var(--run-ink);
+  background: var(--run-ink);
+  color: #fffefa;
+  padding: 11px 16px;
+  font:
+    12px var(--font-code),
+    monospace;
+  cursor: pointer;
+}
+.bug-runner-overlay button:hover {
+  background: var(--run-orange);
+  border-color: var(--run-orange);
+}
+.bug-runner-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 22px;
+  border-top: 1px dashed var(--run-line);
+}
+.bug-runner-controls p {
+  font:
+    11px var(--font-code),
+    monospace;
+  color: var(--run-muted);
+  margin: 0;
+}
+.bug-runner-controls kbd {
+  font: inherit;
+  padding: 3px 5px;
+  border: 1px solid var(--run-line);
+  border-bottom-width: 2px;
+  color: #665c4e;
+}
+.bug-runner-controls p > span {
+  margin: 0 9px;
+}
+.bug-runner-controls > div {
+  display: flex;
+  gap: 8px;
+}
+.bug-runner-controls button {
+  min-height: 36px;
+  border: 1px solid var(--run-line);
+  background: #fffefa;
+  color: #665c4e;
+  padding: 7px 12px;
+  font:
+    11px var(--font-code),
+    monospace;
+  cursor: pointer;
+}
+.bug-runner-controls button:hover:not(:disabled) {
+  color: var(--run-orange);
+  border-color: var(--run-orange);
+}
+.bug-runner-controls button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.bug-runner button:focus-visible,
+.missing-exits a:focus-visible {
+  outline: 2px solid var(--run-orange);
+  outline-offset: 3px;
+}
+.bug-runner-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.missing-exits {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+  font:
+    12px var(--font-code),
+    monospace;
+  color: var(--run-muted);
+}
+.missing-exits a:hover {
+  color: var(--run-orange);
+}
+@media (max-width: 600px) {
+  .missing-page {
+    width: calc(100% - 32px);
+    padding-top: 54px;
+  }
+  .missing-heading {
+    margin-bottom: 30px;
+  }
+  .missing-heading h1 {
+    letter-spacing: -1.2px;
+  }
+  .missing-heading p {
+    max-width: 270px;
+  }
+  .bug-runner-hud {
+    padding: 15px 13px;
+    gap: 8px;
+    font-size: 10px;
+    letter-spacing: 0.4px;
+  }
+  .bug-runner-hud i {
+    display: none;
+  }
+  .bug-runner-hud > div {
+    gap: 14px;
+  }
+  .bug-runner-hud output {
+    margin-left: 4px;
+  }
+  .bug-runner-controls {
+    padding: 14px 13px;
+    flex-wrap: wrap;
+  }
+  .bug-runner-controls p {
+    font-size: 10px;
+  }
+  .bug-runner-controls > div {
+    margin-left: auto;
+  }
+  .missing-exits {
+    font-size: 11px;
+  }
+}
+
+/* The 404 is the game surface, including when rendered inside the website layout. */
+body:has(.missing-page) {
+  overflow: hidden;
+}
+body:has(.missing-page) > header,
+body:has(.missing-page) > footer {
+  display: none;
+}
+.missing-page {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 20px;
+  width: 100%;
+  max-width: none;
+  height: 100svh;
+  min-height: 0;
+  padding: 26px 32px 22px;
+  box-sizing: border-box;
+}
+.missing-heading {
+  display: flex;
+  align-items: baseline;
+  gap: 22px;
+  flex-wrap: wrap;
+  margin: 0;
+}
+.missing-heading h1 {
+  font-size: 26px;
+  letter-spacing: -1px;
+  margin: 0;
+}
+.missing-heading > span {
+  font-size: 10px;
+  letter-spacing: 1.3px;
+}
+.missing-heading > p {
+  margin-left: auto;
+  font-size: 11px;
+}
+.bug-runner {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 0;
+}
+.bug-runner-stage {
+  min-height: 0;
+}
+.bug-runner canvas {
+  height: 100%;
+}
+.bug-runner-overlay {
+  inset: 12% 12px auto;
+}
+.missing-exits {
+  margin-top: 0;
+}
+@media (max-width: 740px) {
+  .missing-page {
+    padding: 18px 16px;
+    gap: 16px;
+  }
+  .missing-heading {
+    gap: 9px;
+    display: block;
+  }
+  .missing-heading h1 {
+    font-size: 22px;
+    margin-top: 6px;
+  }
+  .missing-heading > p {
+    display: none;
+  }
+  .bug-runner-controls {
+    gap: 12px;
+  }
+  .bug-runner-controls > div {
+    margin-left: 0;
+    width: 100%;
+    justify-content: flex-end;
+  }
+  .bug-runner-controls button {
+    min-height: 40px;
+    min-width: 62px;
+  }
+  .missing-exits {
+    font-size: 10px;
+  }
+}
+
+/* Edge-to-edge playfield; every piece of page chrome floats above the canvas. */
+.missing-page {
+  position: relative;
+  display: block;
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+}
+.missing-heading {
+  position: absolute;
+  z-index: 3;
+  top: 24px;
+  left: 26px;
+  display: block;
+  pointer-events: none;
+}
+.missing-heading h1 {
+  font-size: 18px;
+  letter-spacing: -0.6px;
+  margin-top: 7px;
+}
+.missing-heading > p {
+  display: none;
+}
+.bug-runner {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border: 0;
+  background: transparent;
+}
+.bug-runner:before,
+.bug-runner:after {
+  display: none;
+}
+.bug-runner-stage {
+  position: absolute;
+  inset: 0;
+}
+.bug-runner canvas {
+  width: 100%;
+  height: 100%;
+}
+.bug-runner canvas:focus-visible {
+  outline: none;
+}
+.bug-runner:has(canvas:focus-visible) .bug-runner-hud {
+  box-shadow: 0 2px 0 #c64a08;
+}
+.bug-runner-hud {
+  position: absolute;
+  top: 27px;
+  right: 26px;
+  z-index: 3;
+  padding: 0 0 7px;
+  border: 0;
+  background: transparent;
+}
+.bug-runner-hud > span {
+  display: none;
+}
+.bug-runner-overlay {
+  inset: 35% 12px auto;
+}
+.bug-runner-controls {
+  position: absolute;
+  left: 26px;
+  right: 26px;
+  bottom: 62px;
+  z-index: 3;
+  border: 0;
+  padding: 0;
+  background: transparent;
+  pointer-events: none;
+}
+.bug-runner-controls > * {
+  pointer-events: auto;
+}
+.bug-runner-controls p {
+  padding: 7px 0;
+}
+.missing-exits {
+  position: absolute;
+  z-index: 3;
+  left: 26px;
+  right: 26px;
+  bottom: 22px;
+  margin: 0;
+  font-size: 11px;
+}
+@media (max-width: 740px) {
+  .missing-heading {
+    top: 18px;
+    left: 16px;
+  }
+  .missing-heading h1 {
+    font-size: 15px;
+  }
+  .missing-heading > span {
+    font-size: 9px;
+  }
+  .bug-runner-hud {
+    top: 76px;
+    left: 16px;
+    right: auto;
+    padding-bottom: 5px;
+  }
+  .bug-runner-controls {
+    bottom: 62px;
+    left: 16px;
+    right: 16px;
+    gap: 10px;
+    flex-wrap: nowrap;
+  }
+  .bug-runner-controls > p {
+    max-width: 135px;
+    font-size: 9px;
+    line-height: 1.8;
+  }
+  .bug-runner-controls > div {
+    width: auto;
+    margin-left: auto;
+    gap: 5px;
+  }
+  .bug-runner-controls button {
+    min-width: 50px;
+    padding: 8px;
+    font-size: 10px;
+  }
+  .missing-exits {
+    left: 16px;
+    right: 16px;
+    bottom: 20px;
+    font-size: 10px;
+    gap: 12px;
+  }
+}

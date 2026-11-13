@@ -7,11 +7,11 @@ export default function BlogPage() {
 
   return (
     <main className="min-h-screen pt-20 pb-32">
-      <section className="container mx-auto max-w-[1200px] px-6 space-y-8">
+      <section className="zone zone-dither container mx-auto max-w-[1200px] px-6 space-y-8">
         <header className="border border-grid bg-surface">
           <div className="px-6 md:px-8 py-7 md:py-8 border-b border-grid">
             <div className="page-chip mb-3">Engineering Notes</div>
-            <h1 className="text-3xl md:text-5xl leading-[0.95] font-bold text-accent blog-title-rise">
+            <h1 className="text-3xl md:text-5xl leading-[0.95] font-bold text-ink blog-title-rise">
               Blog posts from real runtime sessions.
             </h1>
             <p className="mt-3 text-base text-ink-light max-w-3xl">
@@ -30,7 +30,7 @@ export default function BlogPage() {
               <h2 className="mt-3 text-2xl md:text-4xl leading-[1] font-bold text-ink">{latest.title}</h2>
               <p className="mt-3 text-base text-ink-light max-w-[46ch]">{latest.excerpt}</p>
               <p className="mt-6 text-xs font-mono text-ink-light">{latest.date} • {latest.author}</p>
-              <Link href={`/blog/${latest.slug}`} className="btn-outline mt-6 px-6 py-3">
+              <Link href={`/blog/${latest.slug}`} className="frame btn-outline mt-6 px-6 py-3">
                 Open Entry
               </Link>
             </div>
@@ -57,7 +57,7 @@ export default function BlogPage() {
 
         <section className="border border-grid bg-surface">
           <div className="px-6 md:px-8 py-5 md:py-6 border-b border-grid bg-accent/8 flex items-center justify-between gap-4">
-            <h3 className="text-2xl md:text-3xl font-bold text-accent">All Posts</h3>
+            <h3 className="text-2xl md:text-3xl font-bold text-ink">All Posts</h3>
           </div>
 
           <div>

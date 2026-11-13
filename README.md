@@ -15,12 +15,20 @@ The web console lives at `app.osmogrep.com` in a separate repo. `NEXT_PUBLIC_CON
 
 | Path | What |
 | --- | --- |
-| `app/` | Pages (one folder per route) and API routes (`app/api/*`) |
-| `app/components/navbar/` | The header: bar cells, features panel, search menu, GitHub stars, sign-in |
-| `app/components/LogoMark.tsx` | Animated logo (orbiting flaw + trailing blink). `still` renders the static mark |
-| `app/components/FooterBug.tsx` | Pixel bug that walks the footer ridge |
-| `app/globals.css` | Color tokens, the `.frame` box style, and every keyframe animation |
-| `lib/` | Plain data and logic, no React: features copy, changelog, blog loader, search index and ranking |
+| `app/` | Pages (one folder per route), API routes (`app/api/*`), `layout.tsx`, `template.tsx` (page transition) |
+| `app/components/navbar/` | Header: bar cells, features panel, search menu, GitHub stars, sign-in |
+| `app/components/hero/` | Home hero: headline, bug ticker, install box, woodpecker canvas |
+| `app/components/home/` | Home sections: terminal session, field guide, how it works, console, platforms |
+| `app/components/footer/` | Footer scene canvas host, the walking bug and its easter eggs, footer links |
+| `app/components/bug/` | The pixel bug and its moods (`walk`, `curious`, `scared`, `caught`, `happy`), optional gear |
+| `app/components/motion/` | Scroll helpers: `Reveal`, `stagger`, `useInView`, `useScrollProgress` |
+| `app/components/ui/` | Shared icons (GitHub, search, pixel star, pixel arrow) |
+| `app/components/LogoMark.tsx` | Animated logo. `still` renders the static mark |
+| `app/globals.css` | Color tokens, `.frame`, buttons, keyframes |
+| `app/textures.css` | Zone textures: `.tx-NAME` (solid) and `.zone .zone-NAME` (fades at the edges) |
+| `lib/` | Plain data and logic: features, changelog, blog loader, search, motion helper |
+| `lib/woodpecker/scene.js` | Hero woodpecker engine (canvas, stateless `frame` + `draw`) |
+| `lib/footer/scene.js` | Footer ASCII landscape engine; day/night follows IST |
 | `public/brand/` | Logo files: `osmogrep-mark-light.svg`, `osmogrep-mark-dark.svg` |
 
 ## Common changes
@@ -31,6 +39,9 @@ The web console lives at `app.osmogrep.com` in a separate repo. `NEXT_PUBLIC_CON
 - **Blog posts** – add a Markdown file to `content/blog/`. It shows up on `/blog` and in search automatically.
 - **New page or docs section** – also add one line to `pages` in `lib/search.ts` so search can find it.
 - **Logo timing** – `ORBIT` and `BLINK` at the top of `LogoMark.tsx`.
+- **Footer bug easter eggs** – listed at the top of `app/components/footer/FooterBug.tsx`.
+- **Install methods** – `METHODS` in `app/components/hero/CopyInstall.tsx`.
+- **Section texture** – add `zone zone-dither` (or `-engraved`, `-pinstripe`, `-film`) to a section.
 
 ## Design rules
 
@@ -38,4 +49,4 @@ The web console lives at `app.osmogrep.com` in a separate repo. `NEXT_PUBLIC_CON
 - **Boxes** use `.frame`: a pixel-stitch dashed border with corner ticks that grow and turn orange on hover (on links). Add the class to any card, panel or tooltip; it needs no extra markup.
 - **Pixel art** (logo, icons, bug, star) is drawn on small grids with `shapeRendering="crispEdges"`. Keep it on whole pixels.
 - **Motion** respects `prefers-reduced-motion`: CSS animations are switched off globally, and JS animations check `prefersReducedMotion()` from `lib/motion.ts` and render their still state.
-- **Fonts**: Bricolage Grotesque for headings, Hanken Grotesk for body, JetBrains Mono for code and terminal-style UI.
+- **Fonts** (set in `app/layout.tsx`): Space Mono for headings and body (`font-space`, `font-inter`, has bold), Share Tech Mono for UI chrome, labels, code and terminal text (`font-mono`, one weight only, so don't bold it).

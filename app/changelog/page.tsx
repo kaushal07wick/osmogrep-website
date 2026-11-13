@@ -5,12 +5,12 @@ import { majorUpdates } from '../../lib/changelog';
 export default function Changelog() {
   return (
     <main className="min-h-screen pt-28 pb-24">
-      <section className="container mx-auto max-w-[1200px] px-6">
+      <section className="zone zone-pinstripe container mx-auto max-w-[1200px] px-6">
         <div className="max-w-3xl">
           <div className="page-chip mb-4">
             Changelog
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-accent">Major Product Updates</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-ink">Major Product Updates</h1>
           <p className="mt-4 text-lg text-ink-light">
             A curated record of meaningful releases and platform improvements.
           </p>
@@ -18,7 +18,7 @@ export default function Changelog() {
 
         <div className="mt-10 space-y-5">
           {majorUpdates.map((update) => (
-            <article key={update.version} className="border border-grid rounded-sm bg-surface backdrop-blur-sm p-5 md:p-6">
+            <article key={update.version} className="frame bg-surface p-5 md:p-6">
               <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
                 <div>
                   <p className="text-[11px] tracking-wider uppercase font-bold text-accent">{update.version}</p>
@@ -34,7 +34,7 @@ export default function Changelog() {
                     href={`https://github.com/kaushal07wick/OsmoGrep/commit/${hash}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-xs font-mono px-2.5 py-1 rounded-sm border border-grid bg-surface text-accent hover:border-accent hover:underline underline-offset-4"
+                    className="text-xs font-mono px-2.5 py-1 frame bg-surface text-accent hover:border-accent hover:underline underline-offset-4"
                   >
                     {hash}
                   </a>

@@ -4,7 +4,7 @@ const nextConfig = {
   distDir: process.env.NEXT_DIST_DIR || ".next",
   devIndicators: false,
   async redirects() {
-    return [{ source: "/install", destination: "/#install", permanent: true }];
+    return [{ source: "/install", destination: "/docs#quickstart", permanent: true }];
   },
 };
 

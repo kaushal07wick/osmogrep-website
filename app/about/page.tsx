@@ -1,88 +1,97 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
+import { consoleUrl } from '../../lib/console';
+import AboutHero from '../components/about/AboutHero';
+import IncidentLog from '../components/about/IncidentLog';
+import Principles from '../components/about/Principles';
+import CopyInstall from '../components/hero/CopyInstall';
+import LogoMark from '../components/LogoMark';
+import Reveal from '../components/motion/Reveal';
+import { stagger } from '../components/motion/stagger';
+import { GithubIcon, PixelArrow } from '../components/ui/icons';
+import SectionDivider from '../components/ui/SectionDivider';
+
+export const metadata: Metadata = {
+  title: 'About',
+  description: 'Why Osmogrep exists: catching the runtime bugs that pass review and CI, with a fix and proof.',
+};
+
+const REPO = 'https://github.com/kaushal07wick/OsmoGrep';
+
+/* The three ways to use the same engine. */
+const SURFACES = [
+  { name: 'CLI', line: 'A terminal agent inside your repo.', href: '/docs#quickstart', cta: 'Install' },
+  { name: 'Web console', line: 'Paste a PR, get the evidence.', href: consoleUrl, cta: 'Open' },
+  { name: 'MCP + skills', line: 'Codex and Claude Code, with a sandbox.', href: '/#coding-agents', cta: 'Connect' },
+];
 
 export default function About() {
   return (
-    <main className="min-h-screen pt-28 pb-24">
-      <section className="container mx-auto max-w-[1200px] px-6">
-        <div className="max-w-4xl animate-slide-up opacity-0 delay-100">
-          <div className="page-chip mb-4">
-            About
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-accent mb-6">A Terminal-Native Agent For Real Engineering Work</h1>
-          <p className="max-w-3xl text-lg text-ink-light leading-relaxed">
-            Osmogrep is built for teams that want AI assistance without losing control. It runs inside your repository,
-            keeps execution transparent, and treats every action as auditable engineering work instead of a black box.
-          </p>
+    <main className="w-full">
+      <AboutHero />
+      <SectionDivider index={1} label="why" />
+      <IncidentLog />
+      <SectionDivider index={2} label="principles" dir={-1} />
+      <Principles />
+      <SectionDivider index={3} label="one engine" />
+
+      <section className="w-full py-24 md:py-28">
+        <div className="mx-auto max-w-[1280px] px-6">
+          <Reveal className="flex flex-wrap items-end justify-between gap-6">
+            <div>
+              <p data-stagger style={stagger(0)} className="font-mono text-[12px] text-accent">one engine, three doors</p>
+              <h2 data-stagger style={stagger(1)} className="mt-3 text-4xl font-bold leading-tight tracking-tight text-ink md:text-5xl">Use it where you work.</h2>
+            </div>
+            <p data-stagger style={stagger(2)} className="max-w-sm text-ink-light">The same run, catch and fix loop behind every surface.</p>
+          </Reveal>
+          <Reveal className="mt-12 grid gap-4 md:grid-cols-3">
+            {SURFACES.map((s, i) => (
+              <Link key={s.name} href={s.href} data-stagger style={stagger(i)} className="frame group flex min-h-[200px] flex-col bg-surface p-7">
+                <span className="font-mono text-[12px] text-ink-light">0{i + 1}</span>
+                <span className="mt-3 text-2xl font-bold tracking-tight text-ink group-hover:text-accent">{s.name}</span>
+                <span className="mt-2 text-ink-light">{s.line}</span>
+                <span className="mt-auto inline-flex items-center gap-2 pt-6 font-mono text-[13px] text-ink group-hover:text-accent">
+                  {s.cta} <span className="transition-transform group-hover:translate-x-1"><PixelArrow /></span>
+                </span>
+              </Link>
+            ))}
+          </Reveal>
         </div>
+      </section>
 
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-5">
-          <article className="border border-grid rounded-sm bg-surface p-6 animate-slide-up opacity-0 delay-200">
-            <h2 className="text-xl font-semibold text-accent">Mission</h2>
-            <p className="mt-3 text-sm text-ink-light leading-relaxed">
-              Help engineers ship faster with fewer regressions by combining autonomous code actions with visible, human-reviewable execution.
-            </p>
-          </article>
+      <SectionDivider index={4} label="open source" dir={-1} />
 
-          <article className="border border-grid rounded-sm bg-surface p-6 animate-slide-up opacity-0 delay-300">
-            <h2 className="text-xl font-semibold text-accent">Approach</h2>
-            <p className="mt-3 text-sm text-ink-light leading-relaxed">
-              Start from the terminal, operate on real files, run real commands, and keep a clear activity trail that teams can inspect anytime.
+      <section className="zone zone-dither w-full py-24 md:py-28">
+        <div className="mx-auto grid max-w-[1280px] items-center gap-12 px-6 lg:grid-cols-[1fr_1fr]">
+          <Reveal>
+            <p data-stagger style={stagger(0)} className="font-mono text-[12px] text-accent">open source</p>
+            <h2 data-stagger style={stagger(1)} className="mt-3 text-4xl font-bold leading-tight tracking-tight text-ink md:text-5xl">Read every line.</h2>
+            <p data-stagger style={stagger(2)} className="mt-5 max-w-md text-lg text-ink-light">
+              A tool that changes your code should be one you can audit. The CLI and the MCP server are open source.
             </p>
-          </article>
-
-          <article className="border border-grid rounded-sm bg-surface p-6 animate-slide-up opacity-0 delay-300">
-            <h2 className="text-xl font-semibold text-accent">Outcome</h2>
-            <p className="mt-3 text-sm text-ink-light leading-relaxed">
-              Faster debugging, better test reliability, and safer merges through iterative write, run, verify loops.
-            </p>
-          </article>
+            <div data-stagger style={stagger(3)} className="mt-8 flex flex-wrap gap-4">
+              <a href={REPO} target="_blank" rel="noopener noreferrer" className="btn-primary"><GithubIcon className="h-4 w-4" /> OsmoGrep</a>
+              <a href="https://github.com/kaushal07wick/osmogrep-mcp" target="_blank" rel="noopener noreferrer" className="frame btn-outline"><GithubIcon className="h-4 w-4" /> osmogrep-mcp</a>
+            </div>
+          </Reveal>
+          <Reveal>
+            <div data-stagger className="flex items-center justify-center py-6">
+              <LogoMark className="h-40" />
+            </div>
+          </Reveal>
         </div>
+      </section>
 
-        <section className="mt-10 border border-grid rounded-sm bg-surface p-6 md:p-8 animate-slide-up opacity-0 delay-300">
-          <h2 className="text-2xl font-semibold text-accent">What Makes Osmogrep Different</h2>
-          <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
-            <ul className="text-sm text-ink-light space-y-2">
-              <li>Interactive agent loop with streaming responses and tool calls.</li>
-              <li>Shell execution in-context using `!` prefix commands.</li>
-              <li>Slash controls like `/help`, `/clear`, and `/quit` for session management.</li>
-              <li>Repository-aware edits with explicit diffs and command output.</li>
-            </ul>
-            <ul className="text-sm text-ink-light space-y-2">
-              <li>Supports OpenAI-compatible backends, including local model setups.</li>
-              <li>Built for code review, bug-fixing, and test-generation workflows.</li>
-              <li>Designed for local-first usage with clear operational boundaries.</li>
-              <li>Optimized for engineers who prefer terminal-native velocity.</li>
-            </ul>
-          </div>
-        </section>
+      <SectionDivider index={5} label="start" />
 
-        <section className="mt-10 grid grid-cols-1 md:grid-cols-4 gap-4 animate-slide-up opacity-0 delay-300">
-          {[
-            { step: '01', title: 'Prompt', text: 'Describe your task or issue in plain language.' },
-            { step: '02', title: 'Execute', text: 'Run tools and shell commands inside the session.' },
-            { step: '03', title: 'Verify', text: 'Inspect changes, tests, and command output.' },
-            { step: '04', title: 'Ship', text: 'Merge with confidence after review and validation.' },
-          ].map((item) => (
-            <article key={item.step} className="border border-grid rounded-sm bg-surface p-4">
-              <div className="text-xs font-mono text-accent">{item.step}</div>
-              <h3 className="mt-2 text-base font-semibold text-ink">{item.title}</h3>
-              <p className="mt-2 text-xs text-ink-light leading-relaxed">{item.text}</p>
-            </article>
-          ))}
-        </section>
-
-        <section className="mt-10 border border-grid rounded-sm bg-surface p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 animate-slide-up opacity-0 delay-300">
-          <div>
-            <h2 className="text-xl font-semibold text-accent">Ready to try it in your repository?</h2>
-            <p className="mt-2 text-sm text-ink-light">
-              Install Osmogrep locally and start with a live session in under a minute.
-            </p>
-          </div>
-          <div className="flex gap-3">
-            <Link href="/#install" className="btn-primary px-5 py-2.5">Install</Link>
-            <Link href="/docs" className="btn-outline px-5 py-2.5">Read Docs</Link>
-          </div>
-        </section>
+      <section className="w-full py-24 md:py-28">
+        <div className="mx-auto flex max-w-[1280px] flex-col items-start gap-8 px-6">
+          <h2 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight text-ink md:text-5xl">Catch the next one before your users do.</h2>
+          <CopyInstall />
+          <a href={consoleUrl} className="group inline-flex items-center gap-2 font-mono text-[13px] text-ink-light hover:text-accent">
+            or open the web console <span className="transition-transform group-hover:translate-x-1"><PixelArrow /></span>
+          </a>
+        </div>
       </section>
     </main>
   );
