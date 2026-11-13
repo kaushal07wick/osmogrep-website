@@ -19,7 +19,9 @@ export default function Home() {
       <HowItWorks />
       <SectionDivider index={4} label="web console" dir={-1} />
       <ConsoleSection />
+      <SectionDivider index={5} label="mcp + skills" />
       <AgentIntegrations />
+      <SectionDivider index={6} label="platforms" dir={-1} />
       <Platforms />
     </main>
   );

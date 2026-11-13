@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import type { IconType } from 'react-icons';
-import { SiClaude, SiCodeium, SiGithubcopilot, SiGooglegemini, SiOpenai } from 'react-icons/si';
-import { TbCursorText } from 'react-icons/tb';
+import { SiClaude, SiGithubcopilot, SiGooglegemini, SiOpenai } from 'react-icons/si';
 import { prefersReducedMotion } from '../../../lib/motion';
 import { useInView } from '../motion/hooks';
 import Reveal from '../motion/Reveal';
@@ -15,14 +14,22 @@ import { PixelArrow } from '../ui/icons';
 const REPO = 'https://github.com/kaushal07wick/osmogrep-mcp';
 /* Codex and Claude Code get the server and the skill from the installer. Other MCP clients add the
    stdio server by hand (tools only, no skill) using the same command the installer registers. */
+/* Cursor's mark (a hexagonal cube with one bright facet); react-icons has no Cursor icon. */
+const CursorIcon: IconType = (props) => (
+  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+    <path d="M12 1.5 21.1 6.75v10.5L12 22.5 2.9 17.25V6.75Z" opacity=".35" />
+    <path d="M12 1.5 21.1 6.75 12 12 2.9 6.75Z" opacity=".7" />
+    <path d="M21.1 6.75 12 22.5V12Z" />
+  </svg>
+);
+
 type Client = { id: string; name: string; Icon: IconType; call: string; install?: string; config?: string };
 const mcpJson = (key: string) => `{ "${key}": { "osmogrep": { "command": "node", "args": ["/path/to/osmogrep-mcp/cli/mcp.mjs"] } } }`;
 const CLIENTS: Client[] = [
   { id: 'codex', name: 'Codex', Icon: SiOpenai, call: '$osmogrep-verify' },
   { id: 'claude', name: 'Claude Code', Icon: SiClaude, call: '/osmogrep-verify' },
-  { id: 'cursor', name: 'Cursor', Icon: TbCursorText, call: 'use the osmogrep tools to', config: `~/.cursor/mcp.json  ${mcpJson('mcpServers')}` },
+  { id: 'cursor', name: 'Cursor', Icon: CursorIcon, call: 'use the osmogrep tools to', config: `~/.cursor/mcp.json  ${mcpJson('mcpServers')}` },
   { id: 'gemini', name: 'Gemini CLI', Icon: SiGooglegemini, call: 'use the osmogrep tools to', config: `~/.gemini/settings.json  ${mcpJson('mcpServers')}` },
-  { id: 'windsurf', name: 'Windsurf', Icon: SiCodeium, call: 'use the osmogrep tools to', config: `~/.codeium/windsurf/mcp_config.json  ${mcpJson('mcpServers')}` },
   { id: 'vscode', name: 'VS Code', Icon: SiGithubcopilot, call: 'use the osmogrep tools to', config: `.vscode/mcp.json  ${mcpJson('servers')}` },
 ];
 const STEPS: [string, string][] = [

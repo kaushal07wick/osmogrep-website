@@ -23,6 +23,7 @@ const siteUrl = rawSiteUrl
     : `https://${rawSiteUrl}`
   : defaultSiteUrl;
 const ogImagePath = '/opengraph-image';
+const iconPath = '/brand/favicon-terminal.svg?v=black-2';
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -36,9 +37,9 @@ export const metadata: Metadata = {
     canonical: '/',
   },
   icons: {
-    icon: [{ url: '/brand/favicon-terminal.svg', type: 'image/svg+xml' }],
-    shortcut: ['/brand/favicon-terminal.svg'],
-    apple: [{ url: '/brand/favicon-terminal.svg' }],
+    icon: [{ url: iconPath, type: 'image/svg+xml' }],
+    shortcut: [iconPath],
+    apple: [{ url: iconPath }],
   },
   openGraph: {
     type: 'website',
