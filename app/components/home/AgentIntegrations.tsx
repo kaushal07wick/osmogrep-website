@@ -44,7 +44,7 @@ export default function AgentIntegrations() {
   const [shown, setShown] = useState(0);
   const [viewRef, seen] = useInView<HTMLDivElement>(0.3);
   const c = CLIENTS[client];
-  const install = c.config ?? `git clone ${REPO}.git && cd osmogrep-mcp && node scripts/install.mjs ${c.id}`;
+  const install = c.config ?? `git clone ${REPO}.git && cd osmogrep-mcp && npm ci && node scripts/install.mjs ${c.id}`;
 
   useEffect(() => {
     if (!seen) return;
@@ -61,8 +61,8 @@ export default function AgentIntegrations() {
 
   return (
     <section id="coding-agents" className="w-full scroll-mt-20 py-24 md:py-32">
-      <div className="mx-auto grid max-w-[1280px] items-center gap-12 px-6 lg:grid-cols-2">
-        <Reveal>
+      <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-12 px-6 lg:grid-cols-2">
+        <Reveal className="min-w-0">
           <p data-stagger style={stagger(0)} className="font-mono text-[12px] text-accent">mcp + skills</p>
           <h2 data-stagger style={stagger(1)} className="mt-3 text-4xl font-bold leading-tight tracking-tight text-ink md:text-5xl">
             Your coding agent,
@@ -94,7 +94,7 @@ export default function AgentIntegrations() {
           </div>
         </Reveal>
 
-        <div ref={viewRef} className="bg-ink p-6 font-mono text-[13px] leading-[26px] text-white/85 shadow-[0_30px_60px_-30px_rgba(0,0,0,.5)]">
+        <div ref={viewRef} className="min-w-0 bg-ink p-6 font-mono text-[13px] leading-[26px] text-white/85 shadow-[0_30px_60px_-30px_rgba(0,0,0,.5)]">
           <p className="mb-4 text-[11px] text-white/40">{c.name.toLowerCase()}</p>
           <p><span className="text-accent">›</span> <span className="text-accent">{c.call}</span> fix the failing checkout</p>
           {STEPS.slice(0, shown).map(([s, tone], i) => (

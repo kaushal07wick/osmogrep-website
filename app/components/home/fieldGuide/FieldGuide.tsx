@@ -34,7 +34,7 @@ function Card({ s, i }: { s: Specimen; i: number }) {
       onBlur={() => setOpen(false)}
       onClick={() => setOpen((v) => !v)}
       aria-expanded={open}
-      className={`group relative flex flex-col border border-dashed bg-surface p-5 text-left transition-[border-color,transform,box-shadow] duration-300 ${open ? '-translate-y-1 border-accent shadow-[0_18px_40px_-24px_rgba(0,0,0,.35)]' : 'border-grid'}`}
+      className={`group relative flex min-w-0 flex-col border border-dashed bg-surface p-5 text-left transition-[border-color,transform,box-shadow] duration-300 ${open ? '-translate-y-1 border-accent shadow-[0_18px_40px_-24px_rgba(0,0,0,.35)]' : 'border-grid'}`}
     >
       {/* header: number, icon, danger */}
       <span className="flex items-center gap-2.5">
@@ -62,7 +62,7 @@ function Card({ s, i }: { s: Specimen; i: number }) {
 
       {/* the tag */}
       <span className="mt-4 border-t border-dashed border-grid pt-3">
-        <span className="flex items-baseline justify-between gap-3">
+        <span className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
           <span className="font-inter text-[15px] italic text-ink">{s.latin}</span>
           <span className="whitespace-nowrap font-mono text-[10px] text-ink-light">missed by {s.missedBy}</span>
         </span>
@@ -97,7 +97,7 @@ export default function FieldGuide() {
             Nine species that ship past code review, from AI agents and new engineers alike. Hover one to see the fix.
           </p>
         </Reveal>
-        <Reveal className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <Reveal className="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {SPECIMENS.map((s, i) => (
             <Card key={s.name} s={s} i={i} />
           ))}
