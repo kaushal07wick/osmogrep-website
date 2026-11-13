@@ -31,3 +31,8 @@ pnpm-debug.log*
 
 # coverage
 coverage/
+
+# Separate production output while the local preview is running.
+.next-build/
+
+.next-mcp-build/

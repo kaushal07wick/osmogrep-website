@@ -1,7 +1,14 @@
 import './globals.css';
+import './textures.css';
 import type { Metadata, Viewport } from 'next';
-import Navbar from './components/Navbar';
+import { Share_Tech_Mono, Space_Mono } from 'next/font/google';
+import Navbar from './components/navbar/Navbar';
 import Footer from './components/Footer';
+
+
+// Space Mono: headings and body text. Share Tech Mono: UI chrome, labels, code, terminal.
+const body = Space_Mono({ subsets: ['latin'], weight: ['400', '700'], style: ['normal', 'italic'], variable: '--font-body', display: 'swap' });
+const ui = Share_Tech_Mono({ subsets: ['latin'], weight: '400', variable: '--font-code', display: 'swap' });
 
 const siteName = 'Osmogrep';
 const siteDescription = 'Proactive runtime analysis for high-velocity teams.';
@@ -59,19 +66,12 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  themeColor: '#F9F8F5',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang="en"
-      style={
-        {
-          '--font-mono':
-            '"JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-        } as Record<string, string>
-      }
-    >
+    <html lang="en" data-theme="light" className={`${body.variable} ${ui.variable}`}>
       <body className="antialiased min-h-screen flex flex-col">
         <Navbar />
         <div className="flex-1">{children}</div>

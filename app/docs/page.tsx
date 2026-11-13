@@ -9,6 +9,7 @@ export default function Docs() {
 
   const sections = [
     { id: 'quickstart', label: 'Quickstart' },
+    { id: 'coding-agents', label: 'Codex & Claude Code' },
     { id: 'interaction', label: 'Agent Interaction' },
     { id: 'shell', label: 'Shell Commands (!)' },
     { id: 'slash', label: 'Slash Commands (/)' },
@@ -52,10 +53,10 @@ Patch the flaky test and explain what changed.`;
 
   return (
     <main className="min-h-screen pt-28 pb-24">
-      <section className="container mx-auto max-w-[1200px] px-6">
+      <section className="zone zone-dither container mx-auto max-w-[1200px] px-6">
         <div className="max-w-4xl">
           <div className="page-chip mb-6">Docs</div>
-          <h1 className="text-4xl md:text-5xl font-bold font-space text-accent mb-4">Osmogrep Documentation</h1>
+          <h1 className="text-4xl md:text-5xl font-bold text-ink mb-4">Osmogrep Documentation</h1>
           <p className="text-lg text-ink-light max-w-2xl">
             Osmogrep is an interactive terminal experience where you can type prompts, review generated code,
             run shell commands, and iterate with the agent in real time.
@@ -65,14 +66,14 @@ Patch the flaky test and explain what changed.`;
 
       <section className="container mx-auto max-w-[1200px] px-6 mt-12 grid grid-cols-1 lg:grid-cols-12 gap-8">
         <aside className="lg:col-span-3">
-          <div className="lg:sticky lg:top-24 rounded-sm border border-grid bg-white/75 backdrop-blur-sm p-4">
-            <h3 className="font-space text-sm font-semibold text-accent mb-3">On This Page</h3>
+          <div className="lg:sticky lg:top-24 frame bg-surface p-4">
+            <h3 className="text-sm font-semibold text-ink mb-3">On This Page</h3>
             <ul className="text-sm text-ink-light grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
               {sections.map((section) => (
                 <li key={section.id}>
                   <a
                     href={`#${section.id}`}
-                    className={`block px-2.5 py-1.5 rounded-sm border transition-colors ${
+                    className={`block px-2.5 py-1.5 border transition-colors ${
                       activeSection === section.id
                         ? 'text-accent border-accent bg-accent/5'
                         : 'border-transparent hover:text-accent hover:bg-accent/5'
@@ -87,21 +88,29 @@ Patch the flaky test and explain what changed.`;
         </aside>
 
         <div className="lg:col-span-9 space-y-10">
-          <section id="quickstart" className="rounded-sm border border-grid bg-white/70 backdrop-blur-sm p-6">
-            <h2 className="text-2xl font-space font-bold text-accent mb-3">Quickstart</h2>
+          <section id="quickstart" className="frame bg-surface p-6">
+            <h2 className="text-2xl font-bold text-ink mb-3">Quickstart</h2>
             <p className="text-ink-light mb-4">Install and launch inside any git repository:</p>
             <CopyCommandBlock code={quickstartCmd} />
-            <p className="mt-4 text-sm text-ink-light">
-              For proper installation details, see{' '}
-              <Link href="/install" className="text-accent font-semibold underline underline-offset-4 hover:text-ink transition-colors">
-                Install page
-              </Link>
-              .
-            </p>
+            <p className="mt-6 mb-2 text-sm text-ink-light">Or install with curl (macOS, Linux):</p>
+            <CopyCommandBlock code="curl -fsSL https://osmogrep.com/install.sh | sh" />
+            <p className="mt-6 mb-2 text-sm text-ink-light">Or build from source:</p>
+            <CopyCommandBlock code="git clone https://github.com/kaushal07wick/OsmoGrep.git && cd OsmoGrep && cargo install --path ." />
           </section>
 
-          <section id="interaction" className="rounded-sm border border-grid bg-white/70 backdrop-blur-sm p-6">
-            <h2 className="text-2xl font-space font-bold text-accent mb-3">Agent Interaction</h2>
+          <section id="coding-agents" className="frame bg-surface p-6 scroll-mt-28">
+            <p className="mb-2 font-mono text-xs text-accent">MCP + SKILLS · DEVELOPER PREVIEW</p>
+            <h2 className="mb-3 text-2xl font-bold text-ink">Codex &amp; Claude Code</h2>
+            <p className="mb-4 text-ink-light">Your coding agent handles the reasoning. OsmoGrep supplies isolated base and candidate workspaces, test execution and exportable evidence.</p>
+            <CopyCommandBlock code={'git clone https://github.com/kaushal07wick/osmogrep-mcp.git\ncd osmogrep-mcp\nnpm ci\nnode scripts/install.mjs codex\n# For Claude Code:\nnode scripts/install.mjs claude'} />
+            <p className="my-4 text-sm leading-relaxed text-ink-light">Requires Node.js 22.18+, the chosen client CLI and an OsmoGrep runtime service running at <code>http://127.0.0.1:3001</code>. The repository must be permitted by that service’s configured project root and contain working changes relative to a Git base. The connector does not include the sandbox backend. Hosted MCP authentication is still being built.</p>
+            <CopyCommandBlock code={'# In Codex\n$osmogrep-verify Investigate the runtime regression in /path/to/repo\n\n# In Claude Code\n/osmogrep-verify Investigate the runtime regression in /path/to/repo'} />
+            <p className="my-4 text-sm leading-relaxed text-ink-light">Open a new client session after installation. The workflow inspects the change, adds an identical reproducer to both versions, compares before and after repair, checks original tests and exports the patch and evidence. Files in your host repository are not automatically changed, committed or pushed. Large runs may need a longer client tool timeout.</p>
+            <a className="font-mono text-sm text-accent underline underline-offset-4" href="https://github.com/kaushal07wick/osmogrep-mcp" target="_blank" rel="noreferrer">Source, configuration and current limits ↗</a>
+          </section>
+
+          <section id="interaction" className="frame bg-surface p-6">
+            <h2 className="text-2xl font-bold text-ink mb-3">Agent Interaction</h2>
             <p className="text-ink-light mb-4">
               Type naturally to ask Osmogrep to inspect code, write patches, generate tests, and explain decisions.
               You can converse with it directly and watch output stream in the terminal UI.
@@ -109,24 +118,24 @@ Patch the flaky test and explain what changed.`;
             <CopyCommandBlock code={interactionCmd} />
           </section>
 
-          <section id="shell" className="rounded-sm border border-grid bg-white/70 backdrop-blur-sm p-6">
-            <h2 className="text-2xl font-space font-bold text-accent mb-3">Shell Commands (!)</h2>
+          <section id="shell" className="frame bg-surface p-6">
+            <h2 className="text-2xl font-bold text-ink mb-3">Shell Commands (!)</h2>
             <p className="text-ink-light mb-4">
               Prefix with <span className="font-mono text-ink">!</span> to run shell commands directly from Osmogrep.
             </p>
             <CopyCommandBlock code={shellCmd} />
           </section>
 
-          <section id="slash" className="rounded-sm border border-grid bg-white/70 backdrop-blur-sm p-6">
-            <h2 className="text-2xl font-space font-bold text-accent mb-3">Slash Commands (/)</h2>
+          <section id="slash" className="frame bg-surface p-6">
+            <h2 className="text-2xl font-bold text-ink mb-3">Slash Commands (/)</h2>
             <p className="text-ink-light mb-4">
               Osmogrep supports explicit slash commands for session control and utility actions.
             </p>
             <CopyCommandBlock code={slashCmd} />
           </section>
 
-          <section id="faq" className="rounded-sm border border-grid bg-white/70 backdrop-blur-sm p-6">
-            <h2 className="text-2xl font-space font-bold text-accent mb-4">FAQ</h2>
+          <section id="faq" className="frame bg-surface p-6">
+            <h2 className="text-2xl font-bold text-ink mb-4">FAQ</h2>
             <div className="space-y-4 text-ink-light text-sm">
               <div>
                 <div className="font-semibold text-ink mb-1">Can I just type normal instructions?</div>

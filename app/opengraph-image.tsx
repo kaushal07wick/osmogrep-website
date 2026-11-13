@@ -34,17 +34,12 @@ export default function Image() {
         />
 
         <div style={{ display: 'flex', position: 'relative', zIndex: 1 }}>
-          <div
-            style={{
-              border: '1px solid rgba(148,163,184,0.45)',
-              borderRadius: 999,
-              padding: '8px 14px',
-              fontSize: 24,
-              letterSpacing: 0.4,
-              color: '#67e8f9',
-            }}
-          >
-            OSMOGREP
+          <div style={{ display: 'flex', alignItems: 'center', gap: 18, fontSize: 40, fontWeight: 700 }}>
+            <svg width="55" height="50" viewBox="0 0 11 10" shapeRendering="crispEdges">
+              <path d="M3 0h5v1h-5zM1 1h9v1h-9zM1 2h2v1h-2zM8 2h2v1h-2zM0 3h2v1h-2zM9 3h2v1h-2zM0 4h2v1h-2zM0 5h2v1h-2zM0 6h2v1h-2zM9 6h2v1h-2zM1 7h2v1h-2zM8 7h2v1h-2zM1 8h9v1h-9zM3 9h5v1h-5z" fill="#FFFFFF" />
+              <rect x="9" y="4" width="2" height="2" fill="#EA580C" />
+            </svg>
+            osmogrep
           </div>
         </div>
 
