@@ -1,0 +1,35 @@
+{
+  "title": "Controlled local URL-restore regression trial",
+  "recordedAt": "2026-11-13T10:22:43.022Z",
+  "environment": "Local Lima sandbox VMs with browser API stubs",
+  "expectedUrlsAdded": 3,
+  "incomingBackupEntries": 4,
+  "reproducerCommand": "node repro_restore_urls.js",
+  "reproducerSha256": "6f5565a29420bbd09f5492cfc2857cbffee502c4d522289e8ddd6a32f6535501",
+  "originalSuiteCommand": "node test_run.js",
+  "originalTestsAndRecipe": "unchanged",
+  "snapshots": [
+    {
+      "revision": "base",
+      "urlsAdded": 3,
+      "entriesSkipped": 1,
+      "replayExitCode": 0,
+      "replayCommandDurationMs": 292
+    },
+    {
+      "revision": "working",
+      "urlsAdded": 0,
+      "entriesSkipped": 4,
+      "replayExitCode": 1,
+      "replayCommandDurationMs": 290
+    },
+    {
+      "revision": "fixed",
+      "urlsAdded": 3,
+      "entriesSkipped": 1,
+      "replayExitCode": 0,
+      "replayCommandDurationMs": 276
+    }
+  ],
+  "scope": "One controlled regression, not a detection-accuracy or end-to-end latency benchmark. Command durations exclude VM provisioning, installation and model work."
+}

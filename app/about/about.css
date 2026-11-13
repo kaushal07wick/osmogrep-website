@@ -1,0 +1,23 @@
+/* Preserve the original About composition; move the bug on the compositor, not through React frames. */
+.about-page section h1 { text-wrap: balance; }
+.about-original-hero { padding-top: clamp(65px, 8vw, 112px); }
+.about-original-hero > div > p { line-height: 1.85; max-width: 62ch; }
+.about-walk-lane { overflow: hidden; }
+.about-walk-runner { position: absolute; left: 0; bottom: 8px; width: 100%; animation: about-bug-walk 9450ms linear infinite; will-change: transform; }
+.about-walk-trail { transform-origin: left; animation: about-bug-trail 9450ms linear infinite; }
+@keyframes about-bug-walk { from { transform: translateX(0); } 74.074%, to { transform: translateX(calc(100% - 40px)); } }
+@keyframes about-bug-trail { from { transform: scaleX(0); } 74.074%, to { transform: scaleX(1); } }
+.about-walk-lane[data-paused="true"] :is(.about-walk-runner, .about-walk-trail) { animation-play-state: paused; }
+.about-page .about-orbit-logo { filter: drop-shadow(0 13px 20px #18181b08); }
+.about-page .frame { transition: --tick-len 200ms steps(3, end), --tick-color 120ms, transform 400ms cubic-bezier(.2,.8,.2,1); }
+@media(max-width: 760px) {
+  .about-original-hero h1 { font-size: clamp(35px, 8vw, 48px); line-height: 1.15; letter-spacing: -1.5px; }
+  .about-original-hero > div > p { font-size: 14px; }
+  .about-page section > div { min-width: 0; }
+  .about-page .about-orbit-logo { height: 128px; }
+}
+@media(prefers-reduced-motion: reduce) {
+  .about-walk-runner, .about-walk-trail { animation: none; }
+  .about-walk-runner { transform: translateX(calc(100% - 40px)); }
+  .about-walk-trail { transform: scaleX(1); }
+}

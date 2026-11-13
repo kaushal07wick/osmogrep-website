@@ -50,10 +50,10 @@ function AuditArt() {
 }
 
 const PRINCIPLES: { title: string; body: string; Art: () => ReactNode }[] = [
-  { title: 'Evidence over opinion', body: 'A fix is only done when a failing run turns green. Every patch ships with the run that proves it.', Art: EvidenceArt },
-  { title: 'Your tests are the judge', body: 'We never edit your tests to make them pass. The original suite stays exactly as you wrote it.', Art: TestsArt },
-  { title: 'Sandbox first', body: 'Bugs are reproduced in isolated workspaces, never against production data or systems.', Art: SandboxArt },
-  { title: 'Every step on the record', body: 'Each file read, command run and edit made is logged and replayable. No black boxes.', Art: AuditArt },
+  { title: 'Evidence over opinion', body: 'A verified repair needs the failing behavior and the passing check after the change, with their scope recorded.', Art: EvidenceArt },
+  { title: 'Your tests are the judge', body: 'Verification preserves original tests and their command. Weakening a test cannot establish a repair.', Art: TestsArt },
+  { title: 'Sandbox first', body: 'Runtime verification uses isolated workspaces and bounded commands, with execution requested explicitly.', Art: SandboxArt },
+  { title: 'Every step on the record', body: 'Keep commands, outcomes and the patch together. Export replay inputs for a result another developer can inspect.', Art: AuditArt },
 ];
 
 export default function Principles() {
@@ -66,11 +66,11 @@ export default function Principles() {
         </Reveal>
         <Reveal className="mt-12 grid gap-4 md:grid-cols-2">
           {PRINCIPLES.map(({ title, body, Art }, i) => (
-            <article key={title} data-stagger style={stagger(i)} className="frame group flex flex-col bg-surface p-7 transition-transform duration-300 hover:-translate-y-1">
+            <article key={title} data-stagger style={stagger(i)} className="editorial-inset flex flex-col p-7">
               <span className="font-mono text-[12px] text-accent">{String(i + 1).padStart(2, '0')}</span>
-              <h3 className="mt-3 text-2xl font-bold tracking-tight text-ink transition-colors group-hover:text-accent">{title}</h3>
+              <h3 className="mt-3 text-2xl font-bold tracking-tight text-ink">{title}</h3>
               <p className="mt-3 max-w-md text-ink-light">{body}</p>
-              <div className="mt-6 border-t border-dashed border-grid pt-5"><Art /></div>
+              <div className="mt-6 border-t border-dashed border-grid pt-5"><span className="mb-3 block font-mono text-[10px] text-ink-light">Workflow illustration</span><Art /></div>
             </article>
           ))}
         </Reveal>

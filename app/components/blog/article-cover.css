@@ -1,0 +1,16 @@
+.journal-article-cover {
+  margin: 32px 0 0;
+  border-block: 1px solid var(--color-grid);
+}
+
+.journal-article-cover img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 560px) {
+  .journal-article-cover {
+    margin-inline: -10px;
+  }
+}

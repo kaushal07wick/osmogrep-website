@@ -1,84 +1,38 @@
-import { notFound } from 'next/navigation';
-import Link from 'next/link';
-import { getAllPostsMeta, getPostBySlug } from '../../../lib/blog';
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { getAllPostsMeta, getPostBySlug } from "../../../lib/blog";
+import PostMeta from "../../components/blog/PostMeta";
+import "../../components/blog/article-cover.css";
 
-type PageProps = {
-  params: Promise<{ slug: string }>;
-};
-
-export function generateStaticParams() {
-  return getAllPostsMeta().map((post) => ({ slug: post.slug }));
-}
-
-export default async function BlogPostPage({ params }: PageProps) {
+type PageProps = { params: Promise<{ slug: string }> };
+export function generateStaticParams() { return getAllPostsMeta().map(post => ({ slug: post.slug })); }
+export async function generateMetadata({ params }: PageProps) {
   const { slug } = await params;
   const post = getPostBySlug(slug);
-
+  const socialCover = post && !post.cover.endsWith(".svg") ? post.cover : "/opengraph-image";
+  return { title: post?.title || "Note not found", description: post?.excerpt, alternates: { canonical: post ? `/blog/${post.slug}` : "/blog" }, ...(post ? {
+    openGraph: { type: "article", url: `/blog/${post.slug}`, title: post.title, description: post.excerpt, publishedTime: post.date, modifiedTime: post.updated || post.date, authors: [post.author], images: [{ url: socialCover, alt: post.title }] },
+    twitter: { card: "summary_large_image", title: post.title, description: post.excerpt, images: [socialCover] },
+  } : {}) };
+}
+export default async function BlogPostPage({ params }: PageProps) {
+  const post = getPostBySlug((await params).slug);
   if (!post) notFound();
-
-  return (
-    <main className="min-h-screen pt-20 pb-32">
-      <article className="container mx-auto max-w-[1200px] px-6 space-y-8">
-        <header className="border border-grid bg-surface">
-          <div className="px-6 md:px-8 py-6 border-b border-grid">
-            <Link href="/blog" className="text-[11px] uppercase tracking-[0.18em] text-accent font-bold hover:underline underline-offset-4">
-              ← Back to Engineering Notes
-            </Link>
-            <p className="mt-4 text-xs font-mono text-ink-light">{post.date} • {post.author}</p>
-            <h1 className="mt-3 text-3xl md:text-5xl leading-[0.95] font-bold text-ink blog-title-rise">{post.title}</h1>
-            <p className="mt-3 text-base md:text-lg text-ink-light max-w-3xl">{post.excerpt}</p>
-          </div>
-          <div className="px-6 md:px-8 py-3 text-[11px] uppercase tracking-[0.16em] text-ink-light border-b border-grid">
-            entry://{post.slug}
-          </div>
-          <div className="relative h-14 border-b border-grid bg-surface overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,color-mix(in_oklab,var(--color-accent)_12%,transparent)_1px,transparent_0)] bg-[size:12px_12px]" />
-            <div className="absolute inset-0 flex items-center justify-between px-4 text-xs md:text-sm font-mono text-ink-light">
-              <span>[notes] engineering write-up</span>
-              <svg viewBox="0 0 80 28" className="text-accent text-accent h-5 w-16" fill="none" aria-hidden="true">
-                <g className="blog-wire-spin" stroke="currentColor" strokeOpacity="0.35" strokeWidth="0.8">
-                  <ellipse cx="54" cy="14" rx="14" ry="6.2" />
-                  <ellipse cx="54" cy="14" rx="14" ry="6.2" transform="rotate(24 54 14)" />
-                  <ellipse cx="54" cy="14" rx="14" ry="6.2" transform="rotate(48 54 14)" />
-                  <ellipse cx="54" cy="14" rx="14" ry="6.2" transform="rotate(72 54 14)" />
-                </g>
-              </svg>
-            </div>
-          </div>
-        </header>
-
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-6 items-start">
-          <div
-            className="
-              border border-grid bg-surface px-6 md:px-8 py-7 text-ink leading-relaxed
-              [&_h1]:text-3xl [&_h1]:text-accent [&_h1]:font-bold [&_h1]:mt-10 [&_h1]:mb-4
-              [&_h2]:text-2xl [&_h2]:text-accent [&_h2]:font-bold [&_h2]:mt-9 [&_h2]:mb-3
-              [&_h3]:text-xl [&_h3]:text-accent [&_h3]:font-bold [&_h3]:mt-8 [&_h3]:mb-3
-              [&_p]:text-base [&_p]:text-ink-light [&_p]:my-4
-              [&_ul]:list-disc [&_ul]:pl-6 [&_ul]:my-4 [&_ul]:text-ink-light
-              [&_li]:my-1.5
-              [&_pre]:bg-[#0f0f10] [&_pre]:text-slate-200 [&_pre]:border [&_pre]:border-grid [&_pre]:p-4 [&_pre]:[&_pre]:overflow-x-auto [&_pre]:my-6
-              [&_code]:font-mono
-              [&_a]:text-accent [&_a]:underline
-              [&_figure]:my-8
-              [&_figure_img]:w-full [&_figure_img]:border [&_figure_img]:border-grid [&_figure_img]:[&_figcaption]:text-xs [&_figcaption]:text-ink-light [&_figcaption]:mt-2
-              [&_blockquote]:border-l-2 [&_blockquote]:border-accent [&_blockquote]:pl-4 [&_blockquote]:text-ink-light [&_blockquote]:my-5
-            "
-            dangerouslySetInnerHTML={{ __html: post.html }}
-          />
-
-          <aside className="border border-grid bg-surface p-4 lg:sticky lg:top-24">
-            <p className="text-[10px] uppercase tracking-[0.16em] text-accent font-bold">Entry Meta</p>
-            <div className="mt-3 space-y-2 text-xs text-ink-light">
-              <div className="border border-grid bg-surface px-2 py-1.5">author: {post.author}</div>
-              <div className="border border-grid bg-surface px-2 py-1.5">date: {post.date}</div>
-            </div>
-            <Link href="/blog" className="frame btn-outline mt-4 w-full py-2.5">
-              More Entries
-            </Link>
-          </aside>
-        </div>
-      </article>
-    </main>
-  );
+  const url = `https://osmogrep.com/blog/${post.slug}`;
+  const socialCover = post.cover.endsWith(".svg") ? "/opengraph-image" : post.cover;
+  const structuredData = { "@context": "https://schema.org", "@graph": [
+    { "@type": "BlogPosting", "@id": `${url}#article`, mainEntityOfPage: url, url, headline: post.title, description: post.excerpt, articleSection: post.category, datePublished: post.date, dateModified: post.updated || post.date, image: new URL(socialCover, "https://osmogrep.com").href, author: { "@type": "Organization", name: post.author, url: "https://osmogrep.com/about" }, publisher: { "@type": "Organization", name: "OsmoGrep", url: "https://osmogrep.com" }, inLanguage: "en" },
+    { "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Engineering notes", item: "https://osmogrep.com/blog" }, { "@type": "ListItem", position: 2, name: post.title, item: url }] },
+  ] };
+  return <main className="journal-article-page">
+    <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
+    <Link className="journal-back" href="/blog">← All engineering notes</Link>
+    <article>
+      <header className="journal-article-header"><p className="editorial-kicker">Engineering / {post.category}</p><h1>{post.title}</h1><p className="journal-deck">{post.excerpt}</p><PostMeta {...post} /></header>
+      {post.cover.startsWith("/blog/") && <figure className="journal-article-cover"><img src={post.cover} alt={post.title} width="1200" height="630" fetchPriority="high" /></figure>}
+      <details className="journal-contents"><summary>In this article <span>{post.sections.length} sections</span></summary><nav aria-label="Article contents"><ol>{post.sections.map(section => <li key={section.id}><a href={`#${section.id}`}>{section.title}</a></li>)}</ol></nav></details>
+      <div className="journal-body" dangerouslySetInnerHTML={{ __html: post.html }} />
+    </article>
+    <footer className="journal-article-footer"><div><p className="editorial-kicker">Continue exploring</p><Link href="/docs/evidence">What counts as a verified repair? ↗</Link></div><Link href="/blog">Back to the journal →</Link></footer>
+  </main>;
 }

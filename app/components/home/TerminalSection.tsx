@@ -1,6 +1,7 @@
 import Reveal from '../motion/Reveal';
 import { stagger } from '../motion/stagger';
 import CatchScene from './CatchScene';
+import ScrollDepth from '../motion/ScrollDepth';
 
 /** Second section: heading and short copy on the left, the run → catch → fix terminal session on the right. */
 export default function TerminalSection() {
@@ -18,9 +19,9 @@ export default function TerminalSection() {
             Run it in your repo. It finds the line that breaks at runtime, patches it, and reruns your own tests to prove it.
           </p>
         </Reveal>
-        <div className="min-w-0">
-          <CatchScene />
-        </div>
+        <Reveal className="min-w-0">
+          <ScrollDepth travel={-160}><div data-stagger className="scroll-scene"><CatchScene /></div></ScrollDepth>
+        </Reveal>
       </div>
     </section>
   );

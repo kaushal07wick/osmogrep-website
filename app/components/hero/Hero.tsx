@@ -2,6 +2,8 @@ import type { CSSProperties, ReactNode } from 'react';
 import WoodpeckerHero from './WoodpeckerHero';
 import CatchingTicker from './CatchingTicker';
 import CopyInstall from './CopyInstall';
+import ScrollDepth from '../motion/ScrollDepth';
+import './hero.css';
 
 /* Headline words rise from behind a mask one after another; matched words then get an
    orange grep-style highlight that wipes in. All CSS (hero-rise / hero-hit in globals.css). */
@@ -22,7 +24,7 @@ function Word({ children, at, hit }: { children: ReactNode; at: number; hit?: nu
 
 export default function Hero() {
   return (
-    <section className="w-full overflow-hidden pb-6 pt-10 md:pb-8 md:pt-14">
+    <section className="home-hero relative w-full overflow-hidden pb-6 pt-10 md:pb-8 md:pt-14">
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-12 px-6 lg:grid-cols-[1fr_1.1fr]">
         <div className="relative z-10">
           <CatchingTicker />
@@ -40,7 +42,7 @@ export default function Hero() {
             <CopyInstall />
           </div>
         </div>
-        <WoodpeckerHero />
+        <ScrollDepth travel={240}><WoodpeckerHero /></ScrollDepth>
       </div>
     </section>
   );

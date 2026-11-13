@@ -171,7 +171,8 @@ export default function HowItWorks() {
                 panels.current[i] = el;
               }}
               data-step={i}
-              className="frame flex h-[340px] flex-col p-8"
+              data-active={i === active}
+              className="home-step-panel editorial-inset flex h-[340px] flex-col p-8"
             >
               <p className="font-mono text-[11px] text-ink-light">
                 fig. {i + 1} · {title.toLowerCase()}

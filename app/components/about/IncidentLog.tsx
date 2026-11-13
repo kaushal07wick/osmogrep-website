@@ -11,7 +11,7 @@ const LOG: [string, string, 'ink' | 'fail' | 'accent' | 'pass'][] = [
   ['02:31', 'Root cause: user.profile is undefined until a user sets one.', 'fail'],
   ['02:33', 'No test ever created a user without a profile.', 'fail'],
   ['03:10', 'Hotfix shipped. Nobody can say for sure it holds.', 'accent'],
-  ['——', 'We built Osmogrep so this happens in a sandbox, before the merge, with proof.', 'pass'],
+  ['——', 'Move the investigation into a sandbox. Keep the failure, repair and evidence together.', 'pass'],
 ];
 const TONE = { ink: 'text-ink', fail: 'text-fail', accent: 'text-accent', pass: 'text-pass' };
 
@@ -33,9 +33,9 @@ export default function IncidentLog() {
         <div className="lg:sticky lg:top-28 lg:h-fit">
           <p className="font-mono text-[12px] text-accent">why we exist</p>
           <h2 className="mt-3 text-4xl font-bold leading-tight tracking-tight text-ink md:text-5xl">You&apos;ve had this night.</h2>
-          <p className="mt-5 max-w-sm text-ink-light">An incident log most engineers could have written. Every line of it happened after the code looked fine.</p>
+          <p className="mt-5 max-w-sm text-ink-light">An illustrative incident log. The missing case is often the one the green checks never exercised.</p>
         </div>
-        <ol className="frame bg-surface px-6 py-5 font-mono text-[14px]">
+        <ol className="editorial-inset px-6 py-5 font-mono text-[14px]">
           {LOG.map(([time, text, tone], i) => (
             <li
               key={time + text}

@@ -24,6 +24,7 @@ export default function Navbar() {
   const router = useRouter();
   const header = useRef<HTMLElement>(null);
   const searchButton = useRef<HTMLButtonElement>(null);
+  const featuresButton = useRef<HTMLButtonElement>(null);
   const input = useRef<HTMLInputElement>(null);
   const hoverOpenedAt = useRef(0);
   const [hovered, setHovered] = useState<string | null>(null);
@@ -78,6 +79,7 @@ export default function Navbar() {
         else openSearch();
       } else if (e.key === 'Escape' && (search || features)) {
         if (search) searchButton.current?.focus();
+        else featuresButton.current?.focus();
         closeAll();
       } else if (e.key === '/' && !search && !(e.target as HTMLElement).closest('input, textarea, select, [contenteditable="true"]')) {
         e.preventDefault();
@@ -112,6 +114,7 @@ export default function Navbar() {
         <div className="flex-1" />
 
         <button
+          ref={featuresButton}
           type="button"
           aria-expanded={features}
           aria-controls="nav-features"
@@ -157,7 +160,7 @@ export default function Navbar() {
       </nav>
 
       {features && (
-        <div id="nav-features" className="absolute inset-x-0 top-full hidden md:block">
+        <div id="nav-features" className="absolute inset-x-0 top-full hidden md:block" onClick={(event) => { if ((event.target as Element).closest('a')) closeAll(); }}>
           <FeaturesPanel />
         </div>
       )}

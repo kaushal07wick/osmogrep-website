@@ -1,160 +1,64 @@
-'use client';
-
-import { useMemo, useState } from 'react';
+import type { Metadata } from 'next';
 import Link from 'next/link';
-import ContactForm from '../components/ContactForm';
+import { FiArrowUpRight } from 'react-icons/fi';
+import { consoleUrl } from '../../lib/console';
+import PricingArtwork from './components/PricingArtwork';
+import PricingHint from './components/PricingHint';
+import './pricing.css';
 
-type Plan = {
-  id: string;
-  category: 'solo' | 'team' | 'enterprise';
-  name: string;
-  price: string;
-  period: string;
-  note: string;
-  features: string[];
-  cta: string;
+export const metadata: Metadata = {
+  title: 'Pricing — plans for your workflow',
+  description: 'Compare OsmoGrep plans for individual developers, runtime investigations, teams and custom deployment requirements.',
+  alternates: { canonical: '/pricing' },
 };
 
-const plans: Plan[] = [
-  {
-    id: 'solo',
-    category: 'solo',
-    name: 'Solo',
-    price: '$2',
-    period: '/mo',
-    note: 'For individuals testing runtime workflows.',
-    features: ['Runtime checks', 'Basic test runs', 'Single project'],
-    cta: 'Choose Solo',
-  },
-  {
-    id: 'solo-pro',
-    category: 'solo',
-    name: 'Solo Pro',
-    price: '$10',
-    period: '/mo',
-    note: 'For power users shipping frequently.',
-    features: ['Everything in Solo', 'Patch suggestions', 'Stress presets'],
-    cta: 'Choose Solo Pro',
-  },
-  {
-    id: 'teams',
-    category: 'team',
-    name: 'Teams',
-    price: '$200',
-    period: '/mo',
-    note: 'For collaborative runtime validation.',
-    features: ['Parallel execution', 'Audit logs', 'Shared projects', 'Team controls'],
-    cta: 'Choose Teams',
-  },
-  {
-    id: 'enterprise',
-    category: 'enterprise',
-    name: 'Enterprise',
-    price: 'Custom',
-    period: '',
-    note: 'For scale, compliance, and dedicated support.',
-    features: ['SSO/SAML', 'Private deployment', 'Custom integrations', 'Dedicated support'],
-    cta: 'Contact Sales',
-  },
+const plans = [
+  { art: 'solo' as const, name: 'Solo', price: '2', note: 'A place to begin.', detail: 'For a developer exploring the local workflow.', features: ['Individual development', 'Local CLI workflow', 'Your provider setup'], href: '/docs/cli#install', action: 'Start with the CLI', tooltip: 'The Rust CLI is a local application. Model credentials and provider usage are configured separately.' },
+  { art: 'pro' as const, name: 'Solo Pro', price: '10', note: 'Follow the question further.', detail: 'For deeper investigations, from a concern to evidence.', features: ['Focused reproduction', 'Repair and replay workflow', 'Codex + Claude Code through MCP'], href: '/docs/coding-agents', action: 'Explore verification', tooltip: 'Connect Codex or Claude Code through MCP. Follow one investigation from reproduction to a candidate patch and verification evidence.' },
+  { art: 'teams' as const, name: 'Teams', price: '200', note: 'Keep the context together.', detail: 'For a shared review process across repositories.', features: ['PR and dashboard workflow', 'Shared investigation context', 'Execution and usage boundaries'], href: '/docs/github', action: 'See the team workflow', tooltip: 'Keep pull request context, investigation results and execution boundaries together. Read the GitHub guide for the review workflow.' },
+  { art: 'enterprise' as const, name: 'Enterprise', price: null, note: 'Make room for your constraints.', detail: 'For teams with their own deployment requirements.', features: ['Deployment requirements', 'Identity and repository needs', 'Operational boundaries'], href: '/docs/architecture', action: 'Read the architecture', tooltip: 'Scope a deployment around your repository access, infrastructure and operational requirements. The architecture guide explains the system boundaries.' },
 ];
 
 export default function PricingPage() {
-  const [selected, setSelected] = useState<'solo' | 'team' | 'enterprise'>('solo');
-
-  const visiblePlans = useMemo(
-    () => plans.filter((plan) => plan.category === selected),
-    [selected],
-  );
-
-  return (
-    <main className="min-h-screen pt-24 pb-28">
-      <section className="zone zone-dither container mx-auto max-w-[1200px] px-6">
-        <div className="max-w-3xl mb-10">
-          <div className="page-chip mb-4">
-            Pricing
-          </div>
-          <h1 className="text-4xl md:text-6xl font-bold leading-tight text-ink">
-            Select your plan
-          </h1>
-          <p className="mt-4 text-lg text-ink-light">
-            Choose Solo, Team, or Enterprise and compare the plans instantly.
-          </p>
+  return <main className="pricing-page">
+    <section className="pricing-hero zone zone-dither">
+      <div className="pricing-hero-inner">
+        <div className="pricing-intro">
+          <p className="pricing-eyebrow"><span /> PRICING / BUILT AROUND YOUR WORK</p>
+          <h1>Keep shipping.<br /><span>Leave less to chance.</span></h1>
+          <p className="pricing-deck">A starting point for every kind of builder.<br />One repository, a deeper question, or a whole team.</p>
+          <Link className="pricing-hero-link" href={consoleUrl}>Explore the console <FiArrowUpRight aria-hidden="true" /></Link>
         </div>
+      </div>
+    </section>
 
-        <div className="inline-flex border border-grid bg-surface p-1 gap-1 mb-8">
-          <button
-            className={`px-4 py-2 text-sm transition-colors ${selected === 'solo' ? 'bg-accent text-white' : 'text-ink-light hover:text-accent hover:bg-accent/10 active:bg-accent/15'}`}
-            onClick={() => setSelected('solo')}
-          >
-            Solo
-          </button>
-          <button
-            className={`px-4 py-2 text-sm transition-colors ${selected === 'team' ? 'bg-accent text-white' : 'text-ink-light hover:text-accent hover:bg-accent/10 active:bg-accent/15'}`}
-            onClick={() => setSelected('team')}
-          >
-            Team
-          </button>
-          <button
-            className={`px-4 py-2 text-sm transition-colors ${selected === 'enterprise' ? 'bg-accent text-white' : 'text-ink-light hover:text-accent hover:bg-accent/10 active:bg-accent/15'}`}
-            onClick={() => setSelected('enterprise')}
-          >
-            Enterprise
-          </button>
-        </div>
+    <section className="pricing-offerings" aria-labelledby="plans-title">
+      <div className="pricing-section-caption"><h2 id="plans-title">Find your pace.</h2><span>MONTHLY PLANS / USD</span></div>
+      <div className="pricing-ledger">
+        {plans.map(({ art, name, price, note, detail, features, href, action, tooltip }, index) => <article className={`pricing-plan ${index === 1 ? 'pricing-plan-featured' : ''}`} key={name}>
+          <div className="pricing-plan-top"><span>0{index + 1}</span><span>{index < 2 ? "INDIVIDUAL" : index === 2 ? "SHARED WORK" : "YOUR INFRASTRUCTURE"}</span></div>
+          <h3>{name}</h3><p className="pricing-plan-note">{note}</p>
+          <PricingArtwork kind={art} />
+          <div className="pricing-price">{price ? <><span className="pricing-currency">$</span><strong>{price}</strong><span className="pricing-period">/ month</span></> : <strong className="pricing-custom">Let’s talk.</strong>}</div>
+          <p className="pricing-plan-detail">{detail}</p>
+          <div className="pricing-scope"><span>THE WORKFLOW</span><PricingHint name={name} text={tooltip} id={`plan-note-${index}`} /></div>
+          <ul>{features.map(feature => <li key={feature}><span aria-hidden="true">↳</span>{feature}</li>)}</ul>
+          <Link className="pricing-plan-link" href={href}>{action}<FiArrowUpRight aria-hidden="true" /></Link>
+        </article>)}
+      </div>
+    </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-          {visiblePlans.map((plan) => (
-            <div key={plan.id} className="frame p-6 bg-surface">
-              <h2 className="text-2xl font-bold text-ink">{plan.name}</h2>
-              <div className="mt-3">
-                <span className="text-4xl font-bold text-ink">{plan.price}</span>
-                <span className="text-sm text-ink-light ml-1">{plan.period}</span>
-              </div>
-              <p className="mt-2 text-sm text-ink-light">{plan.note}</p>
+    <section className="pricing-local" aria-labelledby="local-title">
+      <div className="pricing-local-symbol" aria-hidden="true">{`{ }`}</div>
+      <div><p className="pricing-eyebrow">BUILT IN THE OPEN</p><h2 id="local-title">Open source.<br />Room to explore.</h2><p>The Rust CLI and MCP connector are public. Read the code, set up your local environment, and try a concrete investigation.</p></div>
+      <div className="pricing-local-links"><Link href="/docs/cli#install">Install the CLI <FiArrowUpRight aria-hidden="true" /></Link><Link href="/docs/coding-agents">Connect your coding agent <FiArrowUpRight aria-hidden="true" /></Link><a href="https://github.com/kaushal07wick/OsmoGrep" target="_blank" rel="noreferrer">View the source <FiArrowUpRight aria-hidden="true" /></a></div>
+    </section>
 
-              <ul className="mt-5 space-y-2 text-sm text-ink-light">
-                {plan.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-2">
-                    <span className="text-accent">+</span>
-                    <span>{feature}</span>
-                  </li>
-                ))}
-              </ul>
-
-              <button className="btn-primary mt-6 w-full py-2.5">
-                {plan.cta}
-              </button>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section className="container mx-auto max-w-[1200px] px-6 mt-16">
-        <div className="frame bg-surface p-6 md:p-8">
-          <div className="grid gap-6 md:grid-cols-[1.3fr_0.7fr]">
-            <div>
-              <h2 className="text-2xl font-bold text-ink">Need deployment advice?</h2>
-              <p className="text-sm text-ink-light mt-1">
-                Send your email and message. We review each request and reply with plan and rollout recommendations.
-              </p>
-              <ContactForm source="pricing-contact" />
-            </div>
-            <aside className="frame bg-surface p-4 h-fit">
-              <h3 className="text-sm uppercase tracking-wide text-ink-light">What to include</h3>
-              <ul className="mt-3 space-y-2 text-sm text-ink-light">
-                <li>- Team size and active repos</li>
-                <li>- CI/CD stack and cloud provider</li>
-                <li>- Current testing bottlenecks</li>
-              </ul>
-              <div className="mt-5">
-                <Link href="/docs" className="frame btn-outline px-5 py-2.5">
-                  View Docs
-                </Link>
-              </div>
-            </aside>
-          </div>
-        </div>
-      </section>
-    </main>
-  );
+    <section className="pricing-faq" aria-labelledby="pricing-questions"><div><p className="pricing-eyebrow">A FEW THINGS TO KNOW</p><h2 id="pricing-questions">Before you begin.</h2></div><div>
+      <details><summary>Which workflow should I start with?<span aria-hidden="true">+</span></summary><p>Start with the CLI for work in your terminal, or connect Codex or Claude Code through MCP. Use the console to browse repositories and pull requests. Each plan links to its workflow guide.</p></details>
+      <details><summary>Can I use OsmoGrep with my coding agent?<span aria-hidden="true">+</span></summary><p>Yes. The MCP connector and verification skill connect OsmoGrep to Codex and Claude Code. Follow the setup guide to connect a runtime service and configure access to your repository.</p></details>
+      <details><summary>Does every PR need a runtime?<span aria-hidden="true">+</span></summary><p>No. Read-only source review and runtime execution are separate jobs. A sandbox run should answer a concrete behavioral question and stay within its execution limits.</p></details>
+      <details><summary>Are model and VM costs included?<span aria-hidden="true">+</span></summary><p>For the local workflow, you configure your model and runtime providers and pay for their usage directly. Keep execution budgets and time limits explicit; a plan price does not imply unlimited model or VM usage.</p></details>
+    </div></section>
+  </main>;
 }

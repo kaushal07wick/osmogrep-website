@@ -1,5 +1,6 @@
 import './globals.css';
 import './textures.css';
+import './editorial.css';
 import type { Metadata, Viewport } from 'next';
 import { Share_Tech_Mono, Space_Mono } from 'next/font/google';
 import Navbar from './components/navbar/Navbar';
@@ -13,10 +14,7 @@ const ui = Share_Tech_Mono({ subsets: ['latin'], weight: '400', variable: '--fon
 const siteName = 'Osmogrep';
 const siteDescription = 'Proactive runtime analysis for high-velocity teams.';
 const defaultSiteUrl = 'https://osmogrep.com';
-const rawSiteUrl =
-  process.env.NEXT_PUBLIC_SITE_URL ??
-  process.env.VERCEL_PROJECT_PRODUCTION_URL ??
-  process.env.VERCEL_URL;
+const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 const siteUrl = rawSiteUrl
   ? rawSiteUrl.startsWith('http')
     ? rawSiteUrl

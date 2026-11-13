@@ -4,12 +4,12 @@ import type { ReactNode } from 'react';
 import { SiClaude, SiOpenai } from 'react-icons/si';
 import { useTick } from '../motion/hooks';
 
-/* Live mini-UIs for the navbar features panel, one per feature slug. Each is a small, looping,
+/* Illustrative mini-UIs for the navbar features panel, one per feature slug. Each is a small, looping,
    realistic slice of the product. They only exist while the panel is open. */
 
 const SPIN = '⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏';
 const Window = ({ title, dark = false, children }: { title: string; dark?: boolean; children: ReactNode }) => (
-  <div className={`w-[236px] overflow-hidden border font-mono text-[10px] leading-[16px] shadow-[0_10px_24px_-14px_rgba(0,0,0,.35)] ${dark ? 'border-black bg-[#141416] text-white/80' : 'border-grid bg-surface text-ink'}`}>
+  <div className={`w-full max-w-[236px] overflow-hidden rounded-[3px] border font-mono text-[10px] leading-[16px] shadow-[0_10px_24px_-14px_rgba(0,0,0,.35)] ${dark ? 'border-black bg-[#141416] text-white/80' : 'border-grid bg-surface text-ink'}`}>
     <div className={`flex items-center gap-1 border-b px-2 py-1 ${dark ? 'border-white/10 text-white/40' : 'border-grid text-ink-light'}`}>
       <i className="h-1.5 w-1.5 rounded-full bg-[#FF5F57]" />
       <i className="h-1.5 w-1.5 rounded-full bg-[#FEBC2E]" />
@@ -103,7 +103,7 @@ function McpSkills() {
   const steps = [['reproduce · base', 'text-[#FF8A6B]', '✗'], ['repair · candidate', 'text-accent', '◆'], ['verify · evidence saved', 'text-[#7DD69A]', '✓']];
   const shown = Math.min(3, (t % 7) - 1);
   return (
-    <div className="w-[236px] font-mono text-[10px]">
+    <div className="w-full max-w-[236px] font-mono text-[10px]">
       <div className="relative mb-1.5 grid grid-cols-2 border border-grid bg-surface">
         <span className="absolute inset-y-0 left-0 w-1/2 bg-ink transition-transform duration-300" style={{ transform: `translateX(${client * 100}%)` }} />
         <span className={`relative flex items-center justify-center gap-1 py-1 ${client === 0 ? 'text-white' : 'text-ink-light'}`}><SiOpenai aria-hidden="true" /> Codex</span>
@@ -139,7 +139,29 @@ function WebConsole() {
   );
 }
 
+function SourceReview() {
+  const t = useTick(12, 420);
+  return <Window title="review · src/notify.ts">
+    <div className="text-ink-light">export function notify(user) {'{'}</div>
+    <div className={`px-1 transition-colors ${t > 3 ? 'bg-accent/10 text-ink' : 'text-ink-light'}`}>  send(user.profile.email)</div>
+    <div className="text-ink-light">{'}'}</div>
+    <div className="mt-1.5 border-t border-grid pt-1.5 text-accent">{t > 3 ? '↳ profile can be undefined' : `${SPIN[t % 10]} following the change…`}</div>
+  </Window>;
+}
+
+function GithubReviews() {
+  const t = useTick(12, 460);
+  return <Window title="pull request · #482">
+    <div className="flex items-center gap-1.5"><span className="h-3 w-3 bg-ink" /><span className="text-ink-light">developer</span></div>
+    <div className="mt-1">@osmogrepai review</div>
+    <div className="mt-2 border-t border-grid pt-1.5"><span className="text-accent">osmogrep</span><span className="ml-1 text-ink-light">{t > 4 ? '↳ one source concern' : `${SPIN[t % 10]} reading changes…`}</span></div>
+    <div className={`text-ink-light transition-opacity ${t > 4 ? 'opacity-100' : 'opacity-0'}`}>notify.ts · view evidence ↗</div>
+  </Window>;
+}
+
 export const previews: Record<string, ReactNode> = {
+  'source-review': <SourceReview />,
+  'github-reviews': <GithubReviews />,
   'runtime-checks': <RuntimeChecks />,
   'failure-replay': <FailureReplay />,
   'patch-verify': <PatchVerify />,

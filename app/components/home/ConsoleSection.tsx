@@ -175,15 +175,15 @@ export default function ConsoleSection() {
           </div>
         </Reveal>
 
-        <div className="relative">
-          <div style={drift(30)}><ConsoleMock /></div>
-          <div className="absolute -left-6 -top-6 hidden bg-accent px-3 py-2 font-mono text-[12px] text-white shadow-lg md:block" style={drift(-60)}>
+        <Reveal className="relative">
+          <div className="console-depth-layer" style={drift(150)}><div data-stagger className="scroll-scene"><ConsoleMock /></div></div>
+          <div className="console-depth-layer absolute -left-6 -top-6 hidden bg-accent px-3 py-2 font-mono text-[12px] text-white shadow-lg md:block" style={drift(-120)}>
             NULL-003 reproduced in acme/api
           </div>
-          <div className="absolute -bottom-6 -right-4 hidden bg-ink px-3 py-2 font-mono text-[12px] text-white shadow-lg md:block" style={drift(90)}>
+          <div className="console-depth-layer absolute -bottom-6 -right-4 hidden bg-ink px-3 py-2 font-mono text-[12px] text-white shadow-lg md:block" style={drift(220)}>
             <span className="text-[#7DD69A]">✓</span> fix verified · tests green
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

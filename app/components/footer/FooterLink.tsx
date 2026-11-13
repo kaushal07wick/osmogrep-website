@@ -28,8 +28,8 @@ export default function FooterLink({ href, children }: { href: string; children:
       <span className="ml-0 flex w-0 overflow-hidden text-accent transition-[width,margin] duration-300 group-hover:ml-2.5 group-hover:w-3.5"><PixelArrow /></span>
     </>
   );
-  return href.startsWith('http') ? (
-    <a href={href} target="_blank" rel="noopener noreferrer" onMouseEnter={scramble} className={cls}>{inner}</a>
+  return href.startsWith('http') || href.startsWith('mailto:') ? (
+    <a href={href} target={href.startsWith('http') ? '_blank' : undefined} rel={href.startsWith('http') ? 'noopener noreferrer' : undefined} onMouseEnter={scramble} className={cls}>{inner}</a>
   ) : (
     <Link href={href} onMouseEnter={scramble} className={cls}>{inner}</Link>
   );

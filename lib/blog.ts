@@ -7,17 +7,21 @@ export type BlogPostMeta = {
   slug: string;
   title: string;
   date: string;
+  updated?: string;
   author: string;
   excerpt: string;
   cover: string;
+  category: string;
+  readingMinutes: number;
 };
 
 export type BlogPost = BlogPostMeta & {
   content: string;
   html: string;
+  sections: { id: string; title: string }[];
 };
 
-type Frontmatter = Omit<BlogPostMeta, 'slug'>;
+type Frontmatter = Omit<BlogPostMeta, 'slug' | 'readingMinutes'>;
 
 const defaultMeta: Frontmatter = {
   title: 'Untitled Post',
@@ -25,6 +29,7 @@ const defaultMeta: Frontmatter = {
   author: 'Osmogrep Team',
   excerpt: 'No excerpt provided.',
   cover: '/osmogrep.png',
+  category: 'Runtime verification',
 };
 
 function parseFrontmatter(raw: string): { meta: Frontmatter; content: string } {
@@ -48,9 +53,11 @@ function parseFrontmatter(raw: string): { meta: Frontmatter; content: string } {
     const value = line.slice(idx + 1).trim().replace(/^"(.*)"$/, '$1');
     if (key === 'title') meta.title = value;
     if (key === 'date') meta.date = value;
+    if (key === 'updated') meta.updated = value;
     if (key === 'author') meta.author = value;
     if (key === 'excerpt') meta.excerpt = value;
     if (key === 'cover') meta.cover = value;
+    if (key === 'category') meta.category = value;
   });
 
   return { meta, content };
@@ -60,7 +67,9 @@ function escapeHtml(input: string): string {
   return input
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;');
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 
 function safeUrl(raw: string): string {
@@ -94,17 +103,19 @@ function formatInline(input: string): string {
     });
 }
 
-export function markdownToHtml(markdown: string): string {
+function renderMarkdown(markdown: string) {
   const lines = markdown.replace(/\r\n/g, '\n').split('\n');
   const html: string[] = [];
-  let inList = false;
+  let inList: 'ul' | 'ol' | null = null;
+  const sections: { id: string; title: string }[] = [];
+  const headingCounts = new Map<string, number>();
   let inCode = false;
   let codeBuffer: string[] = [];
 
   const flushList = () => {
     if (inList) {
-      html.push('</ul>');
-      inList = false;
+      html.push(`</${inList}>`);
+      inList = null;
     }
   };
 
@@ -116,7 +127,8 @@ export function markdownToHtml(markdown: string): string {
     }
   };
 
-  for (const line of lines) {
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
     if (line.startsWith('```')) {
       if (inCode) {
         flushCode();
@@ -142,7 +154,32 @@ export function markdownToHtml(markdown: string): string {
     if (heading) {
       flushList();
       const level = heading[1].length;
-      html.push(`<h${level}>${formatInline(heading[2])}</h${level}>`);
+      const stem = heading[2].toLowerCase().replace(/[^a-z0-9\s-]/g, '').trim().replace(/\s+/g, '-') || 'section';
+      const count = (headingCounts.get(stem) || 0) + 1;
+      headingCounts.set(stem, count);
+      const id = count === 1 ? stem : `${stem}-${count}`;
+      if (level === 2) sections.push({ id, title: heading[2] });
+      html.push(`<h${level} id="${id}">${formatInline(heading[2])}</h${level}>`);
+      continue;
+    }
+
+    if (trimmed.includes('|') && /^\|?\s*:?-{3,}:?\s*(\|\s*:?-{3,}:?\s*)+\|?$/.test((lines[i + 1] || '').trim())) {
+      flushList();
+      const cells = (row: string) => row.trim().replace(/^\||\|$/g, '').split(/(?<!\\)\|/).map(cell => formatInline(cell.trim().replace(/\\\|/g, '|')));
+      const headers = cells(trimmed);
+      html.push(`<div class="journal-table-scroll" tabindex="0" role="region" aria-label="Article data table"><table><thead><tr>${headers.map(cell => `<th scope="col">${cell}</th>`).join('')}</tr></thead><tbody>`);
+      i++;
+      while ((lines[i + 1] || '').trim().includes('|') && (lines[i + 1] || '').trim()) {
+        const row = cells(lines[++i]);
+        html.push(`<tr>${headers.map((_, column) => `<td>${row[column] || ''}</td>`).join('')}</tr>`);
+      }
+      html.push('</tbody></table></div>');
+      continue;
+    }
+
+    if (trimmed.startsWith('> ')) {
+      flushList();
+      html.push(`<blockquote><p>${formatInline(trimmed.slice(2))}</p></blockquote>`);
       continue;
     }
 
@@ -150,17 +187,19 @@ export function markdownToHtml(markdown: string): string {
     if (image) {
       flushList();
       const src = safeUrl(image[2]);
-      html.push(`<figure><img src="${src}" alt="${escapeHtml(image[1])}" /><figcaption>${escapeHtml(image[1])}</figcaption></figure>`);
+      html.push(`<figure tabindex="0"><img src="${src}" alt="${escapeHtml(image[1])}" /><figcaption>${escapeHtml(image[1])}</figcaption></figure>`);
       continue;
     }
 
-    const list = trimmed.match(/^- (.+)$/);
+    const list = trimmed.match(/^(-|\d+\.) (.+)$/);
     if (list) {
-      if (!inList) {
-        html.push('<ul>');
-        inList = true;
+      const kind = list[1] === '-' ? 'ul' : 'ol';
+      if (inList !== kind) {
+        flushList();
+        html.push(`<${kind}>`);
+        inList = kind;
       }
-      html.push(`<li>${formatInline(list[1])}</li>`);
+      html.push(`<li>${formatInline(list[2])}</li>`);
       continue;
     }
 
@@ -170,7 +209,13 @@ export function markdownToHtml(markdown: string): string {
 
   flushList();
   flushCode();
-  return html.join('\n');
+  return { html: html.join('\n'), sections };
+}
+
+export function markdownToHtml(markdown: string): string { return renderMarkdown(markdown).html; }
+
+export function readingTime(content: string) {
+  return Math.max(1, Math.ceil(content.trim().split(/\s+/).filter(Boolean).length / 200));
 }
 
 export function getAllPostsMeta(): BlogPostMeta[] {
@@ -181,13 +226,14 @@ export function getAllPostsMeta(): BlogPostMeta[] {
     .map((file) => {
       const slug = file.replace(/\.md$/, '');
       const raw = fs.readFileSync(path.join(BLOG_DIR, file), 'utf8');
-      const { meta } = parseFrontmatter(raw);
-      return { ...meta, slug };
+      const { meta, content } = parseFrontmatter(raw);
+      return { ...meta, slug, readingMinutes: readingTime(content) };
     })
     .sort((a, b) => (a.date < b.date ? 1 : -1));
 }
 
 export function getPostBySlug(slug: string): BlogPost | null {
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(slug)) return null;
   const filePath = path.join(BLOG_DIR, `${slug}.md`);
   if (!fs.existsSync(filePath)) return null;
   const raw = fs.readFileSync(filePath, 'utf8');
@@ -197,6 +243,7 @@ export function getPostBySlug(slug: string): BlogPost | null {
     ...meta,
     slug,
     content,
-    html: markdownToHtml(content),
+    readingMinutes: readingTime(content),
+    ...renderMarkdown(content),
   };
 }

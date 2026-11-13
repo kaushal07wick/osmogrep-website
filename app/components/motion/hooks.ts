@@ -28,7 +28,7 @@ export function useInView<T extends Element>(threshold = 0.2): [RefObject<T | nu
  */
 export function useScrollProgress<T extends Element>(): [RefObject<T | null>, number] {
   const ref = useRef<T>(null);
-  const [p, setP] = useState(0);
+  const [p, setP] = useState(0.5);
   useEffect(() => {
     if (prefersReducedMotion()) return setP(1);
     let raf = 0;

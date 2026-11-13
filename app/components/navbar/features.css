@@ -1,0 +1,13 @@
+.feature-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; max-width: 1400px; max-height: calc(100svh - 56px); overflow-y: auto; margin: auto; padding: 20px; }
+.feature-card.frame { --tick-len: 7px; --tick-w: 1px; display: flex; flex-direction: column; min-width: 0; padding: 17px; color: var(--color-ink); text-decoration: none; transition: background-color 180ms, --tick-len 180ms, --tick-color 180ms; }
+.feature-card.frame:hover, .feature-card.frame:focus-visible { --tick-len: 12px; --tick-color: var(--color-accent); }
+.feature-heading { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 15px; font-weight: 700; letter-spacing: -.45px; }
+.feature-caption { margin-top: 5px; font: 12px/1.6 var(--font-code), monospace; color: var(--color-ink-light); }
+.feature-arrow { color: var(--color-accent); font-size: 16px; transition: transform 200ms; }
+.feature-card:is(:hover, :focus-visible) .feature-arrow { transform: translate(2px, -2px); }
+.feature-art { display: flex; align-items: center; justify-content: center; min-width: 0; height: 142px; margin-top: 15px; padding: 10px; background: #f6f6f4; }
+.feature-art > div { transition: transform 220ms ease; }
+.feature-card:is(:hover, :focus-visible) .feature-art > div { transform: translateY(-2px); }
+@media(min-width: 900px) and (max-width: 1199px) { .feature-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media(max-width: 899px) { .feature-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media(prefers-reduced-motion: reduce) { .feature-card.frame, .feature-card * { animation: none !important; transition: none !important; } }

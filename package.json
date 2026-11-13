@@ -14,7 +14,8 @@
     "dev:fresh": "pnpm clean && next dev",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --test lib/"
+    "test": "node --test lib/",
+    "check:content": "node --experimental-strip-types scripts/content.check.mjs"
   },
   "dependencies": {
     "next": "15.5.9",

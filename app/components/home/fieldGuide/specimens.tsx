@@ -3,17 +3,12 @@
 import type { ReactNode } from 'react';
 import { useTick } from '../../motion/hooks';
 
-/* The field guide's specimens: dangerous, common runtime bugs that slip past AI agents and junior
-   engineers. Each has a pixel icon, a danger level (1-5), a mock-Latin name, its habitat, the buggy
-   and fixed line, and a small looping animation that shows the bug happening. */
-
+/* Simplified behavior examples for the interactive field guide. */
 export type Specimen = {
-  latin: string;
   name: string;
   icon: keyof typeof ICONS;
-  danger: 1 | 2 | 3 | 4 | 5;
-  missedBy: string;
-  habitat: string;
+  context: string;
+  message: string;
   before: ReactNode;
   after: ReactNode;
   Demo: () => ReactNode;
@@ -45,7 +40,7 @@ export const PixelIcon = ({ name, className = 'h-5 w-5' }: { name: keyof typeof 
 
 /* ---------- mini demos ---------- */
 const DemoBox = ({ children }: { children: ReactNode }) => (
-  <div className="h-[54px] overflow-hidden border border-dashed border-grid bg-paper/70 px-3 py-2 font-mono text-[11px] leading-[17px] text-ink">{children}</div>
+  <div className="field-guide-demo">{children}</div>
 );
 
 function SqlDemo() {
@@ -158,31 +153,31 @@ function TimeoutDemo() {
 }
 
 export const SPECIMENS: Specimen[] = [
-  { latin: 'Injectio sqlensis', name: 'SQL injection', icon: 'db', danger: 5, missedBy: 'AI agents',
-    habitat: 'queries built with strings',
+  { name: 'SQL injection', icon: 'db',
+    context: 'User input becomes part of the query itself.', message: 'just an innocent little string…',
     before: <>`… WHERE name = &apos;<Bad>${'{name}'}</Bad>&apos;`</>, after: <>sql`… WHERE name = <Good>${'{name}'}</Good>`</>, Demo: SqlDemo },
-  { latin: 'Interrogatio multiplex', name: 'N+1 queries', icon: 'loop', danger: 3, missedBy: 'juniors',
-    habitat: 'ORM calls inside loops',
+  { name: 'N+1 queries', icon: 'loop',
+    context: 'One request quietly multiplies its database calls.', message: 'one more query won’t hurt…',
     before: <>for (o of orders) <Bad>await o.getUser()</Bad></>, after: <>Order.findAll(<Good>{'{ include: User }'}</Good>)</>, Demo: NPlusOneDemo },
-  { latin: 'Promissa orphana', name: 'missing await', icon: 'hourglass', danger: 4, missedBy: 'AI agents',
-    habitat: 'fire-and-forget async calls',
+  { name: 'Missing await', icon: 'hourglass',
+    context: 'The response leaves before the work finishes.', message: 'I’ll finish that later.',
     before: <><Bad>saveOrder(cart)</Bad>; res.send(200)</>, after: <><Good>await</Good> saveOrder(cart); res.send(200)</>, Demo: AwaitDemo },
-  { latin: 'Cursor concurrens', name: 'race condition', icon: 'swords', danger: 5, missedBy: 'both',
-    habitat: 'read-modify-write under load',
+  { name: 'Race condition', icon: 'swords',
+    context: 'Concurrent updates overwrite each other.', message: 'we both read the same thing.',
     before: <><Bad>b = get(); set(b + amt)</Bad></>, after: <><Good>UPDATE … SET b = b + $1</Good></>, Demo: RaceDemo },
-  { latin: 'Clavis exposita', name: 'secret in logs', icon: 'key', danger: 5, missedBy: 'juniors',
-    habitat: 'debug logging of headers and env',
+  { name: 'Secret in logs', icon: 'key',
+    context: 'Debug output carries credentials into your logs.', message: 'that was supposed to be private.',
     before: <>log.info(<Bad>req.headers</Bad>)</>, after: <>log.info(<Good>redact(req.headers)</Good>)</>, Demo: SecretDemo },
-  { latin: 'Memoria vorax', name: 'unbounded query', icon: 'memory', danger: 4, missedBy: 'AI agents',
-    habitat: 'exports, reports, admin pages',
+  { name: 'Unbounded query', icon: 'memory',
+    context: 'A growing dataset turns one query into a memory problem.', message: 'surely it all fits in memory.',
     before: <>db.rows.<Bad>findAll()</Bad></>, after: <>db.rows.findAll(<Good>{'{ limit, cursor }'}</Good>)</>, Demo: MemoryDemo },
-  { latin: 'Duplex chargius', name: 'double charge', icon: 'card', danger: 5, missedBy: 'both',
-    habitat: 'retries without idempotency keys',
+  { name: 'Double charge', icon: 'card',
+    context: 'A retried request applies the same payment twice.', message: 'you said try again.',
     before: <>retry(() =&gt; <Bad>charge(card)</Bad>)</>, after: <>charge(card, <Good>{'{ idempotencyKey }'}</Good>)</>, Demo: DoubleChargeDemo },
-  { latin: 'Semita fugiens', name: 'path traversal', icon: 'folder', danger: 5, missedBy: 'AI agents',
-    habitat: 'file downloads by name',
+  { name: 'Path traversal', icon: 'folder',
+    context: 'A file name escapes the intended directory.', message: 'taking the scenic route…',
     before: <>readFile(<Bad>dir + name</Bad>)</>, after: <>readFile(<Good>safeJoin(dir, name)</Good>)</>, Demo: TraversalDemo },
-  { latin: 'Expectatio aeterna', name: 'no timeout', icon: 'clock', danger: 3, missedBy: 'juniors',
-    habitat: 'calls to third-party APIs',
+  { name: 'No timeout', icon: 'clock',
+    context: 'An external service keeps your workers waiting.', message: 'any second now…',
     before: <><Bad>await fetch(url)</Bad></>, after: <>fetch(url, <Good>{'{ signal: AbortSignal.timeout(5e3) }'}</Good>)</>, Demo: TimeoutDemo },
 ];

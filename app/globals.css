@@ -334,14 +334,7 @@ html { background: var(--color-paper); }
 .bug-shake { animation: bug-shake 120ms steps(1) infinite; }
 
 /* Hero install command: copy icon sheet lift, row flash and label pop on copy, quick fade on tab switch. */
-@keyframes copy-flash { from { opacity: 1; } to { opacity: 0; } }
-.copy-flash { animation: copy-flash 500ms ease-out forwards; }
-@keyframes copy-pop { from { transform: scale(1.3); } to { transform: none; } }
-.copy-pop { animation: copy-pop 160ms ease-out; }
-@keyframes install-cmd { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
-.install-cmd { animation: install-cmd 120ms ease-out; }
 .copy-front { transition: transform 200ms steps(2, end); }
-.group\/copy:hover .copy-front { transform: translate(-1px, 1px); }
 @media (prefers-reduced-motion: reduce) {
   .hero-rise { transform: none; }
   .hero-hit { transform: scaleX(1); }

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import './about.css';
 import Link from 'next/link';
 import { consoleUrl } from '../../lib/console';
 import AboutHero from '../components/about/AboutHero';
@@ -13,21 +14,22 @@ import SectionDivider from '../components/ui/SectionDivider';
 
 export const metadata: Metadata = {
   title: 'About',
+  alternates: { canonical: '/about' },
   description: 'Why Osmogrep exists: catching the runtime bugs that pass review and CI, with a fix and proof.',
 };
 
 const REPO = 'https://github.com/kaushal07wick/OsmoGrep';
 
-/* The three ways to use the same engine. */
+/* The available workflows have separate setup and execution boundaries. */
 const SURFACES = [
-  { name: 'CLI', line: 'A terminal agent inside your repo.', href: '/docs#quickstart', cta: 'Install' },
+  { name: 'CLI', line: 'A terminal agent inside your repo.', href: '/docs/cli#install', cta: 'Install' },
   { name: 'Web console', line: 'Paste a PR, get the evidence.', href: consoleUrl, cta: 'Open' },
-  { name: 'MCP + skills', line: 'Codex and Claude Code, with a sandbox.', href: '/#coding-agents', cta: 'Connect' },
+  { name: 'MCP + skills', line: 'Codex and Claude Code, with a sandbox.', href: '/docs/coding-agents', cta: 'Connect' },
 ];
 
 export default function About() {
   return (
-    <main className="w-full">
+    <main className="about-page w-full">
       <AboutHero />
       <SectionDivider index={1} label="why" />
       <IncidentLog />
@@ -39,10 +41,10 @@ export default function About() {
         <div className="mx-auto max-w-[1280px] px-6">
           <Reveal className="flex flex-wrap items-end justify-between gap-6">
             <div>
-              <p data-stagger style={stagger(0)} className="font-mono text-[12px] text-accent">one engine, three doors</p>
+              <p data-stagger style={stagger(0)} className="font-mono text-[12px] text-accent">terminal, console, coding agent</p>
               <h2 data-stagger style={stagger(1)} className="mt-3 text-4xl font-bold leading-tight tracking-tight text-ink md:text-5xl">Use it where you work.</h2>
             </div>
-            <p data-stagger style={stagger(2)} className="max-w-sm text-ink-light">The same run, catch and fix loop behind every surface.</p>
+            <p data-stagger style={stagger(2)} className="max-w-sm text-ink-light">Choose your workflow. Its setup and current limits are explained in the docs.</p>
           </Reveal>
           <Reveal className="mt-12 grid gap-4 md:grid-cols-3">
             {SURFACES.map((s, i) => (
@@ -76,7 +78,7 @@ export default function About() {
           </Reveal>
           <Reveal>
             <div data-stagger className="flex items-center justify-center py-6">
-              <LogoMark className="h-40" />
+              <LogoMark className="about-orbit-logo h-40" />
             </div>
           </Reveal>
         </div>
@@ -86,7 +88,7 @@ export default function About() {
 
       <section className="w-full py-24 md:py-28">
         <div className="mx-auto flex max-w-[1280px] flex-col items-start gap-8 px-6">
-          <h2 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight text-ink md:text-5xl">Catch the next one before your users do.</h2>
+          <h2 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight text-ink md:text-5xl">Start with a bug you can reproduce.</h2>
           <CopyInstall />
           <a href={consoleUrl} className="group inline-flex items-center gap-2 font-mono text-[13px] text-ink-light hover:text-accent">
             or open the web console <span className="transition-transform group-hover:translate-x-1"><PixelArrow /></span>
