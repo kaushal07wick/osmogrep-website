@@ -384,24 +384,10 @@ html { background: var(--color-paper); }
 
 /* Real console session, read with credentials from the console's restricted-origin endpoint. */
 .nav-session { display: flex; flex: none; align-items: stretch; }
-.nav-session-action { position: relative; display: flex; align-items: center; gap: 10px; overflow: hidden; background: #18181b; color: #fffefa; padding: 0 22px; font: 12px var(--font-code), monospace; }
+.nav-session-action { position: relative; display: flex; align-items: center; gap: 10px; overflow: hidden; background: #18181b; color: var(--color-surface); padding: 0 22px; font: 12px var(--font-code), monospace; }
 .nav-session-dissolve { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(8,1fr); grid-template-rows: repeat(4,1fr); }
 .nav-session-dissolve > span { background: #ea580c; }
-.nav-session-account { position: relative; border-left: 1px solid var(--color-grid, #dedbd3); }
-.nav-session-account > summary { height: 100%; display: flex; align-items: center; gap: 8px; padding: 0 15px; font: 12px var(--font-code), monospace; cursor: pointer; list-style: none; }
-.nav-session-account > summary::-webkit-details-marker { display: none; }
-.nav-session-account > summary > span { max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.nav-session-account > summary i { font-style: normal; color: #787166; }
-.nav-session-mark { height: 22px; width: 24px; flex: none; }
-.nav-session-menu { position: absolute; right: 0; top: calc(100% + 9px); width: 230px; padding: 18px; background: #fffefa; border: 1px solid #d6d1c6; box-shadow: 5px 5px 0 #e6e1d6; color: #18181b; }
-.nav-session-menu > strong { display: block; font: 12px var(--font-body), monospace; overflow-wrap: anywhere; }
-.nav-session-menu > span { display: block; color: #787166; font: 11px var(--font-code), monospace; margin: 5px 0 16px; overflow-wrap: anywhere; }
-.nav-session-menu > a, .nav-session-menu button { display: flex; width: 100%; justify-content: space-between; padding: 10px 0; background: transparent; border: 0; text-align: left; font: 12px var(--font-code), monospace; cursor: pointer; }
-.nav-session-menu form { border-top: 1px solid #dedbd3; margin-top: 4px; }
-.nav-session-menu > a:hover, .nav-session-menu button:hover { color: #c64a08; }
-@media (max-width: 600px) { .nav-session-action { padding: 0 13px; } .nav-session-account > summary { padding: 0 10px; } .nav-session-account > summary > span, .nav-session-account > summary i { display: none; } }
-
-@media (max-width: 480px) { .nav-bleed nav:has(.nav-session-account) > a:first-child { padding-inline: 14px; } .nav-bleed nav:has(.nav-session-account) > a:first-child > span { display: none; } }
+@media (max-width: 600px) { .nav-session-action { padding: 0 13px; } }
 
 
 /* Section divider (app/components/ui/SectionDivider.tsx): a dot drifting along a hairline. */
