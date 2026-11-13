@@ -27,7 +27,7 @@ export default function TerminalDemo() {
     <div className="w-full max-w-3xl mx-auto border border-[#2d2d30] bg-[#0f0f10] shadow-2xl shadow-black/40">
       <div className="h-10 border-b border-[#222327] px-4 flex items-center justify-between">
         <div className="text-sm tracking-wide text-accent font-mono">OSMOGREP</div>
-        <div className="text-[10px] uppercase tracking-widest text-slate-500">runtime monitor</div>
+        <div className="text-[10px] uppercase tracking-widest text-slate-500">Illustrative CLI session</div>
       </div>
 
       <div className="p-4 min-h-[340px] text-xs md:text-sm font-mono text-slate-300 space-y-1.5">

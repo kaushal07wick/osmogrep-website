@@ -1,16 +1,16 @@
 export default function InsightsShowcase() {
   return (
-    <section className="w-full py-24 border-y border-grid/45 bg-white/20">
+    <section className="w-full py-24 border-y border-grid/45 bg-surface/50">
       <div className="container mx-auto max-w-[1200px] px-6">
-        <div className="border border-grid bg-white/58 p-7 md:p-8 grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-6 items-center">
-          <div className="border border-grid bg-white/80 overflow-hidden">
+        <div className="border border-grid bg-surface p-7 md:p-8 grid grid-cols-1 lg:grid-cols-[0.95fr_1.05fr] gap-6 items-center">
+          <div className="border border-grid bg-surface overflow-hidden">
             <div className="px-4 py-2 text-[11px] uppercase tracking-[0.18em] border-b border-grid text-accent font-bold">
               index://graph-build
             </div>
             <div className="relative p-4 h-[238px]">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(234,88,12,0.14)_1px,transparent_0)] bg-[size:12px_12px]" />
-              <div className="relative h-full border border-grid bg-white/75 overflow-hidden">
-                <svg viewBox="0 0 340 210" className="absolute inset-0 w-full h-full" fill="none" aria-hidden="true">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,color-mix(in_oklab,var(--color-accent)_14%,transparent)_1px,transparent_0)] bg-[size:12px_12px]" />
+              <div className="relative h-full border border-grid bg-surface overflow-hidden">
+                <svg viewBox="0 0 340 210" className="text-accent text-accent absolute inset-0 w-full h-full" fill="none" aria-hidden="true">
                   <defs>
                     <path id="idx-1" d="M170 104L84 58" />
                     <path id="idx-2" d="M170 104L250 60" />
@@ -21,9 +21,9 @@ export default function InsightsShowcase() {
                     <path id="idx-7" d="M84 152L56 184" />
                     <path id="idx-8" d="M250 152L278 184" />
                   </defs>
-                  <circle cx="170" cy="104" r="38" stroke="#EA580C" strokeOpacity="0.28" strokeWidth="1.4" className="index-scan-ring" />
-                  <circle cx="170" cy="104" r="56" stroke="#EA580C" strokeOpacity="0.2" strokeWidth="1" className="index-scan-ring [animation-delay:380ms]" />
-                  <g stroke="#EA580C" strokeOpacity="0.26" strokeWidth="1.2">
+                  <circle cx="170" cy="104" r="38" stroke="currentColor" strokeOpacity="0.28" strokeWidth="1.4" className="index-scan-ring" />
+                  <circle cx="170" cy="104" r="56" stroke="currentColor" strokeOpacity="0.2" strokeWidth="1" className="index-scan-ring [animation-delay:380ms]" />
+                  <g stroke="currentColor" strokeOpacity="0.26" strokeWidth="1.2">
                     <use href="#idx-1" />
                     <use href="#idx-2" />
                     <use href="#idx-3" />
@@ -33,7 +33,7 @@ export default function InsightsShowcase() {
                     <use href="#idx-7" />
                     <use href="#idx-8" />
                   </g>
-                  <g stroke="#EA580C" strokeOpacity="0.75" strokeWidth="1.8">
+                  <g stroke="currentColor" strokeOpacity="0.75" strokeWidth="1.8">
                     <use href="#idx-1" className="index-edge-flow" />
                     <use href="#idx-2" className="index-edge-flow [animation-delay:120ms]" />
                     <use href="#idx-3" className="index-edge-flow [animation-delay:240ms]" />
@@ -44,17 +44,17 @@ export default function InsightsShowcase() {
                     <use href="#idx-8" className="index-edge-flow [animation-delay:840ms]" />
                   </g>
                   <g>
-                    <circle cx="170" cy="104" r="6.2" fill="#EA580C" className="index-node-breathe" />
-                    <circle cx="84" cy="58" r="4.4" fill="#EA580C" className="index-node-breathe [animation-delay:120ms]" />
-                    <circle cx="250" cy="60" r="4.4" fill="#EA580C" className="index-node-breathe [animation-delay:220ms]" />
-                    <circle cx="84" cy="152" r="4.4" fill="#EA580C" className="index-node-breathe [animation-delay:320ms]" />
-                    <circle cx="250" cy="152" r="4.4" fill="#EA580C" className="index-node-breathe [animation-delay:420ms]" />
-                    <rect x="55" y="20" width="17" height="7" fill="#EA580C" className="index-node-breathe [animation-delay:520ms]" />
-                    <rect x="270" y="24" width="17" height="7" fill="#EA580C" className="index-node-breathe [animation-delay:620ms]" />
-                    <rect x="47" y="180" width="17" height="7" fill="#EA580C" className="index-node-breathe [animation-delay:720ms]" />
-                    <rect x="270" y="180" width="17" height="7" fill="#EA580C" className="index-node-breathe [animation-delay:820ms]" />
+                    <circle cx="170" cy="104" r="6.2" fill="currentColor" className="index-node-breathe" />
+                    <circle cx="84" cy="58" r="4.4" fill="currentColor" className="index-node-breathe [animation-delay:120ms]" />
+                    <circle cx="250" cy="60" r="4.4" fill="currentColor" className="index-node-breathe [animation-delay:220ms]" />
+                    <circle cx="84" cy="152" r="4.4" fill="currentColor" className="index-node-breathe [animation-delay:320ms]" />
+                    <circle cx="250" cy="152" r="4.4" fill="currentColor" className="index-node-breathe [animation-delay:420ms]" />
+                    <rect x="55" y="20" width="17" height="7" fill="currentColor" className="index-node-breathe [animation-delay:520ms]" />
+                    <rect x="270" y="24" width="17" height="7" fill="currentColor" className="index-node-breathe [animation-delay:620ms]" />
+                    <rect x="47" y="180" width="17" height="7" fill="currentColor" className="index-node-breathe [animation-delay:720ms]" />
+                    <rect x="270" y="180" width="17" height="7" fill="currentColor" className="index-node-breathe [animation-delay:820ms]" />
                   </g>
-                  <g fill="#EA580C">
+                  <g fill="currentColor">
                     <circle r="2.5" className="index-packet">
                       <animateMotion dur="3.6s" repeatCount="indefinite" rotate="auto">
                         <mpath href="#idx-1" />

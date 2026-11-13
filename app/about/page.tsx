@@ -16,21 +16,21 @@ export default function About() {
         </div>
 
         <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-5">
-          <article className="border border-grid rounded-sm bg-white/65 p-6 animate-slide-up opacity-0 delay-200">
+          <article className="border border-grid rounded-sm bg-surface p-6 animate-slide-up opacity-0 delay-200">
             <h2 className="text-xl font-semibold text-accent">Mission</h2>
             <p className="mt-3 text-sm text-ink-light leading-relaxed">
               Help engineers ship faster with fewer regressions by combining autonomous code actions with visible, human-reviewable execution.
             </p>
           </article>
 
-          <article className="border border-grid rounded-sm bg-white/65 p-6 animate-slide-up opacity-0 delay-300">
+          <article className="border border-grid rounded-sm bg-surface p-6 animate-slide-up opacity-0 delay-300">
             <h2 className="text-xl font-semibold text-accent">Approach</h2>
             <p className="mt-3 text-sm text-ink-light leading-relaxed">
               Start from the terminal, operate on real files, run real commands, and keep a clear activity trail that teams can inspect anytime.
             </p>
           </article>
 
-          <article className="border border-grid rounded-sm bg-white/65 p-6 animate-slide-up opacity-0 delay-300">
+          <article className="border border-grid rounded-sm bg-surface p-6 animate-slide-up opacity-0 delay-300">
             <h2 className="text-xl font-semibold text-accent">Outcome</h2>
             <p className="mt-3 text-sm text-ink-light leading-relaxed">
               Faster debugging, better test reliability, and safer merges through iterative write, run, verify loops.
@@ -38,7 +38,7 @@ export default function About() {
           </article>
         </div>
 
-        <section className="mt-10 border border-grid rounded-sm bg-white/70 p-6 md:p-8 animate-slide-up opacity-0 delay-300">
+        <section className="mt-10 border border-grid rounded-sm bg-surface p-6 md:p-8 animate-slide-up opacity-0 delay-300">
           <h2 className="text-2xl font-semibold text-accent">What Makes Osmogrep Different</h2>
           <div className="mt-5 grid grid-cols-1 md:grid-cols-2 gap-5">
             <ul className="text-sm text-ink-light space-y-2">
@@ -63,7 +63,7 @@ export default function About() {
             { step: '03', title: 'Verify', text: 'Inspect changes, tests, and command output.' },
             { step: '04', title: 'Ship', text: 'Merge with confidence after review and validation.' },
           ].map((item) => (
-            <article key={item.step} className="border border-grid rounded-sm bg-white/65 p-4">
+            <article key={item.step} className="border border-grid rounded-sm bg-surface p-4">
               <div className="text-xs font-mono text-accent">{item.step}</div>
               <h3 className="mt-2 text-base font-semibold text-ink">{item.title}</h3>
               <p className="mt-2 text-xs text-ink-light leading-relaxed">{item.text}</p>
@@ -71,7 +71,7 @@ export default function About() {
           ))}
         </section>
 
-        <section className="mt-10 border border-grid rounded-sm bg-white/75 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 animate-slide-up opacity-0 delay-300">
+        <section className="mt-10 border border-grid rounded-sm bg-surface p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 animate-slide-up opacity-0 delay-300">
           <div>
             <h2 className="text-xl font-semibold text-accent">Ready to try it in your repository?</h2>
             <p className="mt-2 text-sm text-ink-light">
@@ -79,7 +79,7 @@ export default function About() {
             </p>
           </div>
           <div className="flex gap-3">
-            <Link href="/install" className="btn-primary px-5 py-2.5">Install</Link>
+            <Link href="/#install" className="btn-primary px-5 py-2.5">Install</Link>
             <Link href="/docs" className="btn-outline px-5 py-2.5">Read Docs</Link>
           </div>
         </section>

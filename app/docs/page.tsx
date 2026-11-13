@@ -65,7 +65,7 @@ Patch the flaky test and explain what changed.`;
 
       <section className="container mx-auto max-w-[1200px] px-6 mt-12 grid grid-cols-1 lg:grid-cols-12 gap-8">
         <aside className="lg:col-span-3">
-          <div className="lg:sticky lg:top-24 rounded-sm border border-grid bg-white/75 backdrop-blur-sm p-4">
+          <div className="lg:sticky lg:top-24 rounded-sm border border-grid bg-surface backdrop-blur-sm p-4">
             <h3 className="font-space text-sm font-semibold text-accent mb-3">On This Page</h3>
             <ul className="text-sm text-ink-light grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-2">
               {sections.map((section) => (
@@ -87,20 +87,20 @@ Patch the flaky test and explain what changed.`;
         </aside>
 
         <div className="lg:col-span-9 space-y-10">
-          <section id="quickstart" className="rounded-sm border border-grid bg-white/70 backdrop-blur-sm p-6">
+          <section id="quickstart" className="rounded-sm border border-grid bg-surface backdrop-blur-sm p-6">
             <h2 className="text-2xl font-space font-bold text-accent mb-3">Quickstart</h2>
             <p className="text-ink-light mb-4">Install and launch inside any git repository:</p>
             <CopyCommandBlock code={quickstartCmd} />
             <p className="mt-4 text-sm text-ink-light">
               For proper installation details, see{' '}
-              <Link href="/install" className="text-accent font-semibold underline underline-offset-4 hover:text-ink transition-colors">
+              <Link href="/#install" className="text-accent font-semibold underline underline-offset-4 hover:text-ink transition-colors">
                 Install page
               </Link>
               .
             </p>
           </section>
 
-          <section id="interaction" className="rounded-sm border border-grid bg-white/70 backdrop-blur-sm p-6">
+          <section id="interaction" className="rounded-sm border border-grid bg-surface backdrop-blur-sm p-6">
             <h2 className="text-2xl font-space font-bold text-accent mb-3">Agent Interaction</h2>
             <p className="text-ink-light mb-4">
               Type naturally to ask Osmogrep to inspect code, write patches, generate tests, and explain decisions.
@@ -109,7 +109,7 @@ Patch the flaky test and explain what changed.`;
             <CopyCommandBlock code={interactionCmd} />
           </section>
 
-          <section id="shell" className="rounded-sm border border-grid bg-white/70 backdrop-blur-sm p-6">
+          <section id="shell" className="rounded-sm border border-grid bg-surface backdrop-blur-sm p-6">
             <h2 className="text-2xl font-space font-bold text-accent mb-3">Shell Commands (!)</h2>
             <p className="text-ink-light mb-4">
               Prefix with <span className="font-mono text-ink">!</span> to run shell commands directly from Osmogrep.
@@ -117,7 +117,7 @@ Patch the flaky test and explain what changed.`;
             <CopyCommandBlock code={shellCmd} />
           </section>
 
-          <section id="slash" className="rounded-sm border border-grid bg-white/70 backdrop-blur-sm p-6">
+          <section id="slash" className="rounded-sm border border-grid bg-surface backdrop-blur-sm p-6">
             <h2 className="text-2xl font-space font-bold text-accent mb-3">Slash Commands (/)</h2>
             <p className="text-ink-light mb-4">
               Osmogrep supports explicit slash commands for session control and utility actions.
@@ -125,7 +125,7 @@ Patch the flaky test and explain what changed.`;
             <CopyCommandBlock code={slashCmd} />
           </section>
 
-          <section id="faq" className="rounded-sm border border-grid bg-white/70 backdrop-blur-sm p-6">
+          <section id="faq" className="rounded-sm border border-grid bg-surface backdrop-blur-sm p-6">
             <h2 className="text-2xl font-space font-bold text-accent mb-4">FAQ</h2>
             <div className="space-y-4 text-ink-light text-sm">
               <div>

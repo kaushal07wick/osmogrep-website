@@ -81,7 +81,7 @@ export default function PricingPage() {
           </p>
         </div>
 
-        <div className="inline-flex border border-grid bg-white/70 rounded-sm p-1 gap-1 mb-8">
+        <div className="inline-flex border border-grid bg-surface rounded-sm p-1 gap-1 mb-8">
           <button
             className={`px-4 py-2 text-sm rounded-sm transition-colors ${selected === 'solo' ? 'bg-accent text-white' : 'text-ink-light hover:text-accent hover:bg-accent/10 active:bg-accent/15'}`}
             onClick={() => setSelected('solo')}
@@ -104,7 +104,7 @@ export default function PricingPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           {visiblePlans.map((plan) => (
-            <div key={plan.id} className="border border-grid rounded-sm p-6 bg-white/65 backdrop-blur-sm">
+            <div key={plan.id} className="border border-grid rounded-sm p-6 bg-surface backdrop-blur-sm">
               <h2 className="text-2xl font-bold text-accent">{plan.name}</h2>
               <div className="mt-3">
                 <span className="text-4xl font-bold text-ink">{plan.price}</span>
@@ -130,7 +130,7 @@ export default function PricingPage() {
       </section>
 
       <section className="container mx-auto max-w-[1200px] px-6 mt-16">
-        <div className="border border-grid rounded-sm bg-white/60 p-6 md:p-8">
+        <div className="border border-grid rounded-sm bg-surface p-6 md:p-8">
           <div className="grid gap-6 md:grid-cols-[1.3fr_0.7fr]">
             <div>
               <h2 className="text-2xl font-bold text-accent">Need deployment advice?</h2>
@@ -139,7 +139,7 @@ export default function PricingPage() {
               </p>
               <ContactForm source="pricing-contact" />
             </div>
-            <aside className="border border-grid rounded-sm bg-white/70 p-4 h-fit">
+            <aside className="border border-grid rounded-sm bg-surface p-4 h-fit">
               <h3 className="text-sm uppercase tracking-wide text-ink-light">What to include</h3>
               <ul className="mt-3 space-y-2 text-sm text-ink-light">
                 <li>- Team size and active repos</li>

@@ -1,131 +1,28 @@
 import Link from 'next/link';
+import { FiArrowUpRight, FiCheck, FiGitBranch, FiGitPullRequest, FiShield } from 'react-icons/fi';
+import { exampleUrl } from '../../lib/console';
 
 export default function Hero() {
-  const statusItems = [
-    ['[agent]', 'patch candidate generated'],
-    ['[runner]', 'parallel tests: 124/124 passed'],
-    ['[stress]', 'no regressions'],
-  ];
-
-  return (
-    <section className="relative overflow-hidden py-8 sm:py-12 md:py-24">
-      <svg
-        className="pointer-events-none absolute -left-20 top-0 -z-10 h-[320px] w-[320px] opacity-18 sm:-left-10 sm:h-[440px] sm:w-[440px] sm:opacity-25"
-        viewBox="0 0 440 440"
-        fill="none"
-        aria-hidden="true"
-      >
-        <circle cx="220" cy="220" r="180" fill="url(#hero-fade)" className="float-y" />
-        <defs>
-          <radialGradient id="hero-fade">
-            <stop offset="0%" stopColor="#EA580C" stopOpacity="0.34" />
-            <stop offset="100%" stopColor="#EA580C" stopOpacity="0" />
-          </radialGradient>
-        </defs>
-      </svg>
-
-      <div className="container relative z-10 mx-auto max-w-[1200px] px-4 sm:px-6">
-        <div className="grid grid-cols-1 items-start gap-6 sm:gap-7 md:grid-cols-2 lg:gap-8">
-          <div className="animate-slide-up md:pr-2" style={{ animationDelay: '100ms' }}>
-            <h1 className="hero-title-fade text-[2.7rem] font-bold leading-[0.95] tracking-tight text-accent sm:text-5xl md:text-6xl lg:text-7xl">
-              Build.
-              <br />
-              Break.
-              <br />
-              Fix.
-            </h1>
-
-            <p className="hero-sub-fade mt-3 max-w-xl text-sm leading-relaxed text-ink-light sm:mt-4 sm:text-base md:text-lg">
-              Talk to Osmogrep, inspect your repo, patch risky paths, run tests, and ship with verification in one flow.
-            </p>
-
-            <div className="mt-5 hidden gap-3 md:flex md:flex-row md:items-center">
-              <Link href="/get-started" className="btn-primary w-auto px-6 py-2.5 text-sm font-medium md:px-8 md:py-3.5 md:text-base">
-                Get Started
-              </Link>
-              <Link href="/docs" className="btn-outline w-auto px-6 py-2.5 text-sm font-medium md:px-8 md:py-3.5 md:text-base">
-                Read the Docs
-              </Link>
-            </div>
-            <p className="mt-3 hidden text-xs tracking-wide text-ink-light md:mt-4 md:block md:text-sm">No credit card required • Free local install</p>
-          </div>
-
-          <div className="animate-slide-up w-full md:justify-self-end md:max-w-[520px] lg:max-w-[560px]" style={{ animationDelay: '200ms' }}>
-            <div className="overflow-hidden rounded-lg border border-grid bg-[#13151b] shadow-2xl">
-              <div className="flex h-9 items-center justify-between border-b border-[#2d2d30] bg-[#22242b] px-3 sm:h-11 sm:px-4">
-                <div className="flex items-center gap-2">
-                  <span className="h-2 w-2 rounded-full bg-[#ff5f57] sm:h-2.5 sm:w-2.5" />
-                  <span className="h-2 w-2 rounded-full bg-[#febc2e] sm:h-2.5 sm:w-2.5" />
-                  <span className="h-2 w-2 rounded-full bg-[#28c840] sm:h-2.5 sm:w-2.5" />
-                  <span className="ml-1 text-[10px] text-slate-300 sm:ml-2 sm:text-xs">agent://osmogrep-runtime</span>
-                </div>
-                <span className="hidden text-xs text-slate-500 sm:inline">runtime monitor</span>
-              </div>
-
-              <div className="grid min-h-[240px] grid-cols-1 border-t border-[#1d1f25] sm:min-h-[260px] md:min-h-[260px] md:grid-cols-[150px_1fr] lg:min-h-[320px] lg:grid-cols-[190px_1fr]">
-                <div className="hidden border-r border-[#2d2d30] bg-[#1b1d24] p-3 text-xs text-slate-400 md:block">
-                  <div className="mb-3 text-[10px] uppercase tracking-widest text-slate-500">Explorer</div>
-                  <div className="space-y-1">
-                    <div className="text-slate-300">src/</div>
-                    <div className="pl-3 text-accent">auth_service.ts</div>
-                    <div className="pl-3">middleware.ts</div>
-                    <div className="pl-3">types.d.ts</div>
-                  </div>
-                </div>
-
-                <div className="space-y-1.5 p-3 text-[10px] text-slate-100 sm:p-4 sm:text-sm md:text-[13px] lg:p-5 lg:text-base">
-                  <p className="break-all"><span className="text-green-400">$</span> osmogrep watch --project ./backend --fix</p>
-                  <p className="text-slate-400">[engine] runtime hooks initialized</p>
-                  <p>[watch] auth.ts changed</p>
-                  <p>[analyze] runtime trace graph updated</p>
-                  <p className="text-yellow-300">[risk] sql_injection_vector score=0.82</p>
-                  <p className="pt-2 text-green-400 blink-caret">_</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-2 overflow-hidden rounded-sm border border-grid/70 bg-white/75 px-2 py-1 md:px-2.5 md:py-1.5">
-              <div className="ticker-track flex w-max items-center gap-2 whitespace-nowrap text-[9px] text-ink-light md:gap-3 md:text-[10px]">
-                {[...statusItems, ...statusItems].map(([tag, text], idx) => (
-                  <div key={`${tag}-${idx}`} className="inline-flex items-center gap-1">
-                    <span className={tag === '[agent]' ? 'font-bold text-accent' : 'text-slate-500'}>{tag}</span>
-                    <span className="text-ink">{text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-2 grid grid-cols-4 gap-1.5 md:grid-cols-2 md:gap-2 lg:grid-cols-4">
-              <div className="rounded-sm border border-grid bg-white p-1.5 transition-colors hover:border-accent/50 md:bg-white/80 md:p-2.5">
-                <div className="mb-1 text-[9px] font-bold uppercase tracking-widest text-ink-light">Avg Patch Loop</div>
-                <div className="text-xs font-bold text-accent md:text-base">18s</div>
-              </div>
-              <div className="rounded-sm border border-grid bg-white p-1.5 transition-colors hover:border-accent/50 md:bg-white/80 md:p-2.5">
-                <div className="mb-1 text-[9px] font-bold uppercase tracking-widest text-ink-light">Parallel Jobs</div>
-                <div className="text-xs font-bold text-accent md:text-base">32</div>
-              </div>
-              <div className="rounded-sm border border-grid bg-white p-1.5 transition-colors hover:border-accent/50 md:bg-white/80 md:p-2.5">
-                <div className="mb-1 text-[9px] font-bold uppercase tracking-widest text-ink-light">Session Visibility</div>
-                <div className="text-xs font-bold text-accent md:text-base">100%</div>
-              </div>
-              <div className="rounded-sm border border-grid bg-white p-1.5 transition-colors hover:border-accent/50 md:bg-white/80 md:p-2.5">
-                <div className="mb-1 text-[9px] font-bold uppercase tracking-widest text-ink-light">Command Latency</div>
-                <div className="text-xs font-bold text-accent md:text-base">{'<100ms'}</div>
-              </div>
-            </div>
-          </div>
+  return <section className="relative w-full overflow-hidden py-12 sm:py-16 md:py-20">
+    <div className="container relative mx-auto max-w-[1200px] px-4 sm:px-6">
+      <div className="grid items-center gap-10 md:grid-cols-[0.95fr_1.05fr] lg:gap-16">
+        <div className="animate-slide-up">
+          <span className="page-chip mb-6">Your code. Under review.</span>
+          <h1 className="font-mono text-[3.5rem] font-bold leading-[0.97] tracking-tight text-accent sm:text-7xl lg:text-8xl">Build.<br />Break.<br /><span className="text-ink">Fix.</span></h1>
+          <p className="mt-6 max-w-md text-sm leading-relaxed text-ink-light md:text-base">Find what breaks. Understand why.<br />Review your code with the checks to back it up.</p>
+          <div className="mt-7 flex flex-wrap items-center gap-3"><Link href="/web" className="btn-primary gap-3 px-5 py-3 text-xs sm:text-sm">Open Web Console<FiArrowUpRight /></Link><Link href="#install" className="btn-outline px-5 py-3 text-xs sm:text-sm">Get the CLI</Link></div>
+          <p className="mt-4 text-[11px] leading-relaxed text-ink-light">GitHub sign-in · isolated checks · inspectable changes</p>
         </div>
-
-        <div className="mt-4 grid grid-cols-2 gap-2 md:hidden">
-          <Link href="/get-started" className="btn-primary w-full px-3 py-2 text-xs font-medium">
-            Get Started
-          </Link>
-          <Link href="/docs" className="btn-outline w-full px-3 py-2 text-xs font-medium">
-            Read the Docs
-          </Link>
-          <p className="col-span-2 pt-1 text-[10px] tracking-wide text-ink-light">No credit card required • Free local install</p>
+        <div className="rounded-lg border border-grid bg-surface shadow-xl shadow-stone-200/40">
+          <div className="flex items-center justify-between gap-3 border-b border-grid px-4 py-4 sm:px-6"><span className="flex items-center gap-2 text-xs text-ink-light"><FiGitPullRequest className="text-accent" />checkout-demo</span><span className="rounded border border-grid px-2 py-1 text-[11px] text-ink-light">Recorded example</span></div>
+          <div className="p-5 sm:p-7"><div className="mb-4 flex items-center gap-2 text-[11px] text-ink-light"><FiGitBranch />main<span className="mx-1 text-grid">/</span>Repository review</div><h2 className="text-2xl font-semibold leading-snug text-ink sm:text-3xl">One request.<br />Two orders.</h2><p className="mt-3 text-xs leading-relaxed text-ink-light">Retrying checkout creates a duplicate order and reduces stock again.</p>
+            <div className="mt-6 flex items-center gap-3 rounded border border-fail/25 bg-fail/5 px-4 py-3"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-fail/40 text-xs text-fail">!</span><div><strong className="block text-xs font-semibold text-ink">Failure reproduced</strong><span className="text-[11px] text-ink-light">Original test suite · checkout.test.js</span></div></div>
+            <div className="mt-5 grid grid-cols-2 divide-x divide-grid border-y border-grid py-4"><div><span className="block text-[11px] uppercase tracking-wider text-ink-light">Original source</span><strong className="mt-2 block text-xs font-medium text-fail">3 passed · 1 failed</strong></div><div className="pl-5"><span className="block text-[11px] uppercase tracking-wider text-ink-light">After source fix</span><strong className="mt-2 block text-xs font-medium text-pass">4 passed · 0 failed</strong></div></div>
+            <div className="mt-4 flex items-center gap-2 text-[11px] text-ink-light"><FiShield className="text-pass" />Original tests unchanged<FiCheck className="ml-auto text-pass" /></div>
+            <a href={exampleUrl} className="mt-6 flex items-center justify-between border-t border-grid pt-4 text-xs text-accent hover:underline">Run this example<FiArrowUpRight /></a>
+          </div><p className="border-t border-grid px-5 py-3 text-[11px] leading-relaxed text-ink-light sm:px-7">Actual local execution. Source fix applied manually.</p>
         </div>
       </div>
-    </section>
-  );
+    </div>
+  </section>;
 }

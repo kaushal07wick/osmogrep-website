@@ -58,7 +58,7 @@ export default function ContactForm({ source = 'pricing-contact' }: ContactFormP
           onChange={(e) => setEmail(e.target.value)}
           placeholder="name@company.com"
           required
-          className="w-full px-4 py-3 border border-grid rounded-sm bg-white focus:outline-none focus:border-accent"
+          className="w-full px-4 py-3 border border-grid rounded-sm bg-surface focus:outline-none focus:border-accent"
         />
       </div>
       <div className="space-y-1">
@@ -75,7 +75,7 @@ export default function ContactForm({ source = 'pricing-contact' }: ContactFormP
           minLength={8}
           maxLength={2500}
           rows={5}
-          className="w-full px-4 py-3 border border-grid rounded-sm bg-white resize-y focus:outline-none focus:border-accent"
+          className="w-full px-4 py-3 border border-grid rounded-sm bg-surface resize-y focus:outline-none focus:border-accent"
         />
       </div>
       <div className="flex items-center gap-3">
@@ -86,7 +86,7 @@ export default function ContactForm({ source = 'pricing-contact' }: ContactFormP
       </div>
 
       {status !== 'idle' && (
-        <p className={`text-xs ${status === 'success' ? 'text-green-700' : 'text-red-600'}`}>{feedback}</p>
+        <p className={`text-xs ${status === 'success' ? 'text-pass' : 'text-fail'}`}>{feedback}</p>
       )}
     </form>
   );

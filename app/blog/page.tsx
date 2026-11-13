@@ -8,7 +8,7 @@ export default function BlogPage() {
   return (
     <main className="min-h-screen pt-20 pb-32">
       <section className="container mx-auto max-w-[1200px] px-6 space-y-8">
-        <header className="border border-grid bg-white/58">
+        <header className="border border-grid bg-surface">
           <div className="px-6 md:px-8 py-7 md:py-8 border-b border-grid">
             <div className="page-chip mb-3">Engineering Notes</div>
             <h1 className="text-3xl md:text-5xl leading-[0.95] font-bold text-accent blog-title-rise">
@@ -24,7 +24,7 @@ export default function BlogPage() {
         </header>
 
         {latest ? (
-          <section className="border border-grid bg-white/55 grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr]">
+          <section className="border border-grid bg-surface grid grid-cols-1 lg:grid-cols-[1.15fr_0.85fr]">
             <div className="p-6 md:p-8 border-b lg:border-b-0 lg:border-r border-grid">
               <p className="text-[11px] uppercase tracking-[0.18em] text-accent font-bold">Latest Entry</p>
               <h2 className="mt-3 text-2xl md:text-4xl leading-[1] font-bold text-ink">{latest.title}</h2>
@@ -35,11 +35,11 @@ export default function BlogPage() {
               </Link>
             </div>
             <div className="p-5 md:p-6">
-              <div className="border border-grid bg-white/80 h-full min-h-[190px] overflow-hidden relative">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(234,88,12,0.15)_1px,transparent_0)] bg-[size:12px_12px]" />
+              <div className="border border-grid bg-surface h-full min-h-[190px] overflow-hidden relative">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,color-mix(in_oklab,var(--color-accent)_15%,transparent)_1px,transparent_0)] bg-[size:12px_12px]" />
                 <div className="relative h-full flex items-center justify-center">
-                  <svg viewBox="0 0 260 180" className="w-[78%] h-[78%]" fill="none" aria-hidden="true">
-                    <g className="blog-wire-spin" stroke="#EA580C" strokeOpacity="0.34" strokeWidth="1">
+                  <svg viewBox="0 0 260 180" className="text-accent text-accent w-[78%] h-[78%]" fill="none" aria-hidden="true">
+                    <g className="blog-wire-spin" stroke="currentColor" strokeOpacity="0.34" strokeWidth="1">
                       <ellipse cx="130" cy="90" rx="74" ry="36" />
                       <ellipse cx="130" cy="90" rx="74" ry="36" transform="rotate(18 130 90)" />
                       <ellipse cx="130" cy="90" rx="74" ry="36" transform="rotate(36 130 90)" />
@@ -47,7 +47,7 @@ export default function BlogPage() {
                       <ellipse cx="130" cy="90" rx="74" ry="36" transform="rotate(72 130 90)" />
                       <ellipse cx="130" cy="90" rx="74" ry="36" transform="rotate(90 130 90)" />
                     </g>
-                    <circle cx="130" cy="90" r="4.2" fill="#EA580C" className="index-node-breathe" />
+                    <circle cx="130" cy="90" r="4.2" fill="currentColor" className="index-node-breathe" />
                   </svg>
                 </div>
               </div>
@@ -55,7 +55,7 @@ export default function BlogPage() {
           </section>
         ) : null}
 
-        <section className="border border-grid bg-white/52">
+        <section className="border border-grid bg-surface">
           <div className="px-6 md:px-8 py-5 md:py-6 border-b border-grid bg-accent/8 flex items-center justify-between gap-4">
             <h3 className="text-2xl md:text-3xl font-bold text-accent">All Posts</h3>
           </div>
@@ -65,7 +65,7 @@ export default function BlogPage() {
               <Link
                 key={post.slug}
                 href={`/blog/${post.slug}`}
-                className={`group grid grid-cols-1 items-start gap-3 border-b border-grid px-6 py-4 transition-colors hover:bg-white/80 last:border-b-0 md:grid-cols-[96px_1fr_220px] md:items-start md:gap-5 md:px-8 md:py-5 blog-link-row ${idx % 2 === 0 ? 'bg-white/40' : 'bg-white/55'}`}
+                className={`group grid grid-cols-1 items-start gap-3 border-b border-grid px-6 py-4 transition-colors hover:bg-surface last:border-b-0 md:grid-cols-[96px_1fr_220px] md:items-start md:gap-5 md:px-8 md:py-5 blog-link-row ${idx % 2 === 0 ? 'bg-surface/50' : 'bg-surface'}`}
                 style={{ animationDelay: `${idx * 80}ms` }}
               >
                 <div className="hidden md:flex items-center pt-1">

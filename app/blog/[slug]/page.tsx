@@ -19,7 +19,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   return (
     <main className="min-h-screen pt-20 pb-32">
       <article className="container mx-auto max-w-[1200px] px-6 space-y-8">
-        <header className="border border-grid bg-white/58">
+        <header className="border border-grid bg-surface">
           <div className="px-6 md:px-8 py-6 border-b border-grid">
             <Link href="/blog" className="text-[11px] uppercase tracking-[0.18em] text-accent font-bold hover:underline underline-offset-4">
               ← Back to Engineering Notes
@@ -31,12 +31,12 @@ export default async function BlogPostPage({ params }: PageProps) {
           <div className="px-6 md:px-8 py-3 text-[11px] uppercase tracking-[0.16em] text-ink-light border-b border-grid">
             entry://{post.slug}
           </div>
-          <div className="relative h-14 border-b border-grid bg-white/72 overflow-hidden">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,rgba(234,88,12,0.12)_1px,transparent_0)] bg-[size:12px_12px]" />
+          <div className="relative h-14 border-b border-grid bg-surface overflow-hidden">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_1px_1px,color-mix(in_oklab,var(--color-accent)_12%,transparent)_1px,transparent_0)] bg-[size:12px_12px]" />
             <div className="absolute inset-0 flex items-center justify-between px-4 text-xs md:text-sm font-mono text-ink-light">
               <span>[notes] engineering write-up</span>
-              <svg viewBox="0 0 80 28" className="h-5 w-16" fill="none" aria-hidden="true">
-                <g className="blog-wire-spin" stroke="#EA580C" strokeOpacity="0.35" strokeWidth="0.8">
+              <svg viewBox="0 0 80 28" className="text-accent text-accent h-5 w-16" fill="none" aria-hidden="true">
+                <g className="blog-wire-spin" stroke="currentColor" strokeOpacity="0.35" strokeWidth="0.8">
                   <ellipse cx="54" cy="14" rx="14" ry="6.2" />
                   <ellipse cx="54" cy="14" rx="14" ry="6.2" transform="rotate(24 54 14)" />
                   <ellipse cx="54" cy="14" rx="14" ry="6.2" transform="rotate(48 54 14)" />
@@ -50,7 +50,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         <div className="grid grid-cols-1 lg:grid-cols-[1fr_260px] gap-6 items-start">
           <div
             className="
-              border border-grid bg-white/55 px-6 md:px-8 py-7 text-ink leading-relaxed
+              border border-grid bg-surface px-6 md:px-8 py-7 text-ink leading-relaxed
               [&_h1]:text-3xl [&_h1]:text-accent [&_h1]:font-bold [&_h1]:mt-10 [&_h1]:mb-4
               [&_h2]:text-2xl [&_h2]:text-accent [&_h2]:font-bold [&_h2]:mt-9 [&_h2]:mb-3
               [&_h3]:text-xl [&_h3]:text-accent [&_h3]:font-bold [&_h3]:mt-8 [&_h3]:mb-3
@@ -68,11 +68,11 @@ export default async function BlogPostPage({ params }: PageProps) {
             dangerouslySetInnerHTML={{ __html: post.html }}
           />
 
-          <aside className="border border-grid bg-white/62 p-4 lg:sticky lg:top-24">
+          <aside className="border border-grid bg-surface p-4 lg:sticky lg:top-24">
             <p className="text-[10px] uppercase tracking-[0.16em] text-accent font-bold">Entry Meta</p>
             <div className="mt-3 space-y-2 text-xs text-ink-light">
-              <div className="border border-grid bg-white px-2 py-1.5">author: {post.author}</div>
-              <div className="border border-grid bg-white px-2 py-1.5">date: {post.date}</div>
+              <div className="border border-grid bg-surface px-2 py-1.5">author: {post.author}</div>
+              <div className="border border-grid bg-surface px-2 py-1.5">date: {post.date}</div>
             </div>
             <Link href="/blog" className="btn-outline mt-4 w-full py-2.5">
               More Entries
