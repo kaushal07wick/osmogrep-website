@@ -6,7 +6,7 @@ import FooterScene from './footer/FooterScene';
 const COLUMNS = [
   { title: 'product/', links: [['Terminal agent', '/docs/cli#install'], ['Web console', consoleUrl], ['Runtime checks', '/docs/runtime'], ['Pricing', '/pricing'], ['Changelog', '/changelog']] },
   { title: 'learn/', links: [['Documentation', '/docs'], ['Bug-catching engine', '/docs/bug-catching'], ['Evidence & replay', '/docs/evidence'], ['GitHub integration', '/docs/github'], ['MCP + skills', '/docs/coding-agents'], ['Blog', '/blog']] },
-  { title: 'company/', links: [['About', '/about'], ['GitHub', 'https://github.com/kaushal07wick/OsmoGrep'], ['Report an issue', 'https://github.com/kaushal07wick/OsmoGrep/issues'], ['Twitter / X', 'https://x.com/ofcboogeyman'], ['LinkedIn', 'https://www.linkedin.com/in/kaushalkumar11/'], ['Email', 'mailto:kaushalc64@gmail.com']] },
+  { title: 'company/', links: [['About', '/about'], ['GitHub', 'https://github.com/kaushal07wick/OsmoGrep'], ['Report an issue', 'https://github.com/kaushal07wick/OsmoGrep/issues'], ['Twitter / X', 'https://x.com/ofcboogeyman'], ['LinkedIn', 'https://www.linkedin.com/in/11kaushalkumar/'], ['Email', 'mailto:kaushalc64@gmail.com']] },
 ];
 
 /** Dark footer: brand and link columns over the animated ASCII landscape (lib/footer/scene.js). */
