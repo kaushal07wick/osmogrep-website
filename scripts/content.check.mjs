@@ -44,3 +44,15 @@ for (const [source, expected] of [[dedupeBug, false], [dedupeFix, true]]) {
   if (expected) run(); else assert.throws(run, /Distinct URLs/);
 }
 console.log('Documentation example: same reproducer fails before the fix and passes afterward.');
+
+const evidence=JSON.parse((await import('node:fs')).readFileSync('public/data/catcher-acceptance.json','utf8'));
+assert.equal(evidence.controlledFixture,true);
+assert.equal(evidence.tokens.total,evidence.tokens.input+evidence.tokens.output);
+assert(evidence.tokens.cachedInput<=evidence.tokens.input);
+assert.equal(evidence.stages.reduce((sum,stage)=>sum+stage.tokens,0),evidence.tokens.total);
+assert.deepEqual(evidence.observations.map(row=>[row.phase,row.exitCode,row.originalSuite,row.testsUnchanged]),[['base',0,'passed',true],['candidate',1,'passed',true],['repair',0,'passed',true]]);
+assert(evidence.sandboxes.every(row=>row.cleanupConfirmed));
+assert(evidence.verificationScope.includes('production job store'));
+assert.equal(evidence.agentNarrativeSaved,true);
+assert(evidence.limitations.length>0);
+console.log('Architecture evidence checked: scoped controlled case, consistent measured tokens, differential exits, original tests and cleanup; limitations retained.');

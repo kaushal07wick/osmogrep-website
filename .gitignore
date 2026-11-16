@@ -36,3 +36,4 @@ coverage/
 .next-build/
 
 .next-mcp-build/
+.runtime/

@@ -1,45 +1,53 @@
-export default function ArchitectureDiagram() {
-  return <figure className="docs-architecture">
-    <figcaption>From request to result <span>System diagram</span></figcaption>
-    <div className="docs-diagram-scroll" tabIndex={0} role="region" aria-label="Execution flow diagram, scroll horizontally on small screens">
-      <svg viewBox="0 0 720 610" role="img" aria-labelledby="execution-flow-title execution-flow-desc">
-        <title id="execution-flow-title">How a hosted OsmoGrep request is handled</title>
-        <desc id="execution-flow-desc">A console request or GitHub command is validated and queued. The requested job either reviews source code or runs tests in an isolated VM. Both paths save results for the dashboard and GitHub. Source review does not automatically start a VM.</desc>
-        <defs><marker id="execution-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 1 1 L 9 5 L 1 9" fill="none" stroke="currentColor" strokeWidth="1.5" /></marker></defs>
-        <g className="docs-diagram-connectors" fill="none" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#execution-arrow)">
-          <path d="M360 90V132" />
-          <path d="M360 210V238H186V278" />
-          <path d="M360 210V238H534V278" />
-          <path d="M186 382V412H360V444" />
-          <path d="M534 382V412H360" markerEnd="none" />
-          <path d="M360 518V544H186V567" />
-          <path d="M360 518V544H534V567" />
-        </g>
-        <g className="docs-diagram-nodes">
-          <rect x="36" y="24" width="648" height="66" rx="6" />
-          <rect x="36" y="134" width="648" height="76" rx="6" />
-          <rect x="36" y="278" width="300" height="104" rx="6" />
-          <rect className="docs-diagram-runtime" x="384" y="278" width="300" height="104" rx="6" />
-          <rect x="36" y="446" width="648" height="72" rx="6" />
-        </g>
-        <g textAnchor="middle">
-          <text className="docs-diagram-title" x="360" y="51">1. Request a review or a runtime check</text>
-          <text x="360" y="75">Web console or GitHub PR command</text>
-          <text className="docs-diagram-title" x="360" y="164">2. Check permissions &amp; queue the job</text>
-          <text x="360" y="190">API + PostgreSQL · ownership, limits and progress</text>
-          <text className="docs-diagram-title" x="186" y="310">3A. Source review</text>
-          <text x="186" y="339">Inspect the change for bugs.</text>
-          <text x="186" y="363">No VM is started.</text>
-          <text className="docs-diagram-title" x="534" y="310">3B. Runtime check</text>
-          <text x="534" y="339">Tests in an isolated VM.</text>
-          <text x="534" y="363">Can propose and check a fix.</text>
-          <text className="docs-diagram-title" x="360" y="475">4. Save the result &amp; evidence</text>
-          <text x="360" y="501">Findings, command output and any proposed patch</text>
-          <text className="docs-diagram-title" x="186" y="592">Dashboard</text>
-          <text className="docs-diagram-title" x="534" y="592">GitHub PR</text>
-        </g>
-      </svg>
+"use client";
+
+import { useState } from "react";
+import { SiOpenai,SiRust } from "react-icons/si";
+import { LuActivity,LuCode,LuCpu,LuDatabase,LuFlaskConical,LuGitBranch,LuLayers,LuMessageSquare,LuShieldCheck,LuArrowUpRight } from "react-icons/lu";
+import styles from "./ArchitectureMap.module.css";
+
+const nodes=[
+ {id:"request",title:"Review request",sub:"Dashboard or GitHub PR",icon:LuGitBranch,x:24,y:56,w:184,h:80,tag:"ENTRY",description:"A developer requests a source review, test run or repair against a specific pull-request revision.",facts:["GitHub identity and repository permissions are checked.","The requested head SHA is captured.","Opening a page does not request target execution."],boundary:"A request is permission to inspect the selected scope, not permission to merge.",link:"/docs/github"},
+ {id:"admission",title:"Admission",sub:"Auth · limits · idempotency",icon:LuShieldCheck,x:270,y:56,w:184,h:80,tag:"NEXT.JS API",description:"The API validates the request, selects its workspace and persists the job before returning an ID.",facts:["Personal and team data have separate owners.","Current membership and role checks apply to team actions.","Idempotency and shared quotas prevent accidental duplicate work."],boundary:"The HTTP request does not have to stay open for the job to complete.",link:"/docs/api"},
+ {id:"queue",title:"Durable queue",sub:"Jobs · leases · events",icon:LuDatabase,x:515,y:56,w:184,h:80,tag:"POSTGRESQL",description:"PostgreSQL is the shared coordination and persistence layer. A worker must hold a current lease to update a running job.",facts:["Claims use transactional row locking.","Worker-ID fencing rejects stale writes.","Model reservations, observations and publication state are retained separately."],boundary:"An expired execution is failed rather than silently replaying uncertain paid calls or tools.",link:"/docs/architecture#work-outlives-the-http-request"},
+ {id:"worker",title:"Catcher worker",sub:"Trusted orchestration · E2B",icon:LuCpu,x:760,y:56,w:210,h:80,tag:"ON DEMAND",description:"A short-lived coordinator processes queued work. It owns phase transitions, cancellation, resource admission and cleanup.",facts:["Stops at its idle or maximum-lifetime bound.","Uses a separate environment from repository test execution.","Reuses the existing agent loop and sandbox adapters."],boundary:"Even a source-only assessment can incur coordinator compute; no target VM is not the same as zero infrastructure cost.",link:"/docs/runtime"},
+ {id:"memory",title:"Team context",sub:"Selected channels · opt-in",icon:LuMessageSquare,x:24,y:260,w:184,h:100,tag:"OPTIONAL INPUT",description:"Relevant retained channel excerpts can add repository-specific decisions and constraints to an investigation.",facts:["An admin selects channels and maps them to a repository.","Review use is opt-in and access is checked again.","Messages remain untrusted context, not verified runtime facts."],boundary:"Joining a team or connecting Slack does not import every conversation or company member.",link:"/docs/security"},
+ {id:"context",title:"Pinned context",sub:"Change · consumers · history",icon:LuLayers,x:270,y:260,w:184,h:100,tag:"KNOWLEDGE LAYER",description:"The engine builds a bounded context packet before asking a model for an assessment: what changed, what depends on it and what evidence supports the concern.",facts:["Base/head source and changed-hunk anchors are captured.","Manifests, tests, conventions and relevant consumers are retrieved selectively.","Revision-scoped IMPORTS/DEFINES facts and related history can be reused."],boundary:"The stored syntax graph is not a complete semantic call graph or production telemetry map.",link:"/docs/architecture#context-before-reasoning"},
+ {id:"models",title:"Model roles",sub:"Investigator + advisor",icon:SiOpenai,x:515,y:260,w:184,h:100,tag:"SHARED BUDGET",description:"A primary model investigates, plans experiments and repairs. A smaller independent advisor challenges source reasoning and test validity when justified.",facts:["Current defaults: GPT-5.2 and GPT-5.4-mini.","Tools and output schemas are scoped to each phase.","All roles spend from the same request and token ledger."],boundary:"Model agreement and a persuasive explanation do not establish a reproduced bug.",link:"/docs/architecture#models-have-scoped-jobs"},
+ {id:"source",title:"Source findings",sub:"Citations · suggested changes",icon:LuCode,x:760,y:260,w:210,h:100,tag:"NO TARGET VM",description:"Read-only source review can return specific findings and native GitHub suggestions without executing the target repository.",facts:["Findings require relevant source locations and causal reasoning.","Suggested fixes remain proposals for review.","Runtime-sensitive concerns can recommend a focused experiment."],boundary:"A source finding remains unverified until execution establishes the relevant behavior.",link:"/docs/findings"},
+ {id:"terminal",title:"Terminal agent",sub:"Rust TUI · independent local workflow",icon:SiRust,x:24,y:464,w:430,h:90,tag:"SEPARATE APPLICATION",description:"The terminal remains a general coding agent. It works locally with its configured model, tools, sessions and permissions.",facts:["Ordinary coding does not automatically run the cloud PR pipeline.","Git, editing, shell and MCP capabilities remain available.","The cloud Catcher does not require the terminal TUI."],boundary:"This engine work is in the web repository; the Rust terminal runtime was not replaced.",link:"/docs/cli"},
+ {id:"runtime",title:"Target sandboxes",sub:"Base → candidate → repair",icon:LuFlaskConical,x:515,y:464,w:184,h:90,tag:"EXPLICIT EXECUTION",description:"A frozen experiment runs against captured revisions in isolated E2B target sandboxes. Repair is attempted only within the configured execution scope.",facts:["The same test bytes and behavioral oracle are compared.","Original tests and environment identity are preserved.","Commands, exits, logs, patches and cleanup outcomes are retained."],boundary:"Missing setup, a false oracle or stale evidence yields a limited result, not a confirmed regression.",link:"/docs/evidence"},
+ {id:"evidence",title:"Evidence & delivery",sub:"Saved report · dashboard · GitHub",icon:LuActivity,x:760,y:464,w:210,h:90,tag:"INSPECTABLE RESULT",description:"Reports join findings, execution observations and proposed corrections under a stable review identity. Publication retries independently of execution.",facts:["Source, test failure and verified repair are different states.","Individual attempts retain their original evidence.","A proposed patch is inspectable before a developer applies it."],boundary:"A successful run does not imply a published comment or an automatically merged fix.",link:"/docs/evidence"},
+];
+const edges=[
+ {from:"request",to:"admission",d:"M208 96H270"},
+ {from:"admission",to:"queue",d:"M454 96H515"},
+ {from:"queue",to:"worker",d:"M699 96H760"},
+ {from:"worker",to:"context",d:"M865 136V180Q865 196 849 196H378Q362 196 362 212V260"},
+ {from:"memory",to:"context",d:"M208 310H270",optional:true},
+ {from:"context",to:"models",d:"M454 310H515"},
+ {from:"models",to:"source",d:"M699 310H760"},
+ {from:"models",to:"runtime",d:"M607 360V464",optional:true},
+ {from:"source",to:"evidence",d:"M865 360V464"},
+ {from:"runtime",to:"evidence",d:"M699 509H760"},
+];
+export default function ArchitectureDiagram(){
+  const [selected,setSelected]=useState("context");
+  const node=nodes.find(item=>item.id===selected)!;const Icon=node.icon;
+  return <figure className={styles.map}>
+    <figcaption><span>SYSTEM MAP</span><label className={styles.selector}>Explore<select aria-label="Explore architecture component" value={selected} onChange={event=>setSelected(event.target.value)}>{nodes.map(item=><option value={item.id} key={item.id}>{item.title}</option>)}</select></label></figcaption>
+    <div className={styles.scroll} tabIndex={0} role="region" aria-label="Interactive Catcher architecture map">
+      <div className={styles.canvas}>
+        <svg viewBox="0 0 1000 590" aria-hidden="true" className={styles.wires}>
+          <defs><marker id="architecture-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#aaa69d"/></marker><marker id="architecture-arrow-active" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0L8 4L0 8Z" fill="#ea580c"/></marker></defs>
+          <text x="25" y="29">REQUEST & CONTROL</text><text x="25" y="234">CONTEXT & REASONING</text><text x="515" y="438">EXECUTION & RESULTS</text>
+          <rect x="499" y="449" width="216" height="120" className={styles.isolation}/>
+          {edges.map(edge=>{const active=edge.from===selected||edge.to===selected;return <path key={edge.from+edge.to} d={edge.d} className={styles.edge} data-active={active} data-optional={edge.optional||undefined} markerEnd={`url(#architecture-arrow${active?"-active":""})`}/>;})}
+          <text x="622" y="410" className={styles.gate}>when requested</text>
+        </svg>
+        {nodes.map(item=>{const NodeIcon=item.icon;return <button key={item.id} className={styles.node} data-active={selected===item.id} data-separate={item.id==="terminal"||undefined} aria-pressed={selected===item.id} aria-label={item.title} onClick={()=>setSelected(item.id)} style={{left:`${item.x/10}%`,top:`${item.y/5.9}%`,width:`${item.w/10}%`,height:`${item.h/5.9}%`}}><span className={styles.nodeTag}>{item.tag}</span><span className={styles.nodeTitle}><NodeIcon aria-hidden="true"/>{item.title}</span><small>{item.sub}</small></button>;})}
+      </div>
     </div>
-    <p className="docs-diagram-caption">The job type selects the path. Reading code does not automatically start a VM.</p>
+    <div className={styles.inspector} aria-live="polite"><div className={styles.inspectorTitle}><Icon aria-hidden="true"/><span>{node.tag}</span><h3>{node.title}</h3><p>{node.description}</p></div><div className={styles.inspectorDetail}><ul>{node.facts.map(fact=><li key={fact}>{fact}</li>)}</ul><p>{node.boundary}</p><a href={node.link}>Read the guide<LuArrowUpRight aria-hidden="true"/></a></div></div>
+    <div className={styles.legend}><span><i/>Normal flow</span><span><i data-optional/>Enabled or requested explicitly</span><span>Source analysis and repository execution have separate boundaries.</span></div>
   </figure>;
 }

@@ -1,0 +1,81 @@
+{
+  "schemaVersion": 1,
+  "controlledFixture": true,
+  "sourceCommit": "a04485bfeba745d99caef89bd6a6b5a70e2ce78d",
+  "repository": "kaushal07wick/osmogrep-mcp",
+  "pullRequest": "https://github.com/kaushal07wick/osmogrep-mcp/pull/11",
+  "verificationScope": "Controlled production acceptance through the deployed API, on-demand worker, OpenAI and E2B, with the production job store. This deliberately constructed public fixture is not an untouched OSS benchmark.",
+  "modelCalls": 10,
+  "tokens": {
+    "input": 68233,
+    "output": 2640,
+    "cachedInput": 37760,
+    "total": 70873
+  },
+  "durationMs": 108604,
+  "stages": [
+    {
+      "name": "investigator",
+      "label": "Investigation",
+      "tokens": 11477
+    },
+    {
+      "name": "advisor",
+      "label": "Source advisor",
+      "tokens": 6486
+    },
+    {
+      "name": "experiment",
+      "label": "Experiment",
+      "tokens": 5549
+    },
+    {
+      "name": "experiment_advisor",
+      "label": "Test advisor",
+      "tokens": 4861
+    },
+    {
+      "name": "repair",
+      "label": "Repair",
+      "tokens": 42500
+    }
+  ],
+  "observations": [
+    {
+      "phase": "base",
+      "exitCode": 0,
+      "durationMs": 285,
+      "originalSuite": "passed",
+      "testsUnchanged": true
+    },
+    {
+      "phase": "candidate",
+      "exitCode": 1,
+      "durationMs": 237,
+      "originalSuite": "passed",
+      "testsUnchanged": true
+    },
+    {
+      "phase": "repair",
+      "exitCode": 0,
+      "durationMs": 223,
+      "originalSuite": "passed",
+      "testsUnchanged": true
+    }
+  ],
+  "sandboxes": [
+    {
+      "phase": "base",
+      "cleanupConfirmed": true
+    },
+    {
+      "phase": "candidate",
+      "cleanupConfirmed": true
+    }
+  ],
+  "agentNarrativeSaved": true,
+  "limitations": [
+    "One deliberately constructed resource-lease cleanup case; broad detection accuracy, false positives and competitor comparisons are not established.",
+    "This acceptance does not validate arbitrary repository setup, private runtime execution or production telemetry ingestion."
+  ]
+}

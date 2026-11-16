@@ -14,7 +14,13 @@ export default function DocsShell({ children }: { children: React.ReactNode }) {
     document.querySelector('.docs-desktop-nav [aria-current="page"]')?.scrollIntoView({ block: "nearest" });
     setHeadings(Array.from(document.querySelectorAll(".docs-prose > section[id]")).map(section => ({ id: section.id, text: section.querySelector("h2")?.textContent || "" })).filter(item => item.text));
   }, [pathname, children]);
-  return <main className="docs-shell">
+  useEffect(()=>{
+    if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+    const observer=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){(entry.target as HTMLElement).dataset.stepsVisible="true";observer.unobserve(entry.target);}},{threshold:0.12});
+    document.querySelectorAll<HTMLOListElement>(".docs-steps").forEach(list=>{Array.from(list.children).forEach((step,index)=>(step as HTMLElement).style.setProperty("--step-index",String(index)));observer.observe(list);});
+    return()=>observer.disconnect();
+  },[pathname,children]);
+  return <main className={`docs-shell${pathname==="/docs/architecture"?" docs-shell-engineering":""}`}>
     <aside className="docs-sidebar">
       <Link className="docs-wordmark" href="/docs"><span aria-hidden="true">[ ]</span> Documentation</Link>
       <label className="docs-mobile-nav">Browse the docs

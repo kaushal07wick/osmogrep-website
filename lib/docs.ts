@@ -7,13 +7,12 @@ export const docs = [
   { slug: "github", title: "GitHub integration", group: "Workflows", description: "App permissions, PR commands, webhook setup, and delivery behavior." },
   { slug: "runtime", title: "Runtime checks", group: "Workflows", description: "Run focused checks in an isolated workspace." },
   { slug: "coding-agents", title: "Codex & Claude Code", group: "Workflows", description: "Set up the MCP server and verification skill." },
-  { slug: "cli", title: "Terminal CLI", group: "Workflows", description: "Install the Rust TUI and learn its session controls." },
+  { slug: "cli", title: "Terminal CLI", group: "Workflows", description: "A local Rust coding agent. See it in use, install it, and make it yours." },
   { slug: "examples", title: "Examples & recipes", group: "Workflows", description: "A small regression you can reproduce, plus setup recipes for existing projects." },
   { slug: "configuration", title: "Configuration", group: "Reference", description: "Project recipes, worker settings, and client configuration." },
   { slug: "api", title: "HTTP API", group: "Reference", description: "The console’s authenticated job interface, states, and errors." },
   { slug: "security", title: "Permissions & data", group: "Reference", description: "Source access, isolation boundaries, credentials, and retained evidence." },
   { slug: "troubleshooting", title: "Troubleshooting", group: "Reference", description: "Resolve setup problems and understand current limits." },
-  { slug: "architecture", title: "Architecture", group: "Engineering", description: "The control plane, workers, sandbox lifecycle, and result delivery." },
-  { slug: "design-system", title: "Design system", group: "Engineering", description: "Paper, ink, pixels: the tokens and components behind OsmoGrep." },
+  { slug: "architecture", title: "Architecture", group: "Engineering", description: "Context, advisor models, differential verification, durable jobs and measured execution." },
 ] as const;
 export const docHref = (slug: string) => slug ? `/docs/${slug}` : "/docs";
