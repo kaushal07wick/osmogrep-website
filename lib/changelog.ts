@@ -13,10 +13,10 @@ export type ProductUpdate = {
 export const majorUpdates: ProductUpdate[] = [
   {
     id: 'engineering-docs', product: 'Website', version: 'Documentation', date: 'November 17, 2026',
-    title: 'Inside the engine, from context to evidence',
-    summary: 'New guides explain the separate terminal and cloud paths, with an interactive architecture map and measured production acceptance record.',
-    changes: ['Silent, autoplaying terminal demo, guided quick start and session controls.', 'Architecture map covering context, advisors, durable jobs and isolated execution.', 'Published budgets and a controlled base → candidate → repair result, with explicit limitations.', 'Removed the public Design System page and refreshed repository setup steps.'],
-    commits: ['5823218'], link: { label: 'Explore the architecture', href: '/docs/architecture' },
+    title: 'Product docs, from first review to verification',
+    summary: 'Reworked guides cover GitHub reviews, team workspaces, channel memory, project setup and verification evidence.',
+    changes: ['Step-by-step guides for GitHub reviews, runtime checks, applying patches and troubleshooting.', 'Dedicated team and channel memory guides covering roles, connection setup and stored context.', 'Guided terminal quick start and a silent demo with viewport-aware playback.', 'Interactive architecture map and a measured production verification record.', 'Compact docs footer, clearer tables and copyable commands; removed operator setup notes.'],
+    commits: ['5823218', '0e2560c', 'b3ade48', '53c9cc9'], link: { label: 'Explore the architecture', href: '/docs/architecture' },
   },
   {
     id: 'team-workspaces', product: 'Cloud', version: 'Team workspaces', date: 'November 16, 2026',
