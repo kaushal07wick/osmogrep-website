@@ -9,7 +9,7 @@ import styles from "./TerminalSetup.module.css";
 const steps = [
   { label:"Install", detail:"Get the CLI", icon:SiNpm, heading:"Install once.", description:"The npm launcher downloads the native Rust binary for your machine. No Rust toolchain is needed.", command:"npm install -g osmogrep", location:"Your shell", note:"Requires Node.js 22.19+ for the npm launcher." },
   { label:"Open", detail:"Choose a project", icon:LuFolder, heading:"Start with your code.", description:"Launch inside the repository you want to work on. Its files, shell and Git history become your workspace.", command:"cd /path/to/your-repo\nosmogrep", location:"Your repository", note:"Use /permissions to choose the agent’s tool access." },
-  { label:"Connect", detail:"Select your model", icon:LuKeyRound, heading:"Bring your preferred model.", description:"Add credentials with /key, then choose a provider and model with /model. Newly saved keys use the OS credential store.", command:"/key\n/model", location:"Inside OsmoGrep", note:"Run each slash command in the agent’s prompt." },
+  { label:"Connect", detail:"Select your model", icon:LuKeyRound, heading:"Bring your preferred model.", description:"Add credentials with /key, then choose a provider and model with /model. Newly saved keys use the OS credential store.", command:"/key", location:"Inside OsmoGrep", note:"After saving a key, run /model to choose your model." },
 ];
 export default function TerminalSetup() {
   const [active,setActive]=useState(0);
