@@ -1,55 +1,35 @@
 import Link from 'next/link';
+import { LuArrowUpRight, LuCpu, LuGlobe, LuTerminal } from 'react-icons/lu';
 import { majorUpdates } from '../../lib/changelog';
+import styles from './Changelog.module.css';
 
+const icons = { Cloud: LuCpu, Terminal: LuTerminal, Website: LuGlobe };
+const repositories = { Terminal: 'OsmoGrep', Website: 'osmogrep-website' };
 
 export default function Changelog() {
-  return (
-    <main className="min-h-screen pt-28 pb-24">
-      <section className="zone zone-pinstripe container mx-auto max-w-[1200px] px-6">
-        <div className="max-w-3xl">
-          <div className="page-chip mb-4">
-            Changelog
+  return <main className={styles.page}>
+    <header className={styles.header}>
+      <span className={styles.eyebrow}>CHANGELOG</span>
+      <h1>What changed.</h1>
+      <p>Major updates to the terminal, cloud engine and console.</p>
+      <nav aria-label="Changelog products"><a href="#team-workspaces"><LuCpu aria-hidden="true"/>Cloud</a><a href="#terminal-0-3-16"><LuTerminal aria-hidden="true"/>Terminal</a><a href="#engineering-docs"><LuGlobe aria-hidden="true"/>Website</a></nav>
+    </header>
+    <div className={styles.timeline}>
+      {majorUpdates.map(update => {
+        const Icon = icons[update.product];
+        return <article key={update.id} id={update.id} className={styles.entry}>
+          <div className={styles.date}><span>{update.date}</span><span><Icon aria-hidden="true"/>{update.product}</span></div>
+          <div className={styles.body}>
+            <span className={styles.version}>{update.version}</span>
+            <h2>{update.title}</h2>
+            <p>{update.summary}</p>
+            {update.changes.length > 0 && <ul>{update.changes.map(change => <li key={change}>{change}</li>)}</ul>}
+            {update.link && <Link className={styles.guide} href={update.link.href}>{update.link.label}<LuArrowUpRight aria-hidden="true"/></Link>}
+            {update.commits.length > 0 && <details className={styles.commits}><summary>{update.commits.length} commit references</summary><div>{update.commits.map(hash => update.product === 'Cloud' ? <code key={hash}>{hash}</code> : <a key={hash} href={`https://github.com/kaushal07wick/${repositories[update.product]}/commit/${hash}`} target="_blank" rel="noopener noreferrer">{hash}<LuArrowUpRight aria-hidden="true"/></a>)}</div>{update.product === 'Cloud' && <small>Build references from the private cloud repository.</small>}</details>}
           </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-ink">Major Product Updates</h1>
-          <p className="mt-4 text-lg text-ink-light">
-            A curated record of meaningful releases and platform improvements.
-          </p>
-        </div>
-
-        <div className="mt-10 space-y-5">
-          {majorUpdates.map((update) => (
-            <article key={update.version} className="frame bg-surface p-5 md:p-6">
-              <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
-                <div>
-                  <p className="text-[11px] tracking-wider uppercase font-bold text-accent">{update.version}</p>
-                  <h2 className="text-xl md:text-2xl font-bold text-ink mt-1">{update.title}</h2>
-                </div>
-                <p className="text-xs text-ink-light font-mono">{update.date}</p>
-              </div>
-              <p className="mt-3 text-sm text-ink-light leading-relaxed">{update.summary}</p>
-              <div className="mt-4 flex flex-wrap gap-2">
-                {update.commits.map((hash) => (
-                  <a
-                    key={hash}
-                    href={`https://github.com/kaushal07wick/OsmoGrep/commit/${hash}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs font-mono px-2.5 py-1 frame bg-surface text-accent hover:border-accent hover:underline underline-offset-4"
-                  >
-                    {hash}
-                  </a>
-                ))}
-              </div>
-            </article>
-          ))}
-        </div>
-
-        <div className="mt-8">
-          <Link href="/blog" className="text-sm text-accent hover:underline underline-offset-4">
-            Read engineering updates in the blog
-          </Link>
-        </div>
-      </section>
-    </main>
-  );
+        </article>;
+      })}
+    </div>
+    <Link className={styles.footer} href="/blog">Engineering articles<LuArrowUpRight aria-hidden="true"/></Link>
+  </main>;
 }

@@ -56,3 +56,17 @@ assert(evidence.verificationScope.includes('production job store'));
 assert.equal(evidence.agentNarrativeSaved,true);
 assert(evidence.limitations.length>0);
 console.log('Architecture evidence checked: scoped controlled case, consistent measured tokens, differential exits, original tests and cleanup; limitations retained.');
+
+const {majorUpdates}=await import('../lib/changelog.ts');
+assert.equal(new Set(majorUpdates.map(update=>update.id)).size,majorUpdates.length);
+for(const update of majorUpdates){
+  assert(['Cloud','Terminal','Website'].includes(update.product));
+  assert(update.title&&update.summary&&update.date&&update.version);
+  assert(update.commits.every(hash=>/^[a-f0-9]{7,40}$/.test(hash)));
+  if(update.link)assert(update.link.href.startsWith('/')||update.link.href.startsWith('https://'));
+}
+assert(majorUpdates.some(update=>update.id==='team-workspaces'));
+assert(majorUpdates.some(update=>update.id==='differential-catcher'));
+assert(majorUpdates.some(update=>update.version==='v0.3.16'));
+assert(!docs.some(doc=>doc.slug==='design-system'));
+console.log(`Changelog checked: ${majorUpdates.length} distinct entries, valid commit references and product links.`);

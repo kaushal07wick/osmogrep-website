@@ -25,7 +25,7 @@ export function buildSearchIndex(): SearchDoc[] {
     ...pages,
     ...docs.map(doc => ({ kind: 'docs' as const, title: doc.title, href: docHref(doc.slug), text: doc.description })),
     ...features.map((f): SearchDoc => ({ kind: 'feature', title: f.title, href: f.href, text: f.desc })),
-    ...majorUpdates.map((u): SearchDoc => ({ kind: 'changelog', title: `${u.version}: ${u.title}`, href: '/changelog', text: `${u.date}. ${u.summary}` })),
+    ...majorUpdates.map((u): SearchDoc => ({ kind: 'changelog', title: `${u.version}: ${u.title}`, href: `/changelog#${u.id}`, text: `${u.product}. ${u.date}. ${u.summary} ${u.changes.join(' ')}` })),
     ...getAllPostsMeta().map((m): SearchDoc => ({
       kind: 'blog',
       title: m.title,
