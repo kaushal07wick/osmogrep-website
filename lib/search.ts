@@ -1,28 +1,22 @@
-import { getAllPostsMeta, getPostBySlug } from './blog';
-import { majorUpdates } from './changelog';
-import { features } from './features';
-import { docs, docHref } from './docs';
+import { getAllPostsMeta, getPostBySlug } from './blog.ts';
+import { majorUpdates } from './changelog.ts';
+import { features } from './features.ts';
+import { docs, docHref } from './docs.ts';
+import { searchShortcuts } from './searchShortcuts.ts';
 
-export type SearchDoc = { kind: 'page' | 'docs' | 'feature' | 'blog' | 'changelog'; title: string; href: string; text: string };
+export type SearchDoc = { kind: 'workspace' | 'page' | 'docs' | 'feature' | 'blog' | 'changelog'; title: string; href: string; text: string };
 
-// ponytail: pages and docs sections are listed by hand; add an entry when a page or docs section is added.
 const pages: SearchDoc[] = [
   { kind: 'page', title: 'Home', href: '/', text: 'Catch the bug. Ship the fix. Osmogrep runs your code, reproduces the failure, and patches the source, with your own tests as proof.' },
-  { kind: 'page', title: 'Install the CLI', href: '/docs/cli#install', text: 'npm install -g osmogrep. Shell installer and Cargo source builds. Node.js 22.19+.' },
-  { kind: 'page', title: 'Pricing', href: '/pricing', text: 'Plans: Solo $2/mo, Solo Pro $10/mo, Teams $200/mo, Enterprise custom. Compare workflows for individual developers and teams.' },
-  { kind: 'page', title: 'Docs', href: '/docs', text: 'Console, runtime checks, Codex and Claude Code, terminal CLI, verification evidence, and troubleshooting.' },
-  { kind: 'page', title: 'Blog', href: '/blog', text: 'Notes from the team.' },
-  { kind: 'page', title: 'Changelog', href: '/changelog', text: 'Major product updates, version by version.' },
-  { kind: 'page', title: 'About', href: '/about', text: 'A terminal-native agent for real engineering work. Who builds Osmogrep.' },
   { kind: 'page', title: 'Get started', href: '/get-started', text: 'Install Osmogrep and run your first session.' },
-
 ];
 
 const stripMarkdown = (md: string) => md.replace(/<!--[\s\S]*?-->/g, ' ').replace(/```[\s\S]*?```/g, ' ').replace(/[#>*_`[\]()-]/g, ' ').replace(/\s+/g, ' ').trim();
 
 export function buildSearchIndex(): SearchDoc[] {
-  return [
+  const index: SearchDoc[] = [
     ...pages,
+    ...searchShortcuts,
     ...docs.map(doc => ({ kind: 'docs' as const, title: doc.title, href: docHref(doc.slug), text: doc.description })),
     ...features.map((f): SearchDoc => ({ kind: 'feature', title: f.title, href: f.href, text: f.desc })),
     ...majorUpdates.map((u): SearchDoc => ({ kind: 'changelog', title: `${u.version}: ${u.title}`, href: `/changelog#${u.id}`, text: `${u.product}. ${u.date}. ${u.summary} ${u.changes.join(' ')}` })),
@@ -33,4 +27,5 @@ export function buildSearchIndex(): SearchDoc[] {
       text: `${m.excerpt} ${stripMarkdown(getPostBySlug(m.slug)?.content ?? '')}`,
     })),
   ];
+  return [...new Map(index.map(doc => [doc.href, doc])).values()];
 }

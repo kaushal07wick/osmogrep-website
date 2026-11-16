@@ -1,145 +1,89 @@
 'use client';
 
-import { useEffect, useMemo, useState, type ReactNode, type RefObject } from 'react';
+import { useEffect, useMemo, useState, type RefObject } from 'react';
 import Link from 'next/link';
+import { FiArrowUpRight, FiBookOpen, FiBox, FiFileText, FiGitCommit, FiGrid } from 'react-icons/fi';
 import type { SearchDoc } from '../../../lib/search';
+import { searchShortcuts } from '../../../lib/searchShortcuts';
 import { prefersReducedMotion } from '../../../lib/motion';
 import { SearchIcon } from '../ui/icons';
-import { menuLinks } from './links';
 import { loadIndex, mark, queryTerms, searchDocs, snippet } from './searchHelpers';
+import './search.css';
 
-type Row = { key: string; href: string; tag: string; body: (selected: boolean) => ReactNode };
+const kinds = {
+  workspace: { label: 'Console', icon: FiGrid },
+  docs: { label: 'Guide', icon: FiBookOpen },
+  feature: { label: 'Workflow', icon: FiBox },
+  blog: { label: 'Article', icon: FiFileText },
+  changelog: { label: 'Update', icon: FiGitCommit },
+  page: { label: 'Page', icon: FiArrowUpRight },
+};
 
-/**
- * Dark panel that unrolls under the bar. A search line on top; with nothing typed it lists
- * menuLinks, and as you type the same rows become site search results.
- */
-export default function SearchMenu({
-  open,
-  query,
-  onQuery,
-  onPick,
-  inputRef,
-}: {
+export default function SearchMenu({ open, query, onQuery, onPick, inputRef }: {
   open: boolean;
   query: string;
   onQuery: (q: string) => void;
   onPick: (href: string) => void;
   inputRef: RefObject<HTMLInputElement | null>;
 }) {
-  const [index, setIndex] = useState<SearchDoc[]>([]);
+  const [index, setIndex] = useState<SearchDoc[] | null>(null);
   const [sel, setSel] = useState(0);
+  const searching = Boolean(query.trim());
+  const failed = index?.length === 0;
+  useEffect(() => { if (open) loadIndex().then(setIndex); }, [open]);
+  useEffect(() => setSel(0), [query, open]);
 
+  const rows = useMemo(() => {
+    if (searching && !failed) return searchDocs(index || [], query, 10);
+    return [...searchShortcuts, ...(index?.filter(doc => doc.kind === 'blog').slice(0, 1) || []), ...(index?.filter(doc => doc.kind === 'changelog').slice(0, 1) || [])];
+  }, [query, searching, failed, index]);
   useEffect(() => {
-    if (open) loadIndex().then(setIndex);
-  }, [open]);
-  useEffect(() => setSel(0), [query]);
+    if (open) document.getElementById(`nav-search-result-${sel}`)?.scrollIntoView({ block: 'nearest' });
+  }, [sel, open]);
+  const terms = queryTerms(query);
 
-  const rows = useMemo<Row[]>(() => {
-    if (!query) return menuLinks.map((m) => ({ key: m.cmd, href: m.href, tag: m.cmd, body: () => m.desc }));
-    const terms = queryTerms(query);
-    return searchDocs(index, query).map((d) => ({
-      key: d.kind + d.href + d.title,
-      href: d.href,
-      tag: d.kind,
-      body: (s) => (
-        <>
-          <span className="text-white">{mark(d.title, terms, s ? 'bg-ink text-white' : 'bg-accent text-white')}</span>
-          <span className={`ml-3 ${s ? 'text-white/80' : 'text-white/45'}`}>
-            {mark(snippet(d.text, terms), terms, s ? 'bg-ink text-white' : 'bg-accent/80 text-white')}
-          </span>
-        </>
-      ),
-    }));
-  }, [query, index]);
-
-  return (
-    <div
-      id="nav-terminal"
-      className={`absolute inset-x-0 top-full grid transition-[grid-template-rows] duration-500 ease-[cubic-bezier(.2,.8,.2,1)] ${open ? 'grid-rows-[1fr]' : 'pointer-events-none grid-rows-[0fr]'}`}
-    >
-      <div className="overflow-hidden">
-        <div className="border-b border-black bg-ink font-mono text-[13px] text-white/70 shadow-2xl shadow-black/30">
-          <div className="mx-auto max-w-[1200px] px-4 py-6 sm:px-6">
-            <label className="relative flex items-center gap-3 border-b border-white/10 px-2 pb-4 text-white">
-              <SearchIcon />
-              <span className="relative min-w-0 flex-1">
-                <input
-                  ref={inputRef}
-                  value={query}
-                  onChange={(e) => onQuery(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'ArrowDown') { e.preventDefault(); setSel((s) => Math.min(s + 1, rows.length - 1)); }
-                    if (e.key === 'ArrowUp') { e.preventDefault(); setSel((s) => Math.max(s - 1, 0)); }
-                    if (e.key === 'Enter' && rows[sel]) { e.preventDefault(); onPick(rows[sel].href); }
-                  }}
-                  tabIndex={open ? 0 : -1}
-                  aria-label="Search the site"
-                  className="nav-search w-full bg-transparent text-[15px] text-white caret-accent"
-                />
-                {!query && <Hint active={open} />}
-              </span>
-              <kbd className="text-[10px] text-white/35">esc</kbd>
-              {/* A thin orange line grows under the field as you type. */}
-              <span
-                className="absolute bottom-[-1px] left-0 h-px bg-accent transition-[width] duration-300 ease-out"
-                style={{ width: query ? `${Math.min(100, 8 + query.length * 6)}%` : 0 }}
-              />
-            </label>
-
-            {query && rows.length === 0 ? (
-              <p className="px-2 py-1.5 text-white/50">no matches for “{query}”. try a word like pricing or a command like /help</p>
-            ) : (
-              <ul className="space-y-0.5">
-                {rows.map((r, i) => (
-                  <li key={r.key} style={{ animationDelay: `${i * 40}ms` }} className={open ? 'nav-line-in' : 'opacity-0'}>
-                    <Link
-                      href={r.href}
-                      tabIndex={open ? 0 : -1}
-                      onMouseEnter={() => setSel(i)}
-                      onFocus={() => setSel(i)}
-                      onClick={(e) => { e.preventDefault(); onPick(r.href); }}
-                      className={`grid grid-cols-[20px_110px_1fr] rounded-[3px] px-2 py-1.5 sm:grid-cols-[24px_140px_1fr] ${sel === i ? 'bg-accent text-white' : ''}`}
-                    >
-                      <span>{sel === i ? '>' : ''}</span>
-                      <span className={sel === i ? 'text-white' : 'text-accent'}>{r.tag}</span>
-                      <span className="truncate">{r.body(sel === i)}</span>
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            )}
-
-            <p className={`${open ? 'nav-line-in' : 'opacity-0'} mt-4 hidden px-2 text-[11px] text-white/40 sm:block`} style={{ animationDelay: '300ms' }}>
-              ↑↓ move · enter open
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  return <div id="nav-terminal" inert={!open} className={`nav-search-shell ${open ? 'is-open' : ''}`}>
+    <div className="nav-search-clip"><div className="nav-search-panel"><div className="nav-search-inner">
+      <label className="nav-search-field"><SearchIcon /><span>
+        <input ref={inputRef} value={query} type="search" autoComplete="off" spellCheck={false} onChange={event => onQuery(event.target.value)}
+          onKeyDown={event => {
+            if (event.key === 'ArrowDown') { event.preventDefault(); setSel(value => Math.min(value + 1, Math.max(0, rows.length - 1))); }
+            if (event.key === 'ArrowUp') { event.preventDefault(); setSel(value => Math.max(value - 1, 0)); }
+            if (event.key === 'Enter' && rows[sel]) { event.preventDefault(); onPick(rows[sel].href); }
+          }} aria-label="Search the site" aria-controls="nav-search-results" aria-describedby="nav-search-status" className="nav-search" />
+        {!query && <Hint active={open} />}
+      </span><kbd>esc</kbd></label>
+      <p id="nav-search-status" className="nav-search-status" role="status">{failed ? 'Search is unavailable. Shortcuts are still available.' : searching ? index === null ? 'Searching…' : `${rows.length} ${rows.length === 1 ? 'result' : 'results'}` : 'Explore OsmoGrep'}</p>
+      {searching && !failed && index !== null && rows.length === 0 ? <p className="nav-search-empty">No matches for “{query}”. Try memory, runtime checks or architecture.</p> :
+        <ul id="nav-search-results" className={`nav-search-results ${searching && !failed ? 'is-searching' : ''}`}>{rows.map((row, i) => {
+          const kind = kinds[row.kind];
+          const Icon = kind.icon;
+          return <li key={row.href}>
+            <Link id={`nav-search-result-${i}`} href={row.href} onMouseEnter={() => setSel(i)} onFocus={() => setSel(i)} onClick={event => { event.preventDefault(); onPick(row.href); }} data-selected={sel === i} className="nav-search-result">
+              <Icon aria-hidden="true" /><span className="nav-search-copy"><span className="nav-search-result-meta">{kind.label}{!searching && row.kind === 'blog' ? ' · Latest' : ''}</span><strong>{mark(row.title, terms, 'nav-search-match')}</strong><span className="nav-search-description">{mark(snippet(row.text, terms, 120), terms, 'nav-search-match')}</span></span><FiArrowUpRight className="nav-search-arrow" aria-hidden="true" />
+            </Link>
+          </li>;
+        })}</ul>}
+      <div className="nav-search-footer"><span>↑↓ move <span aria-hidden="true">·</span> enter open <span aria-hidden="true">·</span> esc close</span></div>
+    </div></div></div>
+  </div>;
 }
 
-/** Placeholder that types example searches, so it is obvious what you can look for. */
-const EXAMPLES = ['pricing', '/help', 'install on linux', 'checkout bug', 'changelog'];
+const EXAMPLES = ['Slack memory', 'runtime verification', 'team invites', 'architecture', 'tokens'];
 function Hint({ active }: { active: boolean }) {
-  const [text, setText] = useState('');
+  const [text, setText] = useState(EXAMPLES[0]);
   useEffect(() => {
     if (!active || prefersReducedMotion()) return setText(EXAMPLES[0]);
     let word = 0, len = 0, dir = 1, wait = 0;
     const id = setInterval(() => {
       if (wait > 0) return void wait--;
-      const w = EXAMPLES[word];
+      const example = EXAMPLES[word];
       len += dir;
-      if (len === w.length) { dir = -1; wait = 18; } // hold the full word
+      if (len === example.length) { dir = -1; wait = 18; }
       if (len === 0) { dir = 1; word = (word + 1) % EXAMPLES.length; wait = 4; }
-      setText(w.slice(0, len));
+      setText(example.slice(0, len));
     }, 70);
     return () => clearInterval(id);
   }, [active]);
-  return (
-    <span className="pointer-events-none absolute inset-y-0 left-0 flex items-center text-[15px] text-white/35" aria-hidden="true">
-      search osmogrep, try&nbsp;<span className="text-white/60">{text}</span>
-    </span>
-  );
+  return <span className="nav-search-hint" aria-hidden="true">Search OsmoGrep <span>· {text}</span></span>;
 }

@@ -6,7 +6,12 @@ export { searchDocs, snippet, queryTerms } from '../../../lib/searchQuery';
 
 /* Site search helpers used by the navbar's terminal menu. */
 let indexPromise: Promise<SearchDoc[]> | null = null; // fetched once, on first open
-export const loadIndex = () => (indexPromise ??= fetch('/api/search').then((r) => r.json()).catch(() => ((indexPromise = null), [])));
+export const loadIndex = () => (indexPromise ??= fetch('/api/search').then(async response => {
+  if (!response.ok) throw new Error('Search unavailable');
+  const data = await response.json();
+  if (!Array.isArray(data) || !data.every(doc => doc && ['workspace','page','docs','feature','blog','changelog'].includes(doc.kind) && ['title','href','text'].every(field => typeof doc[field] === 'string') && /^(?:\/(?!\/)|https?:\/\/)/.test(doc.href))) throw new Error('Invalid search index');
+  return data as SearchDoc[];
+}).catch(() => ((indexPromise = null), [])));
 
 const escapeRe = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
