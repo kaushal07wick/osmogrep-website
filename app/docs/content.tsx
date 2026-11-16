@@ -32,7 +32,7 @@ export function DocArticle({ slug, children }: { slug: string; children: React.R
 export function Quickstart() {
   return <>
     <section id="quickstart"><h2>Review your first pull request.</h2>
-      <ol className="docs-steps"><li><strong>Sign in with GitHub.</strong><p><a href={dashboardUrl}>Open the dashboard</a> and choose the GitHub account you use for the repository.</p></li><li><strong>Connect a repository.</strong><p>Select repositories during setup. For private source access or bot comments, <Link href="/docs/github">install the GitHub App</Link> for the repositories you want to review.</p></li><li><strong>Request a review.</strong><p>Open a pull request from <strong>Repositories</strong>, or post this command in its GitHub conversation:</p><CopyCommandBlock code="@osmogrepai review"/></li></ol>
+      <ol className="docs-steps docs-steps-timeline"><li><strong>Sign in with GitHub.</strong><p><a href={dashboardUrl}>Open the dashboard</a> and choose the GitHub account you use for the repository.</p></li><li><strong>Connect a repository.</strong><p>Select repositories during setup. For private source access or bot comments, <Link href="/docs/github">install the GitHub App</Link> for the repositories you want to review.</p></li><li><strong>Request a review.</strong><p>Open a pull request from <strong>Repositories</strong>, or post this command in its GitHub conversation:</p><CopyCommandBlock code="@osmogrepai review"/></li></ol>
       <p>OsmoGrep inspects the change and relevant source, then returns findings with locations, explanations and suggested corrections.</p>
     </section>
     <section id="interaction"><h2>Follow a finding to a fix.</h2>

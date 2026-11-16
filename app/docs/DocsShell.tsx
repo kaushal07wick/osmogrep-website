@@ -15,9 +15,10 @@ export default function DocsShell({ children }: { children: React.ReactNode }) {
     setHeadings(Array.from(document.querySelectorAll(".docs-prose > section[id]")).map(section => ({ id: section.id, text: section.querySelector("h2")?.textContent || "" })).filter(item => item.text));
   }, [pathname, children]);
   useEffect(()=>{
-    if(matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+    const timelines=document.querySelectorAll<HTMLOListElement>(".docs-steps-timeline");
+    if(!timelines.length||matchMedia("(prefers-reduced-motion: reduce)").matches)return;
     const observer=new IntersectionObserver(entries=>{for(const entry of entries)if(entry.isIntersecting){(entry.target as HTMLElement).dataset.stepsVisible="true";observer.unobserve(entry.target);}},{threshold:0.12});
-    document.querySelectorAll<HTMLOListElement>(".docs-steps").forEach(list=>{Array.from(list.children).forEach((step,index)=>(step as HTMLElement).style.setProperty("--step-index",String(index)));observer.observe(list);});
+    timelines.forEach(list=>{Array.from(list.children).forEach((step,index)=>(step as HTMLElement).style.setProperty("--step-index",String(index)));observer.observe(list);});
     return()=>observer.disconnect();
   },[pathname,children]);
   return <main className={`docs-shell${(pathname==="/docs/architecture"||pathname==="/docs/cli")?" docs-shell-engineering":""}`}>
