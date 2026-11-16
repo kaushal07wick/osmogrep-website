@@ -18,7 +18,7 @@ const pages: SearchDoc[] = [
 
 ];
 
-const stripMarkdown = (md: string) => md.replace(/```[\s\S]*?```/g, ' ').replace(/[#>*_`[\]()-]/g, ' ').replace(/\s+/g, ' ').trim();
+const stripMarkdown = (md: string) => md.replace(/<!--[\s\S]*?-->/g, ' ').replace(/```[\s\S]*?```/g, ' ').replace(/[#>*_`[\]()-]/g, ' ').replace(/\s+/g, ' ').trim();
 
 export function buildSearchIndex(): SearchDoc[] {
   return [
