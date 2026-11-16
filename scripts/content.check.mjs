@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { getAllPostsMeta, getPostBySlug, markdownToHtml, readingTime } from '../lib/blog.ts';
 import { docs } from '../lib/docs.ts';
-import { dedupeBug, dedupeFix, dedupeRepro } from '../lib/docs-examples.ts';
+import { dedupeBug, dedupeFix, dedupeRepro, nodeRecipe, pythonRecipe, monorepoRecipe } from '../lib/docs-examples.ts';
 import vm from 'node:vm';
 assert.equal(new Set(docs.map(doc => doc.slug)).size, docs.length);
 for (const post of getAllPostsMeta()) {
@@ -70,3 +70,12 @@ assert(majorUpdates.some(update=>update.id==='differential-catcher'));
 assert(majorUpdates.some(update=>update.version==='v0.3.16'));
 assert(!docs.some(doc=>doc.slug==='design-system'));
 console.log(`Changelog checked: ${majorUpdates.length} distinct entries, valid commit references and product links.`);
+
+for(const recipe of [nodeRecipe,pythonRecipe,monorepoRecipe]){
+  const parsed=JSON.parse(recipe);
+  assert.deepEqual(Object.keys(parsed).sort(),['install','test']);
+  for(const value of Object.values(parsed))assert(typeof value==='string'&&value.trim()&&value.length<=4000&&!value.includes('\0'));
+}
+assert(docs.some(doc=>doc.slug==='memory'));
+assert(docs.some(doc=>doc.slug==='teams'));
+console.log('Product documentation checked: channel memory, team access and valid setup examples.');

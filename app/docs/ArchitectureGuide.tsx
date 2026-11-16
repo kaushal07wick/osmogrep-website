@@ -21,7 +21,7 @@ export default function ArchitectureGuide() {
         <tr><td>Change snapshot</td><td>Immutable GitHub source, base/head SHAs and hunk anchors.</td><td>Stale revisions and truncated input remain visible.</td></tr>
         <tr><td>Repository context</td><td>Purpose, setup, test/build configuration and relevant consumers.</td><td>File/read/byte budgets; secret and path filters.</td></tr>
         <tr><td>Structural history</td><td>Content-addressed syntax facts and earlier investigations.</td><td>Workspace + repository + revision scope; unchanged facts can be reused.</td></tr>
-        <tr><td>Channel memory</td><td>Relevant retained excerpts from explicitly selected channels.</td><td>Opt-in review use, fresh access checks and untrusted-input treatment.</td></tr>
+        <tr><td>Channel memory</td><td>Relevant retained excerpts from explicitly selected channels.</td><td>Selected-channel mapping, fresh access checks and untrusted-input treatment.</td></tr>
       </tbody></table></div><p>The stored syntax graph currently represents <code>IMPORTS</code> and <code>DEFINES</code> for supported analysis. It is not a complete semantic call graph, deployed dependency map or production telemetry collector. Revision mappings isolate branches.</p></details>
     </section>
     <section id="models-have-scoped-jobs" className={styles.section}>
@@ -59,13 +59,13 @@ export default function ArchitectureGuide() {
       <figure className={styles.chart}><figcaption>Reported tokens by stage</figcaption>{evidence.stages.map(stage=><div className={styles.barRow} key={stage.name} data-model={stage.name.includes("advisor")?"advisor":"primary"}><span>{stage.label}</span><div className={styles.barTrack}><div className={styles.bar} style={{width:`${100*stage.tokens/Math.max(...evidence.stages.map(s=>s.tokens))}%`}}/></div><span>{stage.tokens.toLocaleString("en-US")}</span></div>)}<p>{evidence.tokens.input.toLocaleString("en-US")} input + {evidence.tokens.output.toLocaleString("en-US")} output. {evidence.tokens.cachedInput.toLocaleString("en-US")} cached input tokens are included in input, not added again.</p></figure>
       <div className="docs-table-wrap"><table><thead><tr><th>Phase</th><th>Reproducer</th><th>Original suite</th><th>Test source</th></tr></thead><tbody>{evidence.observations.map(row=><tr key={row.phase}><td>{row.phase}</td><td>Exit {row.exitCode} · {row.exitCode===0?"passed":"failed"}</td><td>Passed</td><td>Unchanged</td></tr>)}</tbody></table></div>
       <p>The generated test exposed a lease that was not released after a rejected task. A <code>try/finally</code> repair restored cleanup; the same test passed afterward. The patch and agent narrative were saved. No merge was performed.</p>
-      <p className={styles.note}>This is one deliberately constructed public fixture. It establishes this workflow, not broad detection accuracy, false-positive rates, arbitrary repository setup or superiority to another reviewer.</p>
-      <p className={styles.sourceNote}>Acceptance checked 16 November 2026 · build <code>{evidence.sourceCommit.slice(0,7)}</code>. <a href="/data/catcher-acceptance.json" download>Download measured record</a> · <a href={evidence.pullRequest} target="_blank" rel="noreferrer">Controlled PR<LuArrowUpRight aria-hidden="true"/></a></p>
+      <p className={styles.note}>This controlled example demonstrates the workflow. It does not measure detection accuracy across unrelated repositories.</p>
+      <p className={styles.sourceNote}>Controlled run · 16 November 2026. <a href="/data/catcher-acceptance.json" download>Download measured record</a> · <a href={evidence.pullRequest} target="_blank" rel="noreferrer">Controlled PR<LuArrowUpRight aria-hidden="true"/></a></p>
     </section>
     <section id="observe-the-boundary-that-failed" className={styles.section}>
-      <h2>Show the evidence and the limit.</h2>
+      <h2>Reports and supported scope.</h2>
       <p>Reports distinguish source findings, observed failures and verified repairs. Commands, exits, relevant logs, original-test integrity, generated-test source and proposed patches remain inspectable.</p>
-      <div className={styles.controlNote}><LuShieldCheck aria-hidden="true"/><p>Authorized private source review is supported. Hosted private-repository runtime execution is currently blocked. Production telemetry ingestion and exhaustive future-failure prediction are not implemented.</p></div>
+      <div className={styles.controlNote}><LuShieldCheck aria-hidden="true"/><p>Private source review uses authorized GitHub App access. Hosted runtime execution supports public repositories and uses isolated experiments; it does not collect production telemetry.</p></div>
       <div className={styles.sourceLinks}><Link href="/docs/evidence">Evidence and verification<LuArrowUpRight aria-hidden="true"/></Link><Link href="/docs/cli">The separate terminal agent<LuArrowUpRight aria-hidden="true"/></Link></div>
     </section>
   </>;

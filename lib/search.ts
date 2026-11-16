@@ -8,7 +8,7 @@ export type SearchDoc = { kind: 'page' | 'docs' | 'feature' | 'blog' | 'changelo
 // ponytail: pages and docs sections are listed by hand; add an entry when a page or docs section is added.
 const pages: SearchDoc[] = [
   { kind: 'page', title: 'Home', href: '/', text: 'Catch the bug. Ship the fix. Osmogrep runs your code, reproduces the failure, and patches the source, with your own tests as proof.' },
-  { kind: 'page', title: 'Install the CLI', href: '/docs/cli#install', text: 'curl -fsSL https://osmogrep.com/install.sh | sh. cargo install osmogrep. Build from source. macOS Linux Windows.' },
+  { kind: 'page', title: 'Install the CLI', href: '/docs/cli#install', text: 'npm install -g osmogrep. Shell installer and Cargo source builds. Node.js 22.19+.' },
   { kind: 'page', title: 'Pricing', href: '/pricing', text: 'Plans: Solo $2/mo, Solo Pro $10/mo, Teams $200/mo, Enterprise custom. Compare workflows for individual developers and teams.' },
   { kind: 'page', title: 'Docs', href: '/docs', text: 'Console, runtime checks, Codex and Claude Code, terminal CLI, verification evidence, and troubleshooting.' },
   { kind: 'page', title: 'Blog', href: '/blog', text: 'Notes from the team.' },

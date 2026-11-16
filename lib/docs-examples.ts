@@ -14,3 +14,7 @@ assert.deepEqual(dedupe([first, second]), [first, second],
 assert.deepEqual(dedupe([first, first]), [first],
   'An exact duplicate should be collapsed');
 console.log('URL behavior preserved');`;
+
+export const nodeRecipe = JSON.stringify({ install: "npm ci --ignore-scripts", test: "npm test" }, null, 2);
+export const pythonRecipe = JSON.stringify({ install: "python3 -m venv .venv && .venv/bin/pip install -r requirements.txt", test: ".venv/bin/python -m pytest -q" }, null, 2);
+export const monorepoRecipe = JSON.stringify({ install: "pnpm install --ignore-scripts", test: "pnpm --filter api test" }, null, 2);
