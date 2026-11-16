@@ -108,7 +108,10 @@ export default function Navbar() {
       >
         <Link href="/" className="flex shrink-0 items-center gap-2 px-4 md:px-6">
           <LogoMark className="h-7" />
-          <span className="font-mono text-lg font-bold tracking-tight text-ink">osmogrep</span>
+          <span className="flex flex-col gap-0.5 md:flex-row md:items-center md:gap-2">
+            <span className="font-mono text-lg leading-none font-bold tracking-tight text-ink md:leading-normal">osmogrep</span>
+            <span className="font-mono text-[10px] leading-none uppercase tracking-wide text-[#ad4310]" title="Public beta">beta</span>
+          </span>
         </Link>
 
         <div className="flex-1" />
