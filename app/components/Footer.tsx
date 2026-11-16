@@ -1,7 +1,3 @@
-'use client';
-
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { consoleUrl } from '../../lib/console';
 import LogoMark from './LogoMark';
 import FooterLink from './footer/FooterLink';
@@ -14,13 +10,6 @@ const COLUMNS = [
 ];
 
 export default function Footer() {
-  const pathname = usePathname();
-  if (pathname === '/docs' || pathname.startsWith('/docs/')) {
-    return <footer className="docs-footer">
-      <Link href="/" className="docs-footer-brand"><LogoMark className="h-5" still />osmogrep</Link>
-      <nav aria-label="Documentation footer"><Link href="/changelog">Changelog</Link><a href="https://github.com/kaushal07wick/OsmoGrep" target="_blank" rel="noreferrer">GitHub ↗</a><a href="mailto:kaushalc64@gmail.com">Support</a></nav>
-    </footer>;
-  }
   return (
     <footer className="footer-speckle relative mt-auto w-full overflow-hidden text-white">
       <div className="relative z-10 grid grid-cols-2 gap-8 px-[4.5vw] pt-11 md:grid-cols-[1.45fr_1fr_1fr_1fr] md:pt-16">

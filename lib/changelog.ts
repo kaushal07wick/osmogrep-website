@@ -15,7 +15,7 @@ export const majorUpdates: ProductUpdate[] = [
     id: 'engineering-docs', product: 'Website', version: 'Documentation', date: 'November 17, 2026',
     title: 'Product docs, from first review to verification',
     summary: 'Reworked guides cover GitHub reviews, team workspaces, channel memory, project setup and verification evidence.',
-    changes: ['Step-by-step guides for GitHub reviews, runtime checks, applying patches and troubleshooting.', 'Dedicated team and channel memory guides covering roles, connection setup and stored context.', 'Guided terminal quick start and a silent demo with viewport-aware playback.', 'Interactive architecture map and a measured production verification record.', 'Compact docs footer, clearer tables and copyable commands; removed operator setup notes.'],
+    changes: ['Step-by-step guides for GitHub reviews, runtime checks, applying patches and troubleshooting.', 'Dedicated team and channel memory guides covering roles, connection setup and stored context.', 'Guided terminal quick start and a silent demo with viewport-aware playback.', 'Interactive architecture map and a measured production verification record.', 'Shared site footer, clearer tables and copyable commands; removed operator setup notes.'],
     commits: ['5823218', '0e2560c', 'b3ade48', '53c9cc9'], link: { label: 'Explore the architecture', href: '/docs/architecture' },
   },
   {
