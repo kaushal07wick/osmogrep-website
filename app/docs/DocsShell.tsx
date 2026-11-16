@@ -35,7 +35,7 @@ export default function DocsShell({ children }: { children: React.ReactNode }) {
           {docs.filter(doc => doc.group === group).map(doc => <Link key={doc.slug} href={docHref(doc.slug)} aria-current={pathname === docHref(doc.slug) ? "page" : undefined}>{doc.title}<span aria-hidden="true">›</span></Link>)}
         </div>)}
       </nav>
-      <a className="docs-source" href="mailto:kaushalc64@gmail.com">Contact support <span aria-hidden="true">↗</span></a>
+      <a className="docs-source" href="https://github.com/kaushal07wick/OsmoGrep/issues">Report an issue <span aria-hidden="true">↗</span></a>
     </aside>
     <div className="docs-main">{children}</div>
     <aside className="docs-on-this-page"><nav aria-label="On this page"><p>On this page</p>{headings.map(heading => <a key={heading.id} href={`#${heading.id}`}>{heading.text}</a>)}</nav><Link href="/changelog">Changelog ↗</Link></aside>
