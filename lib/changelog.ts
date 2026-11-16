@@ -15,7 +15,7 @@ export const majorUpdates: ProductUpdate[] = [
     id: 'engineering-docs', product: 'Website', version: 'Documentation', date: 'November 17, 2026',
     title: 'Inside the engine, from context to evidence',
     summary: 'New guides explain the separate terminal and cloud paths, with an interactive architecture map and measured production acceptance record.',
-    changes: ['Silent, autoplaying terminal demo, install commands and session controls.', 'Architecture map covering context, advisors, durable jobs and isolated execution.', 'Published budgets and a controlled base → candidate → repair result, with explicit limitations.', 'Removed the public Design System page and refreshed repository setup steps.'],
+    changes: ['Silent, autoplaying terminal demo, guided quick start and session controls.', 'Architecture map covering context, advisors, durable jobs and isolated execution.', 'Published budgets and a controlled base → candidate → repair result, with explicit limitations.', 'Removed the public Design System page and refreshed repository setup steps.'],
     commits: ['5823218'], link: { label: 'Explore the architecture', href: '/docs/architecture' },
   },
   {

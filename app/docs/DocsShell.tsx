@@ -20,7 +20,7 @@ export default function DocsShell({ children }: { children: React.ReactNode }) {
     document.querySelectorAll<HTMLOListElement>(".docs-steps").forEach(list=>{Array.from(list.children).forEach((step,index)=>(step as HTMLElement).style.setProperty("--step-index",String(index)));observer.observe(list);});
     return()=>observer.disconnect();
   },[pathname,children]);
-  return <main className={`docs-shell${pathname==="/docs/architecture"?" docs-shell-engineering":""}`}>
+  return <main className={`docs-shell${(pathname==="/docs/architecture"||pathname==="/docs/cli")?" docs-shell-engineering":""}`}>
     <aside className="docs-sidebar">
       <Link className="docs-wordmark" href="/docs"><span aria-hidden="true">[ ]</span> Documentation</Link>
       <label className="docs-mobile-nav">Browse the docs
