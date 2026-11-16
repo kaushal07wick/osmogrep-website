@@ -79,3 +79,27 @@ for(const recipe of [nodeRecipe,pythonRecipe,monorepoRecipe]){
 assert(docs.some(doc=>doc.slug==='memory'));
 assert(docs.some(doc=>doc.slug==='teams'));
 console.log('Product documentation checked: channel memory, team access and valid setup examples.');
+
+const runtimePost = getPostBySlug('from-pull-request-to-runtime-regression');
+assert(runtimePost && runtimePost.sections.length >= 12);
+assert.equal(runtimePost.card, '/blog/runtime-regression-card.png');
+for (const figure of ['causal', 'experiment', 'compute']) assert.equal(runtimePost.html.split(`data-runtime-figure="${figure}"`).length - 1, 1);
+assert(!markdownToHtml('<!-- runtime-figure:<script> -->').includes('<script>'));
+assert(markdownToHtml('```text\n<!-- runtime-figure:causal -->\n```').includes('&lt;!-- runtime-figure:causal --&gt;'));
+const diff = markdownToHtml('```diff\n- old <script>\n+ new\n```');
+assert(diff.includes('code-diff-added') && diff.includes('code-diff-removed') && !diff.includes('<script>'));
+const { readFileSync, existsSync } = await import('node:fs');
+const { createHash } = await import('node:crypto');
+const runtimeEvidence = JSON.parse(readFileSync('public/blog/runtime-regression-evidence.json', 'utf8'));
+assert.equal(runtimeEvidence.controlledFixture, true);
+assert.deepEqual(Object.values(runtimeEvidence.publicContext), [false, false, false]);
+assert.equal(createHash('sha256').update(runtimeEvidence.experiment.source).digest('hex'), runtimeEvidence.experiment.sourceHash);
+assert.deepEqual(runtimeEvidence.observations.map(row => row.exitCode), [0, 1, 0]);
+assert(runtimeEvidence.observations.every(row => row.sourceHash === runtimeEvidence.experiment.sourceHash && row.originalSuite.status === 'passed' && row.originalSuite.originalTests === 'unchanged'));
+assert.equal(runtimeEvidence.modelCalls.length, evidence.modelCalls);
+for (const [summaryKey, callKey] of [['input','inputTokens'],['output','outputTokens'],['cachedInput','cachedInputTokens'],['total','totalTokens']]) assert.equal(runtimeEvidence.modelCalls.reduce((sum, row) => sum + row[callKey], 0), evidence.tokens[summaryKey]);
+for (const stage of evidence.stages) assert.equal(runtimeEvidence.modelCalls.filter(row => row.stage === stage.name).reduce((sum, row) => sum + row.totalTokens, 0), stage.tokens);
+assert.equal(runtimeEvidence.decision.patchApplied, false);
+assert(runtimeEvidence.limits.length >= 4);
+for (const asset of [runtimePost.cover, runtimePost.card]) assert(existsSync(`public${asset}`));
+console.log('Runtime article checked: safe figure markers/diff rendering, real source hash, three outcomes, usage sums, original-suite preservation, limits and artwork.');

@@ -1,0 +1,185 @@
+{
+  "schemaVersion": 1,
+  "controlledFixture": true,
+  "scope": "One deliberately constructed public resource-lease cleanup case; not a broad detection benchmark.",
+  "repository": "kaushal07wick/osmogrep-mcp",
+  "pullRequest": "https://github.com/kaushal07wick/osmogrep-mcp/pull/11",
+  "engineBuild": "a04485bfeba745d99caef89bd6a6b5a70e2ce78d",
+  "publicContext": {
+    "repositoryPrivate": false,
+    "memoryUsed": false,
+    "privateContext": false
+  },
+  "provenance": {
+    "selection": "Whitelisted experiment, observations, patch and numeric model usage from the recorded public-fixture report. Credentials, model response IDs, raw context, account identifiers and unrelated events are excluded.",
+    "sourceReportSha256": "a1d008788b1347ac2dbd4b01808ad723951590bdacc427006307ff37d3b773b0"
+  },
+  "experiment": {
+    "path": ".osmogrep-catcher/reproducer.mjs",
+    "command": "node --test .osmogrep-catcher/reproducer.mjs",
+    "source": "import assert from 'node:assert/strict';\nimport test from 'node:test';\n\n// Import the implementation under test from the repo workspace.\nimport { runWithLease } from '../acceptance/catcher-release.mjs';\n\nfunction makePool() {\n  let active = 0;\n  return {\n    acquire() {\n      active += 1;\n      return () => {\n        active -= 1;\n      };\n    },\n    get active() {\n      return active;\n    },\n  };\n}\n\ntest('OSMOGREP_REGRESSION: rejecting task releases lease and propagates error', async () => {\n  const pool = makePool();\n  const err = new Error('boom');\n\n  await assert.rejects(\n    () => runWithLease(pool, async () => {\n      throw err;\n    }),\n    (e) => {\n      // Must propagate the same error instance (not swallow/replace).\n      assert.equal(e, err, 'OSMOGREP_REGRESSION: runWithLease did not propagate the same error');\n      return true;\n    },\n  );\n\n  assert.equal(\n    pool.active,\n    0,\n    'OSMOGREP_REGRESSION: lease was not released after task rejection',\n  );\n});\n",
+    "sourceHash": "e92bee2c6108d626ec4ca4152bca8498bf8422f8046b688b1e5091f047126680",
+    "hypothesis": "runWithLease leaks the acquired pool lease when the provided task rejects/throws because release() is only called after awaiting task(), so the rejection bypasses cleanup.",
+    "trigger": "Call runWithLease(pool, async () => { throw new Error('boom'); }) and observe both that the promise rejects with the same error and that pool.active returns to 0 after the promise settles.",
+    "expected": "The returned promise rejects (propagating the same error) and the pool lease is released before/when the promise settles, observable as pool.active===0 after awaiting the rejection.",
+    "baseFiles": [],
+    "candidateRevision": "d19fff2ee72202ae5265ea83e7dcdb978248fd64",
+    "oracleRevision": "8f8d9d66bc678c9a9683f7fee38a6b71c467968f",
+    "oracle": {
+      "path": "README.md",
+      "quote": "When a task rejects or throws, runWithLease must propagate that same error and release its acquired pool lease before the returned promise settles."
+    },
+    "assumptions": [
+      "The contract in README.md applies to acceptance/catcher-release.mjs runWithLease behavior.",
+      "A pool implementation that increments active on acquire() and decrements on release() is a valid observable proxy for 'lease released'.",
+      "Checking pool.active after awaiting the rejection is sufficient to detect whether release() ran before settlement."
+    ]
+  },
+  "observations": [
+    {
+      "phase": "base",
+      "exitCode": 0,
+      "durationMs": 285,
+      "command": "node --test .osmogrep-catcher/reproducer.mjs",
+      "sourceHash": "e92bee2c6108d626ec4ca4152bca8498bf8422f8046b688b1e5091f047126680",
+      "output": "TAP version 13\n# Subtest: OSMOGREP_REGRESSION: rejecting task releases lease and propagates error\nok 1 - OSMOGREP_REGRESSION: rejecting task releases lease and propagates error\n  ---\n  duration_ms: 1.890502\n  type: 'test'\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 1\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 81.371443\n",
+      "originalSuite": {
+        "status": "passed",
+        "command": "npm test && node --test acceptance/catcher-release.test.mjs",
+        "originalTests": "unchanged"
+      }
+    },
+    {
+      "phase": "candidate",
+      "exitCode": 1,
+      "durationMs": 237,
+      "command": "node --test .osmogrep-catcher/reproducer.mjs",
+      "sourceHash": "e92bee2c6108d626ec4ca4152bca8498bf8422f8046b688b1e5091f047126680",
+      "output": "TAP version 13\n# Subtest: OSMOGREP_REGRESSION: rejecting task releases lease and propagates error\nnot ok 1 - OSMOGREP_REGRESSION: rejecting task releases lease and propagates error\n  ---\n  duration_ms: 1.551284\n  type: 'test'\n  location: '/workspace/.osmogrep-catcher/reproducer.mjs:22:1'\n  failureType: 'testCodeFailure'\n  error: |-\n    OSMOGREP_REGRESSION: lease was not released after task rejection\n    \n    1 !== 0\n    \n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  expected: 0\n  actual: 1\n  operator: 'strictEqual'\n  stack: |-\n    TestContext.<anonymous> (file:///workspace/.osmogrep-catcher/reproducer.mjs:37:10)\n    async Test.run (node:internal/test_runner/test:1054:7)\n    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 0\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 62.320042\n",
+      "originalSuite": {
+        "status": "passed",
+        "command": "npm test && node --test acceptance/catcher-release.test.mjs",
+        "originalTests": "unchanged"
+      }
+    },
+    {
+      "phase": "repair",
+      "exitCode": 0,
+      "durationMs": 223,
+      "command": "node --test .osmogrep-catcher/reproducer.mjs",
+      "sourceHash": "e92bee2c6108d626ec4ca4152bca8498bf8422f8046b688b1e5091f047126680",
+      "output": "TAP version 13\n# Subtest: OSMOGREP_REGRESSION: rejecting task releases lease and propagates error\nok 1 - OSMOGREP_REGRESSION: rejecting task releases lease and propagates error\n  ---\n  duration_ms: 1.250938\n  type: 'test'\n  ...\n1..1\n# tests 1\n# suites 0\n# pass 1\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 63.896252\n",
+      "originalSuite": {
+        "status": "passed",
+        "command": "npm test && node --test acceptance/catcher-release.test.mjs",
+        "originalTests": "unchanged"
+      }
+    }
+  ],
+  "patch": "diff --git a/acceptance/catcher-release.mjs b/acceptance/catcher-release.mjs\nindex 8974f5b..bbb1c80 100644\n--- a/acceptance/catcher-release.mjs\n+++ b/acceptance/catcher-release.mjs\n@@ -1,6 +1,8 @@\n export async function runWithLease(pool, task) {\n   const release = pool.acquire();\n-  const result = await task();\n-  release();\n-  return result;\n+  try {\n+    return await task();\n+  } finally {\n+    release();\n+  }\n }\n",
+  "modelCalls": [
+    {
+      "attempt": 1,
+      "stage": "investigator",
+      "model": "gpt-5.2",
+      "inputTokens": 4315,
+      "outputTokens": 135,
+      "cachedInputTokens": 3712,
+      "totalTokens": 4450
+    },
+    {
+      "attempt": 2,
+      "stage": "investigator",
+      "model": "gpt-5.2",
+      "inputTokens": 6406,
+      "outputTokens": 621,
+      "cachedInputTokens": 2688,
+      "totalTokens": 7027
+    },
+    {
+      "attempt": 3,
+      "stage": "advisor",
+      "model": "gpt-5.4-mini",
+      "inputTokens": 5762,
+      "outputTokens": 724,
+      "cachedInputTokens": 4224,
+      "totalTokens": 6486
+    },
+    {
+      "attempt": 4,
+      "stage": "experiment",
+      "model": "gpt-5.2",
+      "inputTokens": 4990,
+      "outputTokens": 559,
+      "cachedInputTokens": 3712,
+      "totalTokens": 5549
+    },
+    {
+      "attempt": 5,
+      "stage": "experiment_advisor",
+      "model": "gpt-5.4-mini",
+      "inputTokens": 4720,
+      "outputTokens": 141,
+      "cachedInputTokens": 0,
+      "totalTokens": 4861
+    },
+    {
+      "attempt": 6,
+      "stage": "repair",
+      "model": "gpt-5.2",
+      "inputTokens": 8199,
+      "outputTokens": 24,
+      "cachedInputTokens": 0,
+      "totalTokens": 8223
+    },
+    {
+      "attempt": 7,
+      "stage": "repair",
+      "model": "gpt-5.2",
+      "inputTokens": 8277,
+      "outputTokens": 74,
+      "cachedInputTokens": 7808,
+      "totalTokens": 8351
+    },
+    {
+      "attempt": 8,
+      "stage": "repair",
+      "model": "gpt-5.2",
+      "inputTokens": 8370,
+      "outputTokens": 30,
+      "cachedInputTokens": 7808,
+      "totalTokens": 8400
+    },
+    {
+      "attempt": 9,
+      "stage": "repair",
+      "model": "gpt-5.2",
+      "inputTokens": 8538,
+      "outputTokens": 30,
+      "cachedInputTokens": 7808,
+      "totalTokens": 8568
+    },
+    {
+      "attempt": 10,
+      "stage": "repair",
+      "model": "gpt-5.2",
+      "inputTokens": 8656,
+      "outputTokens": 302,
+      "cachedInputTokens": 0,
+      "totalTokens": 8958
+    }
+  ],
+  "usageSummary": "/data/catcher-acceptance.json",
+  "decision": {
+    "status": "repair_verified",
+    "verifiedFix": true,
+    "patchApplied": false,
+    "reason": "The documented expectation passed on base, failed on the PR, and passed after repair with original suites preserved."
+  },
+  "limits": [
+    "The pool is a simulated observable boundary; the implementation under test is imported from the real captured workspace.",
+    "The experiment demonstrates cleanup on task rejection, not a production load test or measured resource-exhaustion incident.",
+    "Original-suite status covers the configured commands, not every possible repository behavior.",
+    "A repaired workspace and exported patch do not imply a merged repair commit."
+  ]
+}

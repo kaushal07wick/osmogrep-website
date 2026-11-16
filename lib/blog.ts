@@ -11,6 +11,7 @@ export type BlogPostMeta = {
   author: string;
   excerpt: string;
   cover: string;
+  card?: string;
   category: string;
   readingMinutes: number;
 };
@@ -57,6 +58,7 @@ function parseFrontmatter(raw: string): { meta: Frontmatter; content: string } {
     if (key === 'author') meta.author = value;
     if (key === 'excerpt') meta.excerpt = value;
     if (key === 'cover') meta.cover = value;
+    if (key === 'card') meta.card = value;
     if (key === 'category') meta.category = value;
   });
 
@@ -110,6 +112,7 @@ function renderMarkdown(markdown: string) {
   const sections: { id: string; title: string }[] = [];
   const headingCounts = new Map<string, number>();
   let inCode = false;
+  let codeLanguage = '';
   let codeBuffer: string[] = [];
 
   const flushList = () => {
@@ -121,7 +124,8 @@ function renderMarkdown(markdown: string) {
 
   const flushCode = () => {
     if (inCode) {
-      html.push(`<pre><code>${escapeHtml(codeBuffer.join('\n'))}</code></pre>`);
+      const code = codeLanguage === 'diff' ? codeBuffer.map(line => `<span class="${line.startsWith('+') ? 'code-diff-added' : line.startsWith('-') ? 'code-diff-removed' : 'code-diff-context'}">${escapeHtml(line)}</span>`).join('') : escapeHtml(codeBuffer.join('\n'));
+      html.push(`<pre${codeLanguage === 'diff' ? ' class="journal-code-diff" aria-label="Code change" tabindex="0"' : ''}><code>${code}</code></pre>`);
       inCode = false;
       codeBuffer = [];
     }
@@ -135,6 +139,7 @@ function renderMarkdown(markdown: string) {
       } else {
         flushList();
         inCode = true;
+        codeLanguage = line.slice(3).trim();
       }
       continue;
     }
@@ -147,6 +152,13 @@ function renderMarkdown(markdown: string) {
     const trimmed = line.trim();
     if (!trimmed) {
       flushList();
+      continue;
+    }
+
+    const figure = trimmed.match(/^<!-- runtime-figure:(causal|experiment|compute) -->$/);
+    if (figure) {
+      flushList();
+      html.push(`<div data-runtime-figure="${figure[1]}"></div>`);
       continue;
     }
 

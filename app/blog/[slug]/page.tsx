@@ -1,7 +1,9 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { getAllPostsMeta, getPostBySlug } from "../../../lib/blog";
 import PostMeta from "../../components/blog/PostMeta";
+import RuntimeFigure from "../../components/blog/RuntimeFigure";
 import "../../components/blog/article-cover.css";
 
 type PageProps = { params: Promise<{ slug: string }> };
@@ -24,14 +26,14 @@ export default async function BlogPostPage({ params }: PageProps) {
     { "@type": "BlogPosting", "@id": `${url}#article`, mainEntityOfPage: url, url, headline: post.title, description: post.excerpt, articleSection: post.category, datePublished: post.date, dateModified: post.updated || post.date, image: new URL(socialCover, "https://osmogrep.com").href, author: { "@type": "Organization", name: post.author, url: "https://osmogrep.com/about" }, publisher: { "@type": "Organization", name: "OsmoGrep", url: "https://osmogrep.com" }, inLanguage: "en" },
     { "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Engineering notes", item: "https://osmogrep.com/blog" }, { "@type": "ListItem", position: 2, name: post.title, item: url }] },
   ] };
-  return <main className="journal-article-page">
+  return <main className={`journal-article-page${post.slug === 'from-pull-request-to-runtime-regression' ? ' journal-runtime-article' : ''}`}>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
     <Link className="journal-back" href="/blog">← All engineering notes</Link>
     <article>
       <header className="journal-article-header"><p className="editorial-kicker">Engineering / {post.category}</p><h1>{post.title}</h1><p className="journal-deck">{post.excerpt}</p><PostMeta {...post} /></header>
-      {post.cover.startsWith("/blog/") && <figure className="journal-article-cover"><img src={post.cover} alt={post.title} width="1200" height="630" fetchPriority="high" /></figure>}
+      {post.cover.startsWith("/blog/") && <figure className="journal-article-cover">{post.card ? <Image src={post.cover} alt="Conceptual illustration of a changed component feeding connected resource chambers, with one accumulating unreleased capacity." width={1672} height={941} sizes="(max-width: 900px) 94vw, 840px" priority /> : <img src={post.cover} alt={post.title} width="1200" height="630" fetchPriority="high" />}</figure>}
       <details className="journal-contents"><summary>In this article <span>{post.sections.length} sections</span></summary><nav aria-label="Article contents"><ol>{post.sections.map(section => <li key={section.id}><a href={`#${section.id}`}>{section.title}</a></li>)}</ol></nav></details>
-      <div className="journal-body" dangerouslySetInnerHTML={{ __html: post.html }} />
+      <div className="journal-body">{post.html.split(/<div data-runtime-figure="(causal|experiment|compute)"><\/div>/g).map((part, index) => index % 2 ? <RuntimeFigure key={index} kind={part as 'causal' | 'experiment' | 'compute'} /> : <div key={index} dangerouslySetInnerHTML={{ __html: part }} />)}</div>
     </article>
     <footer className="journal-article-footer"><div><p className="editorial-kicker">Continue exploring</p><Link href="/docs/evidence">What counts as a verified repair? ↗</Link></div><Link href="/blog">Back to the journal →</Link></footer>
   </main>;

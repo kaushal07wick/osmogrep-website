@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import Image from "next/image";
 import { getAllPostsMeta } from "../../lib/blog";
 import PostMeta from "../components/blog/PostMeta";
 import BlogSculpture from "../components/blog/BlogSculpture";
@@ -13,7 +14,7 @@ export default function BlogPage() {
     {posts.length ? <section className="journal-entries" aria-label="Engineering articles">
       {posts.map((post, index) => <Link key={post.slug} className="journal-feature frame" href={`/blog/${post.slug}`}>
         <div className="journal-feature-copy"><p className="editorial-kicker">{index === 0 ? 'Latest' : 'Article'} / {post.category}</p><h2>{post.title}</h2><p className="journal-excerpt">{post.excerpt}</p><PostMeta {...post} /><span className="journal-read">Read the note <span aria-hidden="true">↗</span></span></div>
-        <BlogSculpture variant={post.category === 'Agent engineering' ? 'field' : 'knot'} />
+        {post.card ? <div className="journal-card-art"><Image src={post.card} alt="" width={1536} height={1024} sizes="(max-width: 760px) 90vw, 520px" priority={index === 0} /></div> : <BlogSculpture variant={post.category === 'Agent engineering' ? 'field' : 'knot'} />}
       </Link>)}
     </section> : <p className="journal-empty editorial-inset">The first engineering note is on its way.</p>}
     <footer className="journal-footer"><span>Notes on building osmogrep.</span><Link href="/docs/evidence">Read the verification guide <span aria-hidden="true">↗</span></Link></footer>

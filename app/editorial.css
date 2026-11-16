@@ -121,6 +121,11 @@
 .journal-feature:hover .journal-read > span { transform: translate(2px, -2px); }
 .journal-sculpture { position: relative; align-self: center; height: 360px; overflow: hidden; }
 .journal-sculpture canvas { display: block; width: 100%; height: 100%; }
+.journal-card-art{overflow:hidden;align-self:stretch;min-height:300px;background:#eee7dc}
+.journal-card-art img{display:block;width:100%;height:100%;object-fit:cover;transition:transform .45s ease}
+.journal-feature:hover .journal-card-art img{transform:scale(1.025)}
+@media(max-width:480px){.journal-card-art{min-height:0;aspect-ratio:3/2}}
+@media(prefers-reduced-motion:reduce){.journal-card-art img{transition:none}.journal-feature:hover .journal-card-art img{transform:none}}
 .sculpture-tick { position: absolute; width: 8px; height: 8px; opacity: .45; pointer-events: none; }
 .sculpture-tick.top-left { left: 9px; top: 12px; border-left: 1px solid var(--color-grid); border-top: 1px solid var(--color-grid); }
 .sculpture-tick.bottom-right { right: 9px; bottom: 12px; border-right: 1px solid var(--color-grid); border-bottom: 1px solid var(--color-grid); }
@@ -162,6 +167,10 @@
 .journal-contents a:hover { color: var(--color-accent); text-decoration: underline; text-underline-offset: 3px; }
 .journal-body a { color: var(--color-accent); text-decoration: underline; text-underline-offset: 4px; }
 .journal-body pre { background: var(--color-surface); border: 1px solid var(--color-grid); padding: 20px 24px; overflow-x: auto; font: 12px/1.9 var(--font-code), monospace; margin: 28px 0; color: var(--color-ink); }
+.journal-body .journal-code-diff{padding:18px 0;background:#fcfcfa}
+.journal-code-diff code>span{display:block;padding:0 20px;min-width:max-content}
+.code-diff-added{background:#e7f3e9;color:#176b38}
+.code-diff-removed{background:#fff0e6;color:#9b3f17}
 .journal-body :not(pre) > code { font: 13px var(--font-code), monospace; padding: 2px 4px; background: #eeede8; color: var(--color-ink); overflow-wrap: anywhere; }
 .journal-body img { max-width: 100%; height: auto; }
 .journal-body figcaption { font: 12px/1.7 var(--font-code), monospace; }
