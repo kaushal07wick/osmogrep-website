@@ -64,7 +64,7 @@ export default function MeasuredRuns() {
             <div className={styles.links}><Link href="/blog/from-pull-request-to-runtime-regression">Read the experiment <FiArrowUpRight aria-hidden="true" /></Link><a href="/blog/runtime-regression-evidence.json" download>Evidence <FiArrowDown aria-hidden="true" /></a></div>
           </Reveal>
         </div>
-        <p className="mt-5 max-w-3xl text-xs leading-relaxed text-ink-light">Different tasks and engine builds; these timings are not a performance comparison. Controlled demonstrations establish these outcomes, not general detection accuracy or an advantage over another product.</p>
+        <p className="mt-5 max-w-3xl text-xs leading-relaxed text-ink-light">These are controlled experiments on different tasks and builds. They show the recorded outcomes, not a general detection rate.</p>
       </div>
     </section>
   );
