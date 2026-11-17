@@ -1,70 +1,67 @@
 import Link from 'next/link';
-import { FiArrowDown, FiArrowUpRight, FiCheck, FiGitMerge, FiGitPullRequest, FiX } from 'react-icons/fi';
+import { FiArrowDown, FiArrowUpRight, FiCheck, FiGitMerge, FiGitPullRequest, FiShield, FiX } from 'react-icons/fi';
 import interaction from '../../../public/data/pr-interaction.json';
 import repair from '../../../public/data/catcher-acceptance.json';
 import Reveal from '../motion/Reveal';
 import styles from './MeasuredRuns.module.css';
 
 const number = (value: number) => value.toLocaleString('en-US');
+const phases: Record<string, string> = { base: 'Base', left: 'Capacity PR', right: 'Workers PR', combined: 'Combined', candidate: 'PR', repair: 'Repair' };
 
 export default function MeasuredRuns() {
   return (
-    <section id="measured-runs" aria-labelledby="measured-runs-title" className="w-full border-y border-grid bg-paper py-16 md:py-24">
-      <div className="mx-auto max-w-[1280px] px-6">
-        <Reveal className="mb-9 flex flex-wrap items-end justify-between gap-5">
-          <div className="max-w-2xl">
-            <p className="font-mono text-xs uppercase tracking-[0.15em] text-accent">Measured runtime experiments</p>
-            <h2 id="measured-runs-title" className="mt-3 text-3xl font-bold leading-tight tracking-tight text-ink md:text-5xl">Inspect the run.<br />Follow the evidence.</h2>
-          </div>
-          <p className="max-w-sm text-sm leading-relaxed text-ink-light">Two controlled cases. Real model calls and isolated execution. Revisions, outcomes and limits included.</p>
+    <section id="measured-runs" aria-labelledby="measured-runs-title" className={styles.section}>
+      <div className={styles.container}>
+        <Reveal className={styles.heading}>
+          <div><p className={styles.kicker}>Measured runtime experiments</p><h2 id="measured-runs-title">Inspect the run.<br />Follow the evidence.</h2></div>
+          <p>Two controlled cases, from the first hypothesis to the recorded outcome. The commands, revisions and limits are open to inspect.</p>
         </Reveal>
-        <div className="grid gap-5 lg:grid-cols-2">
-          <Reveal className={styles.card}>
-            <div className={styles.content}>
-              <p className={styles.eyebrow}><FiGitMerge aria-hidden="true" /> Cross-PR interaction <span>Controlled case</span></p>
-              <h3 className={styles.title}>Passed separately.<br />Failed together.</h3>
-              <p className={styles.description}>One PR lowers capacity. Another adds workers. The same generated test exposes the incompatible combination.</p>
-              <div className={styles.branch}>
-                <svg viewBox="0 0 440 130" aria-hidden="true" focusable="false">
-                  <path d="M24 65 H75 C100 65 95 24 125 24 H300 C330 24 320 65 355 65 H416 M75 65 C100 65 95 106 125 106 H300 C330 106 320 65 355 65" />
-                  <circle cx="24" cy="65" r="6" /><circle cx="416" cy="65" r="8" className={styles.failNode} />
-                </svg>
-                <span className={styles.base}>Base <FiCheck aria-label="passed" /></span>
-                <span className={styles.left}><FiGitPullRequest aria-hidden="true" /> Capacity PR <FiCheck aria-label="passed" /></span>
-                <span className={styles.right}><FiGitPullRequest aria-hidden="true" /> Workers PR <FiCheck aria-label="passed" /></span>
-                <span className={styles.combined}>Combined <FiX aria-label="failed" /></span>
+        <div className={styles.reports}>
+          <Reveal as="section" className={styles.report}>
+            <div className={styles.interaction}>
+              <p className={styles.figureLabel}><FiGitMerge aria-hidden="true" /> Cross-PR interaction</p>
+              <div className={styles.branch} role="img" aria-label="Identical reproducer: base, capacity PR and workers PR pass; the combined revision fails.">
+                <svg className={styles.wires} viewBox="0 0 400 180" preserveAspectRatio="none" aria-hidden="true"><path d="M55 90 H85 C110 90 100 40 135 40 H265 C295 40 285 90 320 90 H350 M85 90 C110 90 100 140 135 140 H265 C295 140 285 90 320 90" /></svg>
+                {interaction.observations.map(row => <div key={row.phase} className={`${styles.node} ${styles[row.phase]} ${row.exitCode === 0 ? styles.pass : styles.fail}`}><span>{phases[row.phase]}</span><strong>{row.exitCode === 0 ? <FiCheck aria-hidden="true" /> : <FiX aria-hidden="true" />}{row.exitCode === 0 ? 'Pass' : 'Fail'}</strong></div>)}
               </div>
+              <p className={styles.figureNote}>One frozen test · four revisions</p>
+            </div>
+            <div className={styles.content}>
+              <div className={styles.caseMeta}><span>Controlled case</span><span>Interaction detected</span></div>
+              <h3>Passed separately.<br />Failed together.</h3>
+              <p className={styles.description}>One PR lowers pool capacity. Another adds workers. Combined, they exceed capacity; the same generated test exposes the conflict.</p>
               <dl className={styles.metrics}>
                 <div><dt>Model calls</dt><dd>{interaction.metrics.modelRequests}</dd></div>
                 <div><dt>Reported tokens</dt><dd>{number(interaction.metrics.totalTokens)}</dd></div>
                 <div><dt>Recorded time</dt><dd>{(interaction.metrics.durationMs / 1000).toFixed(1)}<small>s</small></dd></div>
               </dl>
-              <p className={styles.scope}>4 cloud VMs · all closed · local test-DB coordination · no repair</p>
+              <p className={styles.scope}>4 cloud VMs, all closed · local test-DB coordination · no repair</p>
+              <div className={styles.links}><Link href="/blog/two-passing-prs-one-runtime-failure">Read the experiment <FiArrowUpRight aria-hidden="true" /></Link><a href="/data/pr-interaction.json" download>Evidence <FiArrowDown aria-hidden="true" /></a></div>
             </div>
-            <div className={styles.links}><Link href="/blog/two-passing-prs-one-runtime-failure">Read the experiment <FiArrowUpRight aria-hidden="true" /></Link><a href="/data/pr-interaction.json" download>Evidence <FiArrowDown aria-hidden="true" /></a></div>
           </Reveal>
-          <Reveal className={styles.card}>
-            <div className={styles.content}>
-              <p className={styles.eyebrow}><FiGitPullRequest aria-hidden="true" /> Single-PR repair <span>Controlled case</span></p>
-              <h3 className={styles.title}>A repair checked against<br />the same reproducer.</h3>
-              <p className={styles.description}>A rejected task leaks its lease. Catcher reproduces the failure, repairs cleanup and reruns the frozen test.</p>
+          <Reveal as="section" className={styles.report}>
+            <div className={styles.repair}>
+              <p className={styles.figureLabel}><FiGitPullRequest aria-hidden="true" /> Single-PR repair</p>
               <ol className={styles.chain} aria-label="Differential verification outcomes">
-                {repair.observations.map(row => <li key={row.phase} className={row.exitCode === 0 ? styles.passed : styles.failed}>
-                  <span>{row.phase === 'candidate' ? 'PR' : row.phase === 'repair' ? 'Repair' : 'Base'}</span>
-                  {row.exitCode === 0 ? <FiCheck aria-hidden="true" /> : <FiX aria-hidden="true" />}<strong>{row.exitCode === 0 ? 'Pass' : 'Fail'}</strong>
-                </li>)}
+                {repair.observations.map(row => <li key={row.phase} className={row.exitCode === 0 ? styles.pass : styles.fail}><span>{phases[row.phase]}</span>{row.exitCode === 0 ? <FiCheck aria-hidden="true" /> : <FiX aria-hidden="true" />}<strong>{row.exitCode === 0 ? 'Pass' : 'Fail'}</strong><small>exit {row.exitCode}</small></li>)}
               </ol>
+              <p className={styles.figureNote}><FiShield aria-hidden="true" /> Original tests preserved</p>
+            </div>
+            <div className={styles.content}>
+              <div className={styles.caseMeta}><span>Controlled case</span><span>Repair verified</span></div>
+              <h3>A leaked lease.<br />A checked repair.</h3>
+              <p className={styles.description}>A rejected task skips resource cleanup. Catcher reproduces the leak, repairs cleanup and reruns the same frozen test.</p>
               <dl className={styles.metrics}>
                 <div><dt>Model calls</dt><dd>{repair.modelCalls}</dd></div>
                 <div><dt>Reported tokens</dt><dd>{number(repair.tokens.total)}</dd></div>
                 <div><dt>Recorded time</dt><dd>{(repair.durationMs / 1000).toFixed(1)}<small>s</small></dd></div>
               </dl>
-              <p className={styles.scope}>2 cloud VMs · both closed · deployed workflow · original tests preserved</p>
+              <p className={styles.scope}>2 cloud VMs, both closed · deployed workflow · original tests preserved</p>
+              <div className={styles.links}><Link href="/blog/from-pull-request-to-runtime-regression">Read the experiment <FiArrowUpRight aria-hidden="true" /></Link><a href="/blog/runtime-regression-evidence.json" download>Evidence <FiArrowDown aria-hidden="true" /></a></div>
             </div>
-            <div className={styles.links}><Link href="/blog/from-pull-request-to-runtime-regression">Read the experiment <FiArrowUpRight aria-hidden="true" /></Link><a href="/blog/runtime-regression-evidence.json" download>Evidence <FiArrowDown aria-hidden="true" /></a></div>
           </Reveal>
         </div>
-        <p className="mt-5 max-w-3xl text-xs leading-relaxed text-ink-light">These are controlled experiments on different tasks and builds. They show the recorded outcomes, not a general detection rate.</p>
+        <p className={styles.limitation}>Controlled experiments on different tasks and builds. These outcomes do not establish a general detection rate or a competitor comparison.</p>
       </div>
     </section>
   );
