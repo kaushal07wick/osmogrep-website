@@ -10,7 +10,6 @@ for (const doc of docs) {
     await expect(page.getByRole('contentinfo')).toHaveCount(1);
     await expect(page.locator('.docs-mobile-nav > summary')).toBeVisible();
     await expect(page.locator('.docs-prose')).toHaveCSS('font-size', '16px');
-    await expect(page.getByRole('button', { name: 'Copy link', exact: true })).toHaveCount(0);
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
   });
 }
@@ -87,6 +86,17 @@ test('mobile docs search handles empty results and highlights safely', async ({ 
   await expect(dialog.getByText('No guides found')).toBeVisible();
   await expect(dialog.locator('img, script')).toHaveCount(0);
   expect(await dialog.evaluate(el => el.getBoundingClientRect().right)).toBeLessThanOrEqual(375);
+});
+
+test('page links copy the public guide and section without tracking parameters', async ({ page }) => {
+  await page.goto('/docs/evidence?utm_source=fixture#compare-the-same-behavior');
+  await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => { throw Error('Clipboard denied'); } } }));
+  await page.getByRole('button', { name: 'Copy link', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Try copying again', exact: true })).toBeVisible();
+  await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (text: string) => { (window as Window & { copiedGuide?: string }).copiedGuide = text; } } }));
+  await page.getByRole('button', { name: 'Try copying again', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'Link copied', exact: true })).toBeVisible();
+  expect(await page.evaluate(() => (window as Window & { copiedGuide?: string }).copiedGuide)).toBe(`${new URL(page.url()).origin}/docs/evidence#compare-the-same-behavior`);
 });
 
 test('wide reference tables remain readable and keyboard-scrollable on phones', async ({ page }) => {
