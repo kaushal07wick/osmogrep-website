@@ -9,7 +9,7 @@
 .fg-intro p { color: var(--color-ink-light); font-size: 13px; line-height: 1.9; }
 .fg-intro > span { display: block; margin-top: 18px; font: 11px var(--font-code), monospace; color: #69695f; }
 .fg-gallery { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
-.fg-card { --fg-strong: #ba4a14; --fg-line: #d5d5c9; --fg-node: #f8f7f1; --fg-muted: #676960; position: relative; min-width: 0; display: flex; flex-direction: column; overflow: hidden; padding: 25px 26px 20px; border: 1px solid #d9d8cf; border-radius: 10px; background: #fcfcf8; transition: border-color 220ms, box-shadow 220ms, transform 220ms; }
+.fg-card { --fg-strong: #ba4a14; --fg-line: #d5d5c9; --fg-node: #f8f7f1; --fg-muted: #676960; position: relative; min-width: 0; display: flex; flex-direction: column; overflow: hidden; padding: 25px 26px 20px; border: 1px solid #d9d8cf; border-radius: 0; background: #fcfcf8; transition: border-color 220ms, box-shadow 220ms, transform 220ms; }
 .fg-card:hover { z-index: 1; transform: translateY(-3px); border-color: #a5a99b; box-shadow: 0 12px 24px -16px #343c3350; }
 .fg-card-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
 .fg-category { display: inline-flex; align-items: center; gap: 8px; font: 11px var(--font-code), monospace; letter-spacing: .7px; text-transform: uppercase; color: var(--fg-muted); }

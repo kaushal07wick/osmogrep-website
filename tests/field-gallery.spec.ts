@@ -11,6 +11,7 @@ for (const width of [375, 768, 1440]) {
     for (const article of await gallery.getByRole('article').all()) {
       await expect(article).toBeVisible();
       await expect(article.getByRole('heading', { level: 3 })).toBeVisible();
+      await expect(article).toHaveCSS('border-top-left-radius', '0px');
       expect(await article.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
     }
     const descriptions = await gallery.getByRole('img').evaluateAll(images => images.map(image => image.getAttribute('aria-label')));

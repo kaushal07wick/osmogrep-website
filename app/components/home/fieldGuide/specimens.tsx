@@ -14,7 +14,7 @@ function Wire({ d, delay = 0, quiet = false }: { d: string; delay?: number; quie
 }
 
 function Node({ x, y, w = 90, text, tone = '' }: { x: number; y: number; w?: number; text: string; tone?: string }) {
-  return <g className={`fg-node ${tone}`} transform={`translate(${x} ${y})`}><rect width={w} height="32" rx="5" /><text x={w / 2} y="20" textAnchor="middle">{text}</text></g>;
+  return <g className={`fg-node ${tone}`} transform={`translate(${x} ${y})`}><rect width={w} height="32" rx="0" /><text x={w / 2} y="20" textAnchor="middle">{text}</text></g>;
 }
 
 function Queries() {
@@ -26,10 +26,10 @@ function Queries() {
     <Node x={8} y={65} w={104} text="GET /orders" />
     {[8, 38, 68, 98, 128].map((y, i) => <g key={y}>
       <Wire d={`M112 81 H156 Q174 81 174 ${y + 14} H268`} delay={-i * .45} />
-      <g className="fg-query" style={{ '--i': i } as CSSProperties}><rect x="268" y={y} width="126" height="26" rx="4" /><text x="331" y={y + 17} textAnchor="middle">user lookup {i + 1}</text></g>
+      <g className="fg-query" style={{ '--i': i } as CSSProperties}><rect x="268" y={y} width="126" height="26" rx="0" /><text x="331" y={y + 17} textAnchor="middle">user lookup {i + 1}</text></g>
       <Wire d={`M394 ${y + 14} H430 Q454 ${y + 14} 454 81 H492`} delay={-i * .45 - 1} />
     </g>)}
-    <g className="fg-database" transform="translate(492 48)"><path d="M0 12 V58 C0 76 96 76 96 58 V12" /><ellipse cx="48" cy="12" rx="48" ry="12" /><path d="M0 34 C0 52 96 52 96 34" /><text x="48" y="55" textAnchor="middle">database</text></g>
+    <g className="fg-database" transform="translate(492 48)"><path d="M0 12 V58 C0 76 96 76 96 58 V12" /><ellipse cx="48" cy="12" rx="0" ry="12" /><path d="M0 34 C0 52 96 52 96 34" /><text x="48" y="55" textAnchor="middle">database</text></g>
     <text className="fg-caption" x="8" y="145">1 request</text><text className="fg-caption fg-alert" x="492" y="145">1 + N queries</text>
   </Diagram>;
 }
@@ -37,12 +37,12 @@ function Queries() {
 function Sql() {
   return <Diagram label="Untrusted input crosses into SQL syntax and changes the query">
     <text className="fg-caption" x="10" y="17">USER INPUT</text>
-    <g className="fg-payload"><rect x="10" y="30" width="178" height="38" rx="5" /><text x="24" y="54">&apos; OR 1=1 --</text></g>
+    <g className="fg-payload"><rect x="10" y="30" width="178" height="38" rx="0" /><text x="24" y="54">&apos; OR 1=1 --</text></g>
     <path className="fg-sql-boundary" d="M222 18 V148" strokeDasharray="4 5" />
     <Wire d="M188 49 H260 V96 H296" />
-    <g className="fg-sql-rows">{[90, 106, 122].map((y, i) => <rect key={y} x="14" y={y} width={142 + i * 21} height="8" rx="2" />)}</g>
+    <g className="fg-sql-rows">{[90, 106, 122].map((y, i) => <rect key={y} x="14" y={y} width={142 + i * 21} height="8" rx="0" />)}</g>
     <text className="fg-caption fg-alert" x="14" y="154">input → executable syntax</text>
-    <g className="fg-node fg-warning" transform="translate(246 80)"><rect width="64" height="32" rx="5" /><text x="32" y="20" textAnchor="middle">all rows</text></g>
+    <g className="fg-node fg-warning" transform="translate(246 80)"><rect width="64" height="32" rx="0" /><text x="32" y="20" textAnchor="middle">all rows</text></g>
   </Diagram>;
 }
 
@@ -80,31 +80,31 @@ function Memory() {
   return <Diagram label="An unbounded query fills the available memory as the dataset grows">
     <text className="fg-caption" x="8" y="16">DATASET GROWS →</text>
     <path className="fg-capacity" d="M8 48 H312" strokeDasharray="4 4" /><text className="fg-caption" x="8" y="40">heap limit</text>
-    {[28, 45, 60, 80, 98, 119, 144].map((height, i) => <rect key={height} className="fg-memory-bar" x={14 + i * 43} y={151 - height} width="29" height={height} rx="2" style={{ '--i': i } as CSSProperties} />)}
+    {[28, 45, 60, 80, 98, 119, 144].map((height, i) => <rect key={height} className="fg-memory-bar" x={14 + i * 43} y={151 - height} width="29" height={height} rx="0" style={{ '--i': i } as CSSProperties} />)}
   </Diagram>;
 }
 
 function Secrets() {
   return <Diagram wide label="Logging an entire request carries the Authorization header into a log store" compact={<>
-    <g className="fg-log-window"><rect x="4" y="4" width="312" height="149" rx="7" /><text className="fg-caption" x="20" y="26">SHARED LOG STORE</text><text x="20" y="57">method: POST</text><text x="20" y="80">status: 200</text><rect className="fg-secret-highlight" x="13" y="94" width="294" height="31" rx="3" /><text className="fg-secret-text" x="20" y="114">authorization: Bearer …</text></g>
+    <g className="fg-log-window"><rect x="4" y="4" width="312" height="149" rx="0" /><text className="fg-caption" x="20" y="26">SHARED LOG STORE</text><text x="20" y="57">method: POST</text><text x="20" y="80">status: 200</text><rect className="fg-secret-highlight" x="13" y="94" width="294" height="31" rx="0" /><text className="fg-secret-text" x="20" y="114">authorization: Bearer …</text></g>
   </>}>
     <Node x={8} y={61} w={105} text="request" />
     <Wire d="M113 77 H162" /><Wire d="M390 77 H444" delay={-1} />
-    <g className="fg-log-window" transform="translate(162 12)"><rect width="228" height="141" rx="7" /><path d="M0 29 H228" /><circle cx="13" cy="15" r="3" /><circle cx="25" cy="15" r="3" /><circle cx="37" cy="15" r="3" /><text className="fg-caption" x="52" y="19">request.log</text><text x="16" y="54">method: POST</text><text x="16" y="77">status: 200</text><rect className="fg-secret-highlight" x="9" y="88" width="210" height="25" rx="3" /><text className="fg-secret-text" x="16" y="105">authorization: Bearer …</text><text className="fg-caption" x="16" y="132">credentials crossed a boundary</text></g>
+    <g className="fg-log-window" transform="translate(162 12)"><rect width="228" height="141" rx="0" /><path d="M0 29 H228" /><circle cx="13" cy="15" r="3" /><circle cx="25" cy="15" r="3" /><circle cx="37" cy="15" r="3" /><text className="fg-caption" x="52" y="19">request.log</text><text x="16" y="54">method: POST</text><text x="16" y="77">status: 200</text><rect className="fg-secret-highlight" x="9" y="88" width="210" height="25" rx="0" /><text className="fg-secret-text" x="16" y="105">authorization: Bearer …</text><text className="fg-caption" x="16" y="132">credentials crossed a boundary</text></g>
     <g className="fg-log-store"><Node x={444} y={61} w={144} text="shared log store" tone="fg-warning" /></g>
   </Diagram>;
 }
 
 function Traversal() {
   return <Diagram wide label="A path using parent directories escapes the uploads folder and reaches a private file" compact={<>
-    <g className="fg-root-boundary"><rect x="4" y="4" width="212" height="150" rx="8" /><text className="fg-caption" x="16" y="25">/uploads</text></g>
+    <g className="fg-root-boundary"><rect x="4" y="4" width="212" height="150" rx="0" /><text className="fg-caption" x="16" y="25">/uploads</text></g>
     <Node x={16} y={42} w={172} text="../../private/key" />
     <Wire d="M102 74 V107 H254" /><g className="fg-escaped-file"><path d="M260 82 H293 L308 97 V138 H260 Z M293 82 V97 H308" /></g>
     <text className="fg-caption fg-alert" x="16" y="144">escapes the allowed root</text>
   </>}>
-    <g className="fg-root-boundary"><rect x="8" y="8" width="360" height="148" rx="8" /><text className="fg-caption" x="24" y="32">ALLOWED ROOT /uploads</text></g>
+    <g className="fg-root-boundary"><rect x="8" y="8" width="360" height="148" rx="0" /><text className="fg-caption" x="24" y="32">ALLOWED ROOT /uploads</text></g>
     <Wire d="M40 64 H82 V113 H131" quiet /><Node x={131} y={97} w={140} text="photo.png" />
-    <g className="fg-path-payload"><rect x="25" y="46" width="194" height="35" rx="4" /><text x="39" y="68">../../private/key</text></g>
+    <g className="fg-path-payload"><rect x="25" y="46" width="194" height="35" rx="0" /><text x="39" y="68">../../private/key</text></g>
     <Wire d="M219 63 H310 Q330 63 330 81 H447" />
     <g className="fg-escaped-file"><path d="M470 30 H524 L546 52 V127 H470 Z M524 30 V52 H546" /><path d="M484 76 H531 M484 89 H523 M484 102 H517" /><text className="fg-caption fg-alert" x="508" y="151" textAnchor="middle">outside root</text></g>
   </Diagram>;
@@ -114,7 +114,7 @@ function Timeout() {
   return <Diagram label="A slow dependency keeps all eight illustrated workers occupied without a deadline">
     <g className="fg-clock"><circle cx="78" cy="76" r="47" /><circle className="fg-clock-track" cx="78" cy="76" r="39" /><path className="fg-clock-hand" d="M78 76 V46 M78 76 H99" /><circle cx="78" cy="76" r="3" /></g>
     <Wire d="M127 76 H186" />
-    <g className="fg-worker-pool">{Array.from({ length: 8 }, (_, i) => <rect key={i} x={194 + i % 4 * 29} y={48 + Math.floor(i / 4) * 32} width="20" height="22" rx="4" style={{ '--i': i } as CSSProperties} />)}</g>
+    <g className="fg-worker-pool">{Array.from({ length: 8 }, (_, i) => <rect key={i} x={194 + i % 4 * 29} y={48 + Math.floor(i / 4) * 32} width="20" height="22" rx="0" style={{ '--i': i } as CSSProperties} />)}</g>
     <text className="fg-caption" x="78" y="151" textAnchor="middle">still waiting…</text><text className="fg-caption fg-alert" x="248" y="151" textAnchor="middle">workers occupied</text>
   </Diagram>;
 }
