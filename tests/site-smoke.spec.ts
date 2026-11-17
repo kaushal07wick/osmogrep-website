@@ -29,7 +29,7 @@ test('measured runs expose actual outcomes and evidence without mobile overflow'
   await expect(section.getByText('17,008',{exact:true})).toBeVisible();
   await expect(section.getByText('70,873',{exact:true})).toBeVisible();
   await expect(section.getByText('Controlled case',{exact:true})).toHaveCount(2);
-  await expect(section.getByRole('link',{name:/Evidence/})).toHaveCount(2);
+  await expect(section.getByRole('link',{name:/evidence/i})).toHaveCount(2);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
   await section.getByRole('link',{name:/Case study/}).first().click();
   await expect(page.locator('h1')).toHaveText('Two passing PRs. One runtime failure.');
