@@ -10,6 +10,7 @@ import { SearchIcon } from '../ui/icons';
 import { barLinks } from './links';
 import { CellLabel, cellClass } from './NavCell';
 import SearchMenu from './SearchMenu';
+import DocsSearch from './DocsSearch';
 import SignInButton from './SignInButton';
 
 /** Hover opens a panel; a click within this window of that hover keeps it open instead of toggling it shut. */
@@ -21,6 +22,7 @@ const HOVER_CLICK_GRACE_MS = 600;
  */
 export default function Navbar() {
   const pathname = usePathname();
+  const isDocs = pathname === '/docs' || pathname.startsWith('/docs/');
   const router = useRouter();
   const header = useRef<HTMLElement>(null);
   const searchButton = useRef<HTMLButtonElement>(null);
@@ -93,12 +95,13 @@ export default function Navbar() {
   return (
     <header
       ref={header}
-      className="nav-bleed sticky top-0 z-[250] w-full"
+      className={`nav-bleed sticky top-0 z-[250] w-full${isDocs ? ' nav-docs' : ''}`}
       onMouseLeave={() => {
         setFeatures(false);
-        if (!query) setSearch(false); // keep a typed search open
+        if (!isDocs && !query) setSearch(false); // keep a typed search or docs dialog open
       }}
     >
+      {isDocs && <a className="docs-skip" href="#docs-content">Skip to content</a>}
       <nav
         className="relative flex h-14 w-full border-b border-grid bg-paper/95 text-sm backdrop-blur-sm"
         // Pointing at anything in the bar other than the features cell closes the features panel.
@@ -110,10 +113,11 @@ export default function Navbar() {
           <LogoMark className="h-7" />
           <span className="font-mono text-lg font-bold tracking-tight text-ink">osmogrep</span>
         </Link>
+        {isDocs && <Link className="nav-docs-label" href="/docs">Docs</Link>}
 
         <div className="flex-1" />
 
-        <button
+        {!isDocs && <><button
           ref={featuresButton}
           type="button"
           aria-expanded={features}
@@ -138,20 +142,21 @@ export default function Navbar() {
           >
             <CellLabel text={l.cmd} hovered={hovered === l.cmd} active={pathname.startsWith(l.href)} />
           </Link>
-        ))}
+        ))}</>}
 
         <button
           ref={searchButton}
           type="button"
-          onMouseEnter={() => { hoverOpen(search); openSearch(); }}
+          onMouseEnter={() => { if (!isDocs) { hoverOpen(search); openSearch(); } }}
           onClick={() => (search && !justHoverOpened() ? closeAll() : openSearch())}
           aria-expanded={search}
-          aria-controls="nav-terminal"
-          aria-label={`Search the site (${shortcut})`}
+          aria-controls={isDocs ? 'docs-search' : 'nav-terminal'}
+          aria-label={`${isDocs ? 'Search documentation' : 'Search the site'} (${shortcut})`}
           aria-keyshortcuts="Meta+K Control+K /"
-          className={`flex items-center justify-center gap-2.5 border-l border-grid px-4 transition-colors ${search ? 'bg-ink text-white' : 'text-ink-light hover:text-ink'}`}
+          className={`flex items-center justify-center gap-2.5 border-l border-grid px-4 transition-colors ${search && !isDocs ? 'bg-ink text-white' : 'text-ink-light hover:text-ink'}${isDocs ? ' docs-search-trigger' : ''}`}
         >
           <SearchIcon />
+          {isDocs && <span>Search documentation</span>}
           <kbd className={`hidden font-mono text-[11px] lg:inline ${search ? 'text-white/50' : 'text-ink-light/80'}`}>{shortcut}</kbd>
         </button>
 
@@ -159,13 +164,13 @@ export default function Navbar() {
         <SignInButton />
       </nav>
 
-      {features && (
+      {!isDocs && features && (
         <div id="nav-features" className="absolute inset-x-0 top-full hidden md:block" onClick={(event) => { if ((event.target as Element).closest('a')) closeAll(); }}>
           <FeaturesPanel />
         </div>
       )}
 
-      <SearchMenu open={search} query={query} onQuery={setQuery} onPick={go} inputRef={input} />
+      {isDocs ? <DocsSearch open={search} query={query} onQuery={setQuery} onPick={go} inputRef={input} onClose={() => { closeAll(); searchButton.current?.focus(); }} /> : <SearchMenu open={search} query={query} onQuery={setQuery} onPick={go} inputRef={input} />}
     </header>
   );
 }

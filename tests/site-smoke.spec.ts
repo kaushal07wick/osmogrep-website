@@ -14,7 +14,7 @@ for (const path of ['/docs/cli', '/docs/architecture', '/blog/from-pull-request-
   });
 }
 test('compact search finds newer workflows and clears keyboard focus on close', async ({page})=>{
-  await page.goto('/docs');
+  await page.goto('/');
   await page.getByRole('button',{name:/Search the site/}).click();
   const search=page.getByRole('textbox',{name:'Search the site',exact:true});
   await search.fill('channel memory');

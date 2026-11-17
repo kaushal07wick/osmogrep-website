@@ -1,7 +1,5 @@
 import Link from "next/link";
-import { LuBookOpen, LuBug, LuCode, LuFileCheck, LuFlaskConical, LuGitBranch, LuKeyboard, LuLayers, LuMessageSquare, LuSettings, LuShieldCheck, LuTerminal, LuUsers, LuWrench } from "react-icons/lu";
-import { SiGithub } from "react-icons/si";
-import type { IconType } from "react-icons";
+import { LuCode, LuFileCheck, LuFlaskConical, LuMessageSquare } from "react-icons/lu";
 import TerminalGuide from "./TerminalGuide";
 import { collaborationGuides } from "./CollaborationGuides";
 import CopyCommandBlock from "../components/CopyCommandBlock";
@@ -9,17 +7,17 @@ import { docs, docHref } from "../../lib/docs";
 import { dashboardUrl } from "../../lib/console";
 import { referenceGuides } from "./reference";
 import { nodeRecipe } from "../../lib/docs-examples";
+import CopyPageLink from "./CopyPageLink";
 
 const mcpRepo = "https://github.com/kaushal07wick/osmogrep-mcp";
-const icons: Record<string, IconType> = { console:LuLayers, github:SiGithub, "bug-catching":LuBug, findings:LuMessageSquare, runtime:LuFlaskConical, evidence:LuFileCheck, memory:LuMessageSquare, teams:LuUsers, cli:LuTerminal, "coding-agents":LuKeyboard, examples:LuCode, configuration:LuSettings, api:LuCode, security:LuShieldCheck, troubleshooting:LuWrench, architecture:LuGitBranch };
 
 export function DocArticle({ slug, children }: { slug: string; children: React.ReactNode }) {
   const index = docs.findIndex(doc => doc.slug === slug), doc = docs[index];
-  const previous = docs[index - 1], next = docs[index + 1], Icon = icons[slug] || LuBookOpen;
+  const previous = docs[index - 1], next = docs[index + 1];
   return <>
-    <div className="docs-breadcrumb"><Link href="/docs">Docs</Link><span>/</span><span>{doc.title}</span></div>
+    <nav className="docs-breadcrumb" aria-label="Breadcrumb"><Link href="/docs">Docs</Link><span aria-hidden="true">/</span><span>{doc.group}</span></nav>
     <article className="docs-article">
-      <header><div className="docs-heading-top"><Icon aria-hidden="true"/><p className="editorial-kicker">{doc.group}</p></div><h1>{doc.title}</h1><p className="docs-lead">{doc.description}</p></header>
+      <header><h1>{doc.title}</h1><p className="docs-lead">{doc.description}</p><div className="docs-page-tools"><CopyPageLink /></div></header>
       <div className="docs-prose">{children}</div>
     </article>
     <nav className="docs-pagination" aria-label="Adjacent guides">

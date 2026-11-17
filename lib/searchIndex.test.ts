@@ -22,3 +22,10 @@ test('new workflows and recorded evidence are discoverable', () => {
   }
   for (const doc of index) assert(!/runtime.figure:|<!--|```/.test(doc.text), doc.href);
 });
+
+test('documentation search resolves commands and engineering concepts to their actual guides', () => {
+  const guides = index.filter(doc => doc.kind === 'docs');
+  for (const [query, href] of [['/key', '/docs/cli'], ['model budget', '/docs/architecture'], ['retention', '/docs/memory']]) {
+    assert(searchDocs(guides, query).some(doc => doc.href === href), query);
+  }
+});
