@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useId, useRef, useState, type KeyboardEvent } from 'react';
 import type { IconType } from 'react-icons';
 import { SiClaude, SiGithubcopilot, SiGooglegemini, SiOpenai } from 'react-icons/si';
@@ -110,7 +111,7 @@ export default function AgentIntegrations() {
               </div>
             </div></div></ScrollDepth></div>
           </div>
-          <div className="agent-workbench-footer"><span>{c.file ? 'MCP tools' : 'MCP tools + verification skill'}</span><div><a href={REPO} target="_blank" rel="noopener noreferrer">View source <PixelArrow /></a><a href="/docs/coding-agents">Setup guide <PixelArrow /></a></div></div>
+          <div className="agent-workbench-footer"><span>{c.file ? 'MCP tools' : 'MCP tools + verification skill'}</span><div><a href={REPO} target="_blank" rel="noopener noreferrer">View source <PixelArrow /></a><Link href="/docs/coding-agents">Setup guide <PixelArrow /></Link></div></div>
         </Reveal>
       </div>
     </section>

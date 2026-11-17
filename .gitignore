@@ -37,3 +37,7 @@ coverage/
 
 .next-mcp-build/
 .runtime/
+
+# Browser verification artifacts
+test-results/
+playwright-report/

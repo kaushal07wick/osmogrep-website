@@ -7,6 +7,9 @@ pnpm install
 pnpm dev      # http://localhost:3000
 pnpm test     # node --test lib/  (Node 22.18+ runs the TypeScript tests directly)
 pnpm build
+pnpm lint
+pnpm exec playwright install firefox
+pnpm test:browser # starts the production build on loopback port 3013
 ```
 
 The web console lives at `app.osmogrep.com` in a separate repo. `NEXT_PUBLIC_CONSOLE_URL` points this site at it (see `.env.example`).
@@ -37,7 +40,7 @@ The web console lives at `app.osmogrep.com` in a separate repo. `NEXT_PUBLIC_CON
 - **Feature names and one-liners** – `lib/features.ts`. Used by the features panel and by site search. Each feature's animated preview is in `app/components/navbar/FeaturesPanel.tsx`, keyed by `slug`.
 - **Changelog entries** – `lib/changelog.ts`.
 - **Blog posts** – add a Markdown file to `content/blog/`. It shows up on `/blog` and in search automatically.
-- **New page or docs section** – also add one line to `pages` in `lib/search.ts` so search can find it.
+- **New page** – add it to `lib/search.ts` or `lib/searchShortcuts.ts`. Docs registered in `lib/docs.ts`, posts and changelog entries are indexed automatically.
 - **Logo timing** – `ORBIT` and `BLINK` at the top of `LogoMark.tsx`.
 - **Footer bug easter eggs** – listed at the top of `app/components/footer/FooterBug.tsx`.
 - **Install methods** – `METHODS` in `app/components/hero/CopyInstall.tsx`.
@@ -50,3 +53,7 @@ The web console lives at `app.osmogrep.com` in a separate repo. `NEXT_PUBLIC_CON
 - **Pixel art** (logo, icons, bug, star) is drawn on small grids with `shapeRendering="crispEdges"`. Keep it on whole pixels.
 - **Motion** respects `prefers-reduced-motion`: CSS animations are switched off globally, and JS animations check `prefersReducedMotion()` from `lib/motion.ts` and render their still state.
 - **Fonts** (set in `app/layout.tsx`): Space Mono for headings and body (`font-space`, `font-inter`, has bold), Share Tech Mono for UI chrome, labels, code and terminal text (`font-mono`, one weight only, so don't bold it).
+
+## Release checks
+
+GitHub Actions runs lint, unit/content checks, a production build, a dependency audit and Firefox smoke tests. Browser tests check mobile documentation, search, the terminal video and the absence of retired form APIs. Security overrides in `package.json` pin patched transitive dependencies; keep the lockfile in sync and rerun the full audit after dependency changes.

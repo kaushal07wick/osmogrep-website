@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useEffect, useState, type ReactNode } from 'react';
 import { consoleUrl } from '../../../lib/console';
 import { prefersReducedMotion } from '../../../lib/motion';
@@ -169,9 +170,9 @@ export default function ConsoleSection() {
                 <span className="absolute -translate-x-10 transition-transform duration-300 group-hover:translate-x-0"><PixelArrow className="h-3 w-4" /></span>
               </span>
             </a>
-            <a href="/docs" className="group inline-flex items-center gap-2 font-mono text-[13px] text-ink-light hover:text-accent">
+            <Link href="/docs" className="group inline-flex items-center gap-2 font-mono text-[13px] text-ink-light hover:text-accent">
               How reviews work <span className="transition-transform group-hover:translate-x-1"><PixelArrow /></span>
-            </a>
+            </Link>
           </div>
         </Reveal>
 
