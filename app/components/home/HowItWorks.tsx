@@ -1,56 +1,188 @@
-import Link from 'next/link';
-import { FiArrowRight, FiArrowUpRight, FiCheck, FiFileText, FiGitPullRequest, FiLayers, FiTerminal, FiTool, FiX } from 'react-icons/fi';
-import Reveal from '../motion/Reveal';
-import styles from './HowItWorks.module.css';
+"use client";
+
+import { useEffect, useRef, useState, type ReactNode } from "react";
+import Bug from "../bug/Bug";
+
+/* Three steps. The left column is pinned; each step's visual scrolls past on the right and
+   the step closest to the middle of the screen is the active one. */
+
+/** 18x4 grid of test cells (one per test) that fill in; one fails. */
+function RunVisual({ active }: { active: boolean }) {
+  return (
+    <div>
+      <div className="grid grid-cols-[repeat(18,minmax(0,1fr))] gap-1.5">
+        {Array.from({ length: 72 }, (_, i) => (
+          <span
+            key={i}
+            className={`aspect-square transition-colors duration-300 ${active ? (i === 47 ? "bg-fail" : "bg-pass/70") : "bg-grid/60"}`}
+            style={{ transitionDelay: active ? `${i * 18}ms` : "0ms" }}
+          />
+        ))}
+      </div>
+      <p
+        className={`mt-6 font-mono text-[12px] transition-opacity duration-500 ${active ? "opacity-100" : "opacity-0"}`}
+      >
+        <span className="text-fail">1 failing</span>{" "}
+        <span className="text-ink-light">· notify.test.ts</span>
+      </p>
+    </div>
+  );
+}
+
+function CatchVisual({ active }: { active: boolean }) {
+  return (
+    <div className="relative flex h-full items-center justify-center">
+      <div
+        className={`relative flex h-40 w-56 items-center justify-center transition-transform duration-500 ${active ? "scale-100" : "scale-125 opacity-40"}`}
+      >
+        {[
+          "left-0 top-0 border-l-2 border-t-2",
+          "right-0 top-0 border-r-2 border-t-2",
+          "bottom-0 left-0 border-b-2 border-l-2",
+          "bottom-0 right-0 border-b-2 border-r-2",
+        ].map((c) => (
+          <span key={c} className={`absolute h-6 w-6 border-accent ${c}`} />
+        ))}
+        <Bug
+          mood={active ? "scared" : "walk"}
+          className="h-16 w-[90px] text-ink"
+        />
+      </div>
+      <p className="absolute bottom-0 font-mono text-[12px] text-ink-light">
+        <span className="text-accent">NULL-003</span> user.profile
+        <span className="text-fail underline decoration-wavy">.email</span>
+      </p>
+    </div>
+  );
+}
+
+function FixVisual({ active }: { active: boolean }) {
+  const Row = ({
+    label,
+    pass,
+    fail,
+  }: {
+    label: string;
+    pass: number;
+    fail: number;
+  }) => (
+    <div>
+      <div className="mb-1.5 flex justify-between font-mono text-[12px] text-ink-light">
+        <span>{label}</span>
+        <span className={fail ? "text-fail" : "text-pass"}>
+          {pass} passed · {fail} failed
+        </span>
+      </div>
+      <div className="flex h-3 gap-0.5">
+        {Array.from({ length: pass + fail }, (_, i) => (
+          <span
+            key={i}
+            className={`flex-1 transition-colors duration-500 ${active ? (i >= pass ? "bg-fail" : "bg-pass") : "bg-grid"}`}
+            style={{ transitionDelay: `${i * 80}ms` }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+  return (
+    <div className="space-y-6">
+      <Row label="original source" pass={3} fail={1} />
+      <Row label="after osmogrep fix" pass={4} fail={0} />
+      <p className="font-mono text-[12px] text-ink-light">
+        <span className="text-pass">✓</span> original tests unchanged · patch
+        exported
+      </p>
+    </div>
+  );
+}
+
+const STEPS: {
+  title: string;
+  body: string;
+  Visual: (p: { active: boolean }) => ReactNode;
+}[] = [
+  {
+    title: "Run",
+    body: "Your tests, in a sandbox.",
+    Visual: RunVisual,
+  },
+  {
+    title: "Catch",
+    body: "Reproduced, pinned to the line.",
+    Visual: CatchVisual,
+  },
+  {
+    title: "Fix",
+    body: "Patched, rerun, proven.",
+    Visual: FixVisual,
+  },
+];
 
 export default function HowItWorks() {
+  const [active, setActive] = useState(0);
+  const panels = useRef<(HTMLDivElement | null)[]>([]);
+  useEffect(() => {
+    const io = new IntersectionObserver(
+      (entries) =>
+        entries.forEach(
+          (e) =>
+            e.isIntersecting &&
+            setActive(Number((e.target as HTMLElement).dataset.step)),
+        ),
+      { rootMargin: "-45% 0px -45% 0px" }, // a thin band across the middle of the screen
+    );
+    panels.current.forEach((el) => el && io.observe(el));
+    return () => io.disconnect();
+  }, []);
+
   return (
-    <section id="how-it-works" aria-labelledby="how-it-works-title" className={styles.section}>
-      <div className={styles.container}>
-        <Reveal className={styles.heading}>
-          <div><p className={styles.kicker}>How it works</p><h2 id="how-it-works-title">Understand the change.<br /><em>Then put it to the test.</em></h2></div>
-          <p>Source context shapes the hypothesis. Isolated execution checks the behavior. A repair gets checked against the same test.</p>
-        </Reveal>
-        <p className={styles.exampleLabel}>Illustrated workflow · resource cleanup</p>
-        <div className={styles.workflow}>
-          <Reveal className={styles.step}>
-            <div className={styles.stepLabel}><FiLayers aria-hidden="true" /><span>Context</span><FiArrowRight aria-hidden="true" /></div>
-            <div className={`${styles.visual} ${styles.context}`} role="img" aria-label="Read the PR alongside callers, configuration and tests to identify missing resource cleanup on rejection.">
-              <div className={styles.change}><FiGitPullRequest aria-hidden="true" /><span>Changed execution path</span></div>
-              <div className={styles.dependencies}><span>Callers</span><span>Config</span><span>Tests</span></div>
-              <div className={styles.contract}><FiFileText aria-hidden="true" /><div><small>Behavior to preserve</small><p>Release the lease,<br />even when a task rejects.</p></div></div>
-            </div>
-            <h3>Read beyond the diff.</h3>
-            <p>Retrieve relevant source, callers and tests. Establish the expected behavior before proposing a failure or a fix.</p>
-          </Reveal>
-          <Reveal className={styles.step}>
-            <div className={styles.stepLabel}><FiTerminal aria-hidden="true" /><span>Experiment</span><FiArrowRight aria-hidden="true" /></div>
-            <div className={`${styles.visual} ${styles.experiment}`} role="img" aria-label="An illustrative generated rejection test passes on the base and fails on the PR with a lease still held.">
-              <div className={styles.terminalTitle}><span /> Isolated sandbox</div>
-              <code className={styles.command}>$ node --test reproducer.mjs</code>
-              <div className={styles.testRow}><span>Base</span><strong><FiCheck aria-hidden="true" /> PASS</strong></div>
-              <div className={styles.testRow}><span>PR</span><strong className={styles.failed}><FiX aria-hidden="true" /> FAIL</strong></div>
-              <p className={styles.testError}>Expected: 0 leases held<br /><span>Observed: 1 lease held</span></p>
-            </div>
-            <h3>Test a specific failure.</h3>
-            <p>Generate a focused reproducer with a justified expectation. Compare the same test on base and candidate revisions.</p>
-          </Reveal>
-          <Reveal className={styles.step}>
-            <div className={styles.stepLabel}><FiTool aria-hidden="true" /><span>Repair & verify</span><FiCheck aria-hidden="true" /></div>
-            <div className={`${styles.visual} ${styles.patch}`} role="img" aria-label="Illustrative repair puts release in a finally block, then reruns the reproducer and original tests.">
-              <div className={styles.patchTitle}><span>Cleanup on every exit</span><small>Illustrative diff</small></div>
-              <pre><code><span className={styles.removed}>− await task();</span><span className={styles.removed}>− lease.release();</span><span className={styles.added}>+ try {'{'} await task(); {'}'}</span><span className={styles.added}>+ finally {'{'} lease.release(); {'}'}</span></code></pre>
-              <div className={styles.recheck}><FiCheck aria-hidden="true" /><span>Reproducer + original tests</span></div>
-            </div>
-            <h3>Keep the proof with the patch.</h3>
-            <p>When a repair is produced, rerun the reproducer and preserve original-test results. Export the patch, commands and evidence.</p>
-          </Reveal>
+    <section className="w-full py-24 md:py-32">
+      <div className="mx-auto grid max-w-[1280px] gap-12 px-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div className="lg:sticky lg:top-32 lg:h-fit">
+          <p className="font-mono text-[12px] text-accent">how it works</p>
+          <h2 className="mt-3 text-4xl font-bold leading-tight tracking-tight text-ink md:text-5xl">
+            Run. Catch. Fix.
+          </h2>
+          <ol className="mt-10 space-y-6">
+            {STEPS.map((s, i) => (
+              <li
+                key={s.title}
+                className={`grid grid-cols-[3rem_1fr] transition-opacity duration-300 ${i === active ? "opacity-100" : "opacity-35"}`}
+              >
+                <span className="font-mono text-sm text-accent">0{i + 1}</span>
+                <div>
+                  <h3 className="text-xl font-bold text-ink">{s.title}</h3>
+                  <p className="mt-1 max-w-sm text-ink-light">{s.body}</p>
+                  <span
+                    className="mt-3 block h-[2px] origin-left bg-accent transition-transform duration-500"
+                    style={{ transform: `scaleX(${i === active ? 1 : 0})` }}
+                  />
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
-        <Reveal className={styles.outcomes}>
-          <div><span className={styles.outcomeTitle}>The outcome stays explicit.</span><p>A prediction alone is not a confirmed runtime bug.</p></div>
-          <div className={styles.states}><span><i className={styles.green} /> Reproduced</span><span><i className={styles.gray} /> Not reproduced</span><span><i className={styles.amber} /> Inconclusive</span></div>
-          <Link href="/docs/verification">How verification works <FiArrowUpRight aria-hidden="true" /></Link>
-        </Reveal>
+
+        <div className="space-y-[18vh] lg:pb-[4vh] lg:pt-[12vh]">
+          {STEPS.map(({ title, Visual }, i) => (
+            <div
+              key={title}
+              ref={(el) => {
+                panels.current[i] = el;
+              }}
+              data-step={i}
+              data-active={i === active}
+              className="home-step-panel editorial-inset flex h-[340px] flex-col p-8"
+            >
+              <p className="font-mono text-[11px] text-ink-light">
+                fig. {i + 1} · {title.toLowerCase()}
+              </p>
+              <div className="mt-6 flex-1">
+                <Visual active={i === active} />
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   );

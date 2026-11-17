@@ -21,6 +21,8 @@
 @media(prefers-reduced-motion: reduce) { .hero-ticker-body, .hero-ticker-message { animation: none; } }
 .reveal [data-stagger].scroll-scene { opacity: .35; transform: perspective(1200px) translateY(24px) rotateX(4deg) scale(.985); transform-origin: center top; transition: opacity 650ms ease, transform 950ms cubic-bezier(.2,.8,.2,1); }
 .reveal.is-in [data-stagger].scroll-scene { opacity: 1; transform: none; }
+.home-step-panel { transition: border-color 450ms ease; }
+.home-step-panel[data-active="true"] { border-color: var(--color-accent); }
 .scroll-depth { min-width: 0; perspective: 1400px; }
 .scroll-depth-layer { transform: translate3d(0, var(--depth-y), 0) rotateX(var(--depth-tilt)); }
 @media(max-width: 1023px), (prefers-reduced-motion: reduce) { .scroll-depth-layer, .console-depth-layer { transform: none !important; } }
