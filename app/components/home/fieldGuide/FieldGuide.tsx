@@ -1,60 +1,51 @@
 'use client';
 
-import { useId, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import Link from 'next/link';
-import Bug from '../../bug/Bug';
+import { FiArrowUpRight, FiCornerDownRight } from 'react-icons/fi';
 import Reveal from '../../motion/Reveal';
-import { stagger } from '../../motion/stagger';
-import { PixelIcon, SPECIMENS } from './specimens';
+import { SPECIMENS } from './specimens';
 import './field-guide.css';
 
 export default function FieldGuide() {
-  const [selected, setSelected] = useState(0);
-  const detailId = useId();
-  const specimen = SPECIMENS[selected];
+  const section = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const element = section.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(entries => {
+      for (const entry of entries) entry.target.classList.toggle('is-visible', entry.isIntersecting);
+    }, { threshold: 0.12 });
+    element.querySelectorAll('.fg-card').forEach(card => observer.observe(card));
+    const visibility = () => { element.dataset.paused = String(document.hidden); };
+    visibility();
+    document.addEventListener('visibilitychange', visibility);
+    return () => { observer.disconnect(); document.removeEventListener('visibilitychange', visibility); };
+  }, []);
+
   return (
-    <section id="field-guide" className="field-guide zone zone-pinstripe w-full py-20 md:py-28" aria-labelledby="field-guide-title">
-      <div className="mx-auto max-w-[1280px] px-6">
-        <Reveal className="field-guide-heading">
+    <section ref={section} id="field-guide" className="field-guide" aria-labelledby="field-guide-title">
+      <div className="fg-container">
+        <Reveal className="fg-heading">
           <div>
-            <p data-stagger style={stagger(0)} className="font-mono text-[12px] text-accent">the bug collection</p>
-            <h2 id="field-guide-title" data-stagger style={stagger(1)}>Small bugs.<br />Real consequences.</h2>
+            <p className="fg-eyebrow"><span aria-hidden="true" /> The anatomy of a bug</p>
+            <h2 id="field-guide-title">Tiny changes.<br /><em>Unexpected fallout.</em></h2>
           </div>
-          <p data-stagger style={stagger(2)} className="field-guide-intro">Nine failure patterns worth a closer look.<br />Choose one to explore.</p>
+          <div className="fg-intro"><p>A query. A retry. One missing await.<br />Follow the ripple through the system.</p><span>9 illustrated failure patterns</span></div>
         </Reveal>
-        <Reveal className="field-guide-spread">
-          <div className="field-guide-index" role="group" aria-label="Choose a failure pattern">
-            {SPECIMENS.map((item, index) => <button
-              key={item.name}
-              type="button"
-              aria-pressed={selected === index}
-              aria-controls={detailId}
-              onClick={() => setSelected(index)}
-              className="field-guide-choice"
-            >
-              <span className="field-guide-number" aria-hidden="true">0{index + 1}</span>
-              <PixelIcon name={item.icon} />
-              <span>{item.name}</span>
-              <span className="field-guide-choice-arrow" aria-hidden="true">↗</span>
-            </button>)}
-          </div>
-          <article id={detailId} className="field-guide-detail" aria-label={`${specimen.name} example`}>
-            <div key={specimen.name} className="field-guide-example">
-              <div className="field-guide-detail-top"><span className="field-guide-label">PATTERN / 0{selected + 1}</span><span className="field-guide-label">ILLUSTRATIVE EXAMPLE</span></div>
-              <h3>{specimen.name}</h3>
-              <p className="field-guide-context">{specimen.context}</p>
-              <div className="field-guide-observation">
-                <span className="field-guide-mascot" aria-hidden="true"><Bug mood="curious" className="h-10 w-14 text-ink" /><span>{specimen.message}</span></span>
-                <specimen.Demo />
-              </div>
-              <div className="field-guide-comparison">
-                <div><span className="field-guide-label">THE CAUSE</span><code>{specimen.before}</code></div>
-                <div><span className="field-guide-label">REPAIR DIRECTION <span className="text-accent" aria-hidden="true">↳</span></span><code>{specimen.after}</code></div>
-              </div>
-            </div>
-            <footer className="field-guide-footer"><span>Check the behavior. Keep the evidence.</span><Link href="/docs/bug-catching">How verification works <span aria-hidden="true">↗</span></Link></footer>
-          </article>
-        </Reveal>
+
+        <div className="fg-gallery">
+          {SPECIMENS.map(({ id, name, category, context, fix, Icon, Demo }) => (
+            <article key={id} className={`fg-card fg-card--${id}`} aria-labelledby={`fg-${id}`}>
+              <div className="fg-card-heading"><span className="fg-category"><Icon aria-hidden="true" />{category}</span></div>
+              <h3 id={`fg-${id}`}>{name}</h3>
+              <p className="fg-context">{context}</p>
+              <div className="fg-visual"><Demo /></div>
+              <div className="fg-repair"><FiCornerDownRight aria-hidden="true" /><span>{fix}</span></div>
+            </article>
+          ))}
+        </div>
+
+        <div className="fg-footer"><p>Understand the pattern. Verify it in your code.</p><Link href="/docs/bug-catching">Inside the verification engine <FiArrowUpRight aria-hidden="true" /></Link></div>
       </div>
     </section>
   );
