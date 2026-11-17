@@ -5,7 +5,7 @@ Marketing site for [Osmogrep](https://github.com/kaushal07wick/OsmoGrep). Next.j
 ```sh
 pnpm install
 pnpm dev      # http://localhost:3000
-pnpm test     # node --test lib/  (Node 22.18+ runs the TypeScript tests directly)
+pnpm test     # explicit TypeScript/JavaScript test paths for Node 22
 pnpm build
 pnpm lint
 pnpm exec playwright install firefox

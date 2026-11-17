@@ -14,7 +14,7 @@
     "dev:fresh": "pnpm clean && next dev",
     "start": "next start",
     "lint": "next lint",
-    "test": "node --test lib/",
+    "test": "node --test lib/*.test.ts lib/footer/*.test.js",
     "check:content": "node --experimental-strip-types scripts/content.check.mjs",
     "test:browser": "playwright test"
   },
