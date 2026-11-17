@@ -1,6 +1,5 @@
 import type { CSSProperties, ReactNode } from 'react';
 import WoodpeckerHero from './WoodpeckerHero';
-import CatchingTicker from './CatchingTicker';
 import CopyInstall from './CopyInstall';
 import ScrollDepth from '../motion/ScrollDepth';
 import './hero.css';
@@ -27,7 +26,6 @@ export default function Hero() {
     <section className="home-hero relative w-full overflow-hidden pb-6 pt-10 md:pb-8 md:pt-14">
       <div className="mx-auto grid max-w-[1280px] grid-cols-1 items-center gap-12 px-6 lg:grid-cols-[1fr_1.1fr]">
         <div className="relative z-10">
-          <CatchingTicker />
           <h1 className="mt-6 text-5xl font-bold leading-[1.1] tracking-tight text-ink md:text-6xl" aria-label="Catch the bug. Ship the fix.">
             <span aria-hidden="true">
               <Word at={0.1}>Catch</Word> <Word at={0.2}>the</Word> <Word at={0.3} hit={1.0}>bug.</Word>
@@ -36,7 +34,7 @@ export default function Hero() {
             </span>
           </h1>
           <p className="hero-fade mt-6 max-w-md text-lg text-ink-light" style={delay(0.9)}>
-            Osmogrep runs your code, reproduces the failure, and patches the source, with your own tests as proof.
+            A coding agent for your terminal. Runtime verification for your pull requests.
           </p>
           <div className="hero-fade mt-8" style={delay(1.1)}>
             <CopyInstall />

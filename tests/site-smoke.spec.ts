@@ -24,14 +24,14 @@ test('compact search finds newer workflows and clears keyboard focus on close', 
 test('measured runs expose actual outcomes and evidence without mobile overflow',async({page})=>{
   await page.setViewportSize({width:390,height:844});
   await page.goto('/#measured-runs');
-  const section=page.getByRole('region',{name:/Inspect the run.*Follow the evidence/});
+  const section=page.getByRole('region',{name:/Measured results/});
   await expect(section).toBeVisible();
   await expect(section.getByText('17,008',{exact:true})).toBeVisible();
   await expect(section.getByText('70,873',{exact:true})).toBeVisible();
   await expect(section.getByText('Controlled case',{exact:true})).toHaveCount(2);
   await expect(section.getByRole('link',{name:/Evidence/})).toHaveCount(2);
   expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
-  await section.getByRole('link',{name:/Read the experiment/}).first().click();
+  await section.getByRole('link',{name:/Case study/}).first().click();
   await expect(page.locator('h1')).toHaveText('Two passing PRs. One runtime failure.');
 });
 test('retired form endpoints are absent',async({request})=>{
@@ -42,19 +42,16 @@ for (const width of [375, 768, 1440]) {
   test(`experiment reports and workflow stay legible at ${width}px`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 });
     await page.goto('/');
-    const reports = page.getByRole('region', { name: /Inspect the run.*Follow the evidence/ });
+    const reports = page.getByRole('region', { name: /Measured results/ });
     await reports.scrollIntoViewIfNeeded();
     await expect(reports.getByRole('img', { name: /Identical reproducer/ })).toBeVisible();
     await expect(reports.getByText('17,008', { exact: true })).toBeVisible();
     await expect(reports.getByText('70,873', { exact: true })).toBeVisible();
     await expect(reports.getByRole('list', { name: 'Differential verification outcomes' }).getByRole('listitem')).toHaveCount(3);
-    const workflow = page.getByRole('region', { name: /Understand the change.*Then put it to the test/ });
+    const workflow = page.getByRole('region', { name: /Context. Test. Repair./ });
     await workflow.scrollIntoViewIfNeeded();
-    await expect(workflow.getByRole('img')).toHaveCount(3);
-    for (const image of await workflow.getByRole('img').all()) {
-      expect(await image.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
-    }
-    await expect(workflow.getByText('Inconclusive', { exact: true })).toBeVisible();
+    await expect(workflow.getByRole('listitem')).toHaveCount(3);
+    await expect(workflow.locator('pre')).toHaveCount(0);
     await expect(workflow.getByRole('link', { name: /How verification works/ })).toHaveAttribute('href', '/docs/verification');
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
   });
