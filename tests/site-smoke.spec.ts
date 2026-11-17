@@ -37,3 +37,25 @@ test('measured runs expose actual outcomes and evidence without mobile overflow'
 test('retired form endpoints are absent',async({request})=>{
   for(const path of ['/api/contact','/api/waitlist'])expect((await request.post(path,{data:{email:123}})).status()).toBe(404);
 });
+
+for (const width of [375, 768, 1440]) {
+  test(`experiment reports and workflow stay legible at ${width}px`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto('/');
+    const reports = page.getByRole('region', { name: /Inspect the run.*Follow the evidence/ });
+    await reports.scrollIntoViewIfNeeded();
+    await expect(reports.getByRole('img', { name: /Identical reproducer/ })).toBeVisible();
+    await expect(reports.getByText('17,008', { exact: true })).toBeVisible();
+    await expect(reports.getByText('70,873', { exact: true })).toBeVisible();
+    await expect(reports.getByRole('list', { name: 'Differential verification outcomes' }).getByRole('listitem')).toHaveCount(3);
+    const workflow = page.getByRole('region', { name: /Understand the change.*Then put it to the test/ });
+    await workflow.scrollIntoViewIfNeeded();
+    await expect(workflow.getByRole('img')).toHaveCount(3);
+    for (const image of await workflow.getByRole('img').all()) {
+      expect(await image.evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+    }
+    await expect(workflow.getByText('Inconclusive', { exact: true })).toBeVisible();
+    await expect(workflow.getByRole('link', { name: /How verification works/ })).toHaveAttribute('href', '/docs/verification');
+    expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(width);
+  });
+}
