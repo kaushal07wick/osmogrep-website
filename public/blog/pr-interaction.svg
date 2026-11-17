@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Two passing PRs, one runtime failure</title>
+  <desc id="desc">A common base branches into a passing capacity PR and a passing workers PR. The branches merge into a failing combined revision. Controlled experiment.</desc>
+  <defs>
+    <pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r="1" fill="#d3cfc4"/></pattern>
+    <pattern id="failure" width="7" height="7" patternUnits="userSpaceOnUse"><path d="M0 7L7 0" stroke="#b64220" stroke-width="1.5"/></pattern>
+  </defs>
+  <rect width="1600" height="900" fill="#f7f5ef"/><rect x="55" y="55" width="1490" height="790" fill="url(#dots)"/>
+  <rect x="95" y="90" width="1410" height="720" fill="#f7f5ef" stroke="#d3cfc4"/>
+  <g font-family="monospace" fill="#19191b">
+    <text x="155" y="165" font-size="21" letter-spacing="3" fill="#b64220">MEASURED RUNTIME EXPERIMENT</text>
+    <text x="150" y="265" font-size="65" font-weight="700" letter-spacing="-3">Passed separately.</text>
+    <text x="150" y="343" font-size="65" font-weight="700" letter-spacing="-3">Failed together.</text>
+    <g fill="none" stroke="#889a86" stroke-width="5"><path d="M235 560H335C405 560 385 450 465 450H1045C1125 450 1105 560 1185 560H1350"/><path d="M335 560C405 560 385 670 465 670H1045C1125 670 1105 560 1185 560"/></g>
+    <g fill="#197641" stroke="#f7f5ef" stroke-width="8"><circle cx="235" cy="560" r="19"/><circle cx="750" cy="450" r="19"/><circle cx="750" cy="670" r="19"/></g>
+    <rect x="1325" y="535" width="50" height="50" fill="#fff0e6" stroke="#b64220" stroke-width="3"/><rect x="1325" y="535" width="50" height="50" fill="url(#failure)"/>
+    <text x="190" y="620" font-size="22">BASE</text><text x="585" y="415" font-size="24">CAPACITY PR · PASS</text><text x="585" y="726" font-size="24">WORKERS PR · PASS</text>
+    <text x="1225" y="620" font-size="22" fill="#a2361d">COMBINED · FAIL</text>
+    <text x="155" y="780" font-size="17" fill="#62615b">CONTROLLED CASE / SAME TEST / FOUR REVISIONS / PUBLIC EVIDENCE</text>
+  </g>
+</svg>

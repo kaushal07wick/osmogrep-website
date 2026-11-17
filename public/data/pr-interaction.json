@@ -1,0 +1,187 @@
+{
+  "schemaVersion": 1,
+  "controlledFixture": true,
+  "repository": "kaushal07wick/osmogrep-mcp",
+  "pullRequests": [
+    "https://github.com/kaushal07wick/osmogrep-mcp/pull/6",
+    "https://github.com/kaushal07wick/osmogrep-mcp/pull/7"
+  ],
+  "verificationScope": "Real GitHub/OpenAI/E2B through the existing dispatcher; local test-database coordination. No production queue or GitHub publication.",
+  "provenance": {
+    "sourceArtifactSHA256": "19980bc2b64bdbc5db562610039ff7ba3efbc568a8335c2ce745a55769a052b4",
+    "engineCommit": null,
+    "note": "Engine build SHA and per-call model identities were not recorded in this summary; no model-price estimate is supplied."
+  },
+  "composition": {
+    "base": "7b3caa0d61db2a283b3e6b2be363ebff2193ca7c",
+    "left": "4d320b70de95b41bf34028ebcb31ba68b40c09d3",
+    "right": "d36443d3e5f6fde86a17c0ff18d7a5d409fceca3",
+    "merged": "bb44695c5dbea45fe5e82c8cee0ef104b61ef431"
+  },
+  "experiment": {
+    "hypothesis": "The documented contract requires runBatch to immediately serve every configured worker without queueing, while acquireBatch must reject requests over capacity. When pool capacity is reduced below the configured worker concurrency (capacity=4, concurrency=6), runBatch calls acquireBatch(concurrency) and throws \"capacity exhausted\", violating the contract that runBatch must serve every configured worker immediately.",
+    "trigger": "Import acceptance/catcher-pair/worker.mjs and call runBatch() once in a configuration where concurrency exceeds capacity (the combined interaction change).",
+    "expected": "runBatch() returns an array of length equal to concurrency (serves every worker immediately) and does not throw; additionally, acquireBatch(concurrency+1) rejects/throws when requested count exceeds capacity.",
+    "assumptions": [],
+    "oracle": {
+      "path": "README.md",
+      "quote": "runBatch must serve every configured worker immediately without queueing; acquireBatch must reject requests over capacity."
+    },
+    "source": "import test from 'node:test';\nimport assert from 'node:assert/strict';\n\nimport { runBatch, concurrency } from '../acceptance/catcher-pair/worker.mjs';\nimport { acquireBatch, capacity } from '../acceptance/catcher-pair/pool.mjs';\n\ntest('runBatch serves every configured worker immediately (no throw)', () => {\n  assert.doesNotThrow(\n    () => runBatch(),\n    (err) => {\n      // Ensure failures include marker for the harness.\n      assert.fail(`OSMOGREP_REGRESSION: runBatch unexpectedly threw: ${err && err.message}`);\n    },\n  );\n\n  const got = runBatch();\n  assert.equal(\n    got.length,\n    concurrency,\n    `OSMOGREP_REGRESSION: runBatch should return ${concurrency} items, got ${got.length} (capacity=${capacity})`,\n  );\n});\n\ntest('acquireBatch rejects requests over capacity', () => {\n  assert.throws(\n    () => acquireBatch(capacity + 1),\n    /capacity exhausted/,\n    `OSMOGREP_REGRESSION: acquireBatch should throw when count > capacity (capacity=${capacity})`,\n  );\n});\n",
+    "sourceHash": "1b4e3b7f1c04f26aef74ca59422a8f6c50bf1c1cefea58918ada4f93c28f681c",
+    "path": ".osmogrep-catcher/reproducer.mjs",
+    "command": "node --test .osmogrep-catcher/reproducer.mjs"
+  },
+  "observations": [
+    {
+      "phase": "base",
+      "revision": "7b3caa0d61db2a283b3e6b2be363ebff2193ca7c",
+      "exitCode": 0,
+      "durationMs": 1453,
+      "command": "node --test .osmogrep-catcher/reproducer.mjs",
+      "output": "TAP version 13\n# Subtest: runBatch serves every configured worker immediately (no throw)\nok 1 - runBatch serves every configured worker immediately (no throw)\n  ---\n  duration_ms: 1.563211\n  ...\n# Subtest: acquireBatch rejects requests over capacity\nok 2 - acquireBatch rejects requests over capacity\n  ---\n  duration_ms: 0.553415\n  ...\n1..2\n# tests 2\n# suites 0\n# pass 2\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 61.374091\n",
+      "environment": "Linux x86_64\nv20.9.0\nPython 3.11.6\ngit version 2.39.5\n",
+      "sourceHash": "1b4e3b7f1c04f26aef74ca59422a8f6c50bf1c1cefea58918ada4f93c28f681c",
+      "testsUnchanged": true,
+      "originalSuite": "passed",
+      "originalSteps": [
+        {
+          "name": "Install dependencies",
+          "command": "npm ci --ignore-scripts",
+          "exitCode": 0,
+          "durationMs": 4606
+        },
+        {
+          "name": "Test suite",
+          "command": "npm test && node --test acceptance/catcher-pair/original.test.mjs",
+          "exitCode": 0,
+          "durationMs": 1927
+        }
+      ],
+      "originalTests": [
+        {
+          "path": "/workspace/acceptance/catcher-pair/original.test.mjs",
+          "sha256": "483816300830095bf7a6dcd5842c36832d70838c98b7ab2da7c3c2b70a456700"
+        }
+      ]
+    },
+    {
+      "phase": "left",
+      "revision": "4d320b70de95b41bf34028ebcb31ba68b40c09d3",
+      "exitCode": 0,
+      "durationMs": 1587,
+      "command": "node --test .osmogrep-catcher/reproducer.mjs",
+      "output": "TAP version 13\n# Subtest: runBatch serves every configured worker immediately (no throw)\nok 1 - runBatch serves every configured worker immediately (no throw)\n  ---\n  duration_ms: 1.325742\n  ...\n# Subtest: acquireBatch rejects requests over capacity\nok 2 - acquireBatch rejects requests over capacity\n  ---\n  duration_ms: 0.358938\n  ...\n1..2\n# tests 2\n# suites 0\n# pass 2\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 78.235073\n",
+      "environment": "Linux x86_64\nv20.9.0\nPython 3.11.6\ngit version 2.39.5\n",
+      "sourceHash": "1b4e3b7f1c04f26aef74ca59422a8f6c50bf1c1cefea58918ada4f93c28f681c",
+      "testsUnchanged": true,
+      "originalSuite": "passed",
+      "originalSteps": [
+        {
+          "name": "Install dependencies",
+          "command": "npm ci --ignore-scripts",
+          "exitCode": 0,
+          "durationMs": 3856
+        },
+        {
+          "name": "Test suite",
+          "command": "npm test && node --test acceptance/catcher-pair/original.test.mjs",
+          "exitCode": 0,
+          "durationMs": 2333
+        }
+      ],
+      "originalTests": [
+        {
+          "path": "/workspace/acceptance/catcher-pair/original.test.mjs",
+          "sha256": "483816300830095bf7a6dcd5842c36832d70838c98b7ab2da7c3c2b70a456700"
+        }
+      ]
+    },
+    {
+      "phase": "right",
+      "revision": "d36443d3e5f6fde86a17c0ff18d7a5d409fceca3",
+      "exitCode": 0,
+      "durationMs": 1395,
+      "command": "node --test .osmogrep-catcher/reproducer.mjs",
+      "output": "TAP version 13\n# Subtest: runBatch serves every configured worker immediately (no throw)\nok 1 - runBatch serves every configured worker immediately (no throw)\n  ---\n  duration_ms: 1.114532\n  ...\n# Subtest: acquireBatch rejects requests over capacity\nok 2 - acquireBatch rejects requests over capacity\n  ---\n  duration_ms: 0.339178\n  ...\n1..2\n# tests 2\n# suites 0\n# pass 2\n# fail 0\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 60.316461\n",
+      "environment": "Linux x86_64\nv20.9.0\nPython 3.11.6\ngit version 2.39.5\n",
+      "sourceHash": "1b4e3b7f1c04f26aef74ca59422a8f6c50bf1c1cefea58918ada4f93c28f681c",
+      "testsUnchanged": true,
+      "originalSuite": "passed",
+      "originalSteps": [
+        {
+          "name": "Install dependencies",
+          "command": "npm ci --ignore-scripts",
+          "exitCode": 0,
+          "durationMs": 4587
+        },
+        {
+          "name": "Test suite",
+          "command": "npm test && node --test acceptance/catcher-pair/original.test.mjs",
+          "exitCode": 0,
+          "durationMs": 2063
+        }
+      ],
+      "originalTests": [
+        {
+          "path": "/workspace/acceptance/catcher-pair/original.test.mjs",
+          "sha256": "483816300830095bf7a6dcd5842c36832d70838c98b7ab2da7c3c2b70a456700"
+        }
+      ]
+    },
+    {
+      "phase": "combined",
+      "revision": "bb44695c5dbea45fe5e82c8cee0ef104b61ef431",
+      "exitCode": 1,
+      "durationMs": 1558,
+      "command": "node --test .osmogrep-catcher/reproducer.mjs",
+      "output": "TAP version 13\n# Subtest: runBatch serves every configured worker immediately (no throw)\nnot ok 1 - runBatch serves every configured worker immediately (no throw)\n  ---\n  duration_ms: 2.361171\n  location: 'file:///workspace/.osmogrep-catcher/reproducer.mjs:7:1'\n  failureType: 'testCodeFailure'\n  error: 'OSMOGREP_REGRESSION: runBatch unexpectedly threw: capacity exhausted'\n  code: 'ERR_ASSERTION'\n  name: 'AssertionError'\n  operator: 'fail'\n  stack: |-\n    Object.<anonymous> (file:///workspace/.osmogrep-catcher/reproducer.mjs:12:14)\n    hasMatchingError (node:assert:867:10)\n    expectsNoError (node:assert:879:17)\n    Function.doesNotThrow (node:assert:922:3)\n    TestContext.<anonymous> (file:///workspace/.osmogrep-catcher/reproducer.mjs:8:10)\n    Test.runInAsyncScope (node:async_hooks:206:9)\n    Test.run (node:internal/test_runner/test:631:25)\n    Test.start (node:internal/test_runner/test:542:17)\n    startSubtest (node:internal/test_runner/harness:208:17)\n  ...\n# Subtest: acquireBatch rejects requests over capacity\nok 2 - acquireBatch rejects requests over capacity\n  ---\n  duration_ms: 0.815113\n  ...\n1..2\n# tests 2\n# suites 0\n# pass 1\n# fail 1\n# cancelled 0\n# skipped 0\n# todo 0\n# duration_ms 93.714764\n",
+      "environment": "Linux x86_64\nv20.9.0\nPython 3.11.6\ngit version 2.39.5\n",
+      "sourceHash": "1b4e3b7f1c04f26aef74ca59422a8f6c50bf1c1cefea58918ada4f93c28f681c",
+      "testsUnchanged": true,
+      "originalSuite": "passed",
+      "originalSteps": [
+        {
+          "name": "Install dependencies",
+          "command": "npm ci --ignore-scripts",
+          "exitCode": 0,
+          "durationMs": 4360
+        },
+        {
+          "name": "Test suite",
+          "command": "npm test && node --test acceptance/catcher-pair/original.test.mjs",
+          "exitCode": 0,
+          "durationMs": 2094
+        }
+      ],
+      "originalTests": [
+        {
+          "path": "/workspace/acceptance/catcher-pair/original.test.mjs",
+          "sha256": "483816300830095bf7a6dcd5842c36832d70838c98b7ab2da7c3c2b70a456700"
+        }
+      ]
+    }
+  ],
+  "decision": {
+    "status": "reproduced",
+    "verifiedFix": false,
+    "reason": "The documented expectation passed on base and failed on the captured PR; no repair is verified yet."
+  },
+  "metrics": {
+    "modelRequests": 3,
+    "inputTokens": 16475,
+    "outputTokens": 533,
+    "durationMs": 116287,
+    "sandboxStarts": 4,
+    "allSandboxesClosed": true,
+    "totalTokens": 17008
+  },
+  "limitations": [
+    "One controlled fixture, not a general-quality or cost benchmark.",
+    "Combined-branch repair is not performed by runtime_check.",
+    "The same documented expectation must remain valid; passing on base alone does not justify an invented oracle.",
+    "Local coordination with real cloud target VMs; the production queue and GitHub delivery were not exercised.",
+    "Combined revision was created inside an isolated VM; it is not a published GitHub commit.",
+    "Original npm checks completed under Node 20.9.0 despite a package engine warning requiring Node >=22.18. This is not a supported-version compatibility result."
+  ]
+}

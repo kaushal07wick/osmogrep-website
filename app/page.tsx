@@ -1,5 +1,6 @@
 import Hero from './components/hero/Hero';
 import TerminalSection from './components/home/TerminalSection';
+import MeasuredRuns from './components/home/MeasuredRuns';
 import FieldGuide from './components/home/fieldGuide/FieldGuide';
 import HowItWorks from './components/home/HowItWorks';
 import ConsoleSection from './components/home/ConsoleSection';
@@ -13,6 +14,7 @@ export default function Home() {
       <Hero />
       <SectionDivider index={1} label="run" />
       <TerminalSection />
+      <MeasuredRuns />
       <SectionDivider index={2} label="field guide" dir={-1} />
       <FieldGuide />
       <SectionDivider index={3} label="how it works" />

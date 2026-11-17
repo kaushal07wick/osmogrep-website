@@ -57,6 +57,22 @@ assert.equal(evidence.agentNarrativeSaved,true);
 assert(evidence.limitations.length>0);
 console.log('Architecture evidence checked: scoped controlled case, consistent measured tokens, differential exits, original tests and cleanup; limitations retained.');
 
+const interaction=JSON.parse((await import('node:fs')).readFileSync('public/data/pr-interaction.json','utf8'));
+const {createHash:interactionHash}=await import('node:crypto');
+assert.equal(interaction.controlledFixture,true);
+assert.equal(interaction.metrics.totalTokens,interaction.metrics.inputTokens+interaction.metrics.outputTokens);
+assert.equal(interactionHash('sha256').update(interaction.experiment.source).digest('hex'),interaction.experiment.sourceHash);
+assert.deepEqual(interaction.observations.map(row=>[row.phase,row.exitCode]),[['base',0],['left',0],['right',0],['combined',1]]);
+assert(interaction.observations.every(row=>row.sourceHash===interaction.experiment.sourceHash&&row.testsUnchanged&&row.originalSuite==='passed'));
+assert.equal(interaction.decision.verifiedFix,false);
+assert.equal(interaction.metrics.allSandboxesClosed,true);
+assert(interaction.verificationScope.includes('local test-database'));
+const pairPost=getPostBySlug('two-passing-prs-one-runtime-failure');
+assert(pairPost&&pairPost.content.includes(interaction.experiment.sourceHash));
+assert(pairPost.content.includes('17,008'));
+assert(pairPost.content.includes('116.287'));
+console.log('Interaction evidence checked: immutable test, four outcomes, exact totals and explicit scope.');
+
 const {majorUpdates}=await import('../lib/changelog.ts');
 assert.equal(new Set(majorUpdates.map(update=>update.id)).size,majorUpdates.length);
 for(const update of majorUpdates){
