@@ -1,3 +1,4 @@
+import './components/home/floating-panels.css';
 import Hero from './components/hero/Hero';
 import TerminalSection from './components/home/TerminalSection';
 import MeasuredRuns from './components/home/MeasuredRuns';

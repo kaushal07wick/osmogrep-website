@@ -23,8 +23,8 @@ export default function FieldGuide() {
   }, []);
 
   return (
-    <section ref={section} id="field-guide" className="field-guide" aria-labelledby="field-guide-title">
-      <div className="fg-container">
+    <section ref={section} id="field-guide" className="field-guide home-panel-section tx-dither" aria-labelledby="field-guide-title">
+      <div className="fg-container home-floating-panel">
         <Reveal className="fg-heading">
           <div>
             <p className="fg-eyebrow"><span aria-hidden="true" /> The anatomy of a bug</p>

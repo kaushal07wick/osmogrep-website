@@ -9,8 +9,8 @@ const number = (value: number) => value.toLocaleString('en-US');
 
 export default function MeasuredRuns() {
   return (
-    <section id="measured-runs" aria-labelledby="measured-runs-title" className="w-full border-y border-grid bg-paper py-16 md:py-24">
-      <div className="mx-auto max-w-[1280px] px-6">
+    <section id="measured-runs" aria-labelledby="measured-runs-title" className="home-panel-section tx-dither">
+      <div className="home-floating-panel">
         <Reveal className="mb-9 flex flex-wrap items-end justify-between gap-5">
           <div className="max-w-2xl">
             <p className="font-mono text-xs uppercase tracking-[0.15em] text-accent">Measured runtime experiments</p>
