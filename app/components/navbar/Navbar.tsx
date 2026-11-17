@@ -42,7 +42,7 @@ export default function Navbar() {
   const openSearch = () => {
     setFeatures(false);
     setSearch(true);
-    requestAnimationFrame(() => input.current?.focus());
+    if (!isDocs) requestAnimationFrame(() => input.current?.focus());
   };
   const go = (href: string) => {
     closeAll();
@@ -90,7 +90,7 @@ export default function Navbar() {
     };
     addEventListener('keydown', onKey);
     return () => removeEventListener('keydown', onKey);
-  }, [search, features]);
+  }, [search, features, isDocs]);
 
   return (
     <header

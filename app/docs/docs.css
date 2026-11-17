@@ -24,10 +24,6 @@
 .docs-article > header { margin-bottom: 38px; padding-bottom: 22px; border-bottom: 1px solid #dedbd3; }
 .docs-article h1 { margin: 0; font: 700 clamp(31px, 3.2vw, 44px)/1.25 var(--font-body), monospace; letter-spacing: -1.8px; overflow-wrap: anywhere; }
 .docs-lead { max-width: 66ch; margin: 16px 0 0; font-size: 15px; line-height: 1.85; color: var(--color-ink-light); }
-.docs-page-tools { display: flex; justify-content: flex-end; padding-top: 19px; }
-.docs-copy-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 6px 8px; border: 1px solid transparent; font: 11px/1.7 var(--font-code), monospace; color: #68635b; cursor: pointer; transition: border-color 150ms, background 150ms; }
-.docs-copy-link svg { width: 14px; height: 14px; }
-.docs-copy-link:hover { border-color: var(--color-grid); background: #fff; color: var(--color-ink); }
 .docs-prose { font-size: 15px; line-height: 1.85; overflow-wrap: break-word; }
 .docs-prose > section { margin: 0 0 48px; scroll-margin-top: 106px; font-size: inherit; line-height: inherit; }
 .docs-shell .docs-prose h2 { margin: 0 0 18px; font-size: 24px; line-height: 1.4; font-weight: 700; letter-spacing: -.75px; scroll-margin-top: 106px; }
@@ -100,7 +96,6 @@
   .docs-breadcrumb { margin-bottom: 20px; }
   .docs-article h1 { font-size: clamp(29px, 5vw, 40px); letter-spacing: -1.2px; }
   .docs-article > header { margin-bottom: 29px; padding-bottom: 17px; }
-  .docs-page-tools { padding-top: 14px; }
   .docs-shell .docs-prose h2 { font-size: 22px; }
 }
 @media (max-width: 520px) { .docs-shell { padding-inline: 19px; } .docs-lead { font-size: 16px; line-height: 1.75; } .docs-prose { font-size: 16px; line-height: 1.75; } .docs-prose > section { margin-bottom: 38px; } .docs-shell .docs-prose h2 { font-size: 21px; } .docs-shell .docs-prose h3 { font-size: 16px; } .docs-shell .copy-command { padding: 16px 13px; } .docs-pagination { gap: 10px; } .docs-pagination > a { padding: 13px; } .docs-pagination strong { font-size: 12px; } }
