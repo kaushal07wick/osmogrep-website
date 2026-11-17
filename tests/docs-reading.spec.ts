@@ -9,6 +9,7 @@ for (const doc of docs) {
     await expect(page.getByRole('heading', { level: 1 })).toHaveText(doc.title);
     await expect(page.getByRole('contentinfo')).toHaveCount(1);
     await expect(page.locator('.docs-mobile-nav > summary')).toBeVisible();
+    await expect(page.locator('.docs-prose')).toHaveCSS('font-size', '16px');
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(375);
   });
 }
