@@ -18,7 +18,7 @@ export default function CopyInstall() {
   const m = METHODS[method];
 
   return (
-    <div className={`copy-install ${styles.frame}`}>
+    <div className={`copy-install frame ${styles.frame}`}>
       <div className={styles.tabs} role="group" aria-label="Install method">
         {METHODS.map((x, i) => (
           <button

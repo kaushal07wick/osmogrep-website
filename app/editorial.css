@@ -9,7 +9,7 @@
 .copy-command[data-copy-state="copied"] { border-color: var(--color-pass); }
 .copy-command[data-copy-state="copied"] .copy-command-status { color: var(--color-pass); }
 .copy-command[data-copy-state="error"] .copy-command-status { color: var(--color-fail); }
-.copy-install { min-width: 0; border: 1px solid #dedee0; border-radius: 5px; background: #f4f4f3; }
+.copy-install { min-width: 0; border: 1px solid #dedee0; border-radius: 5px; background-color: #f4f4f3; }
 .copy-install .copy-command { border: 0; border-radius: 0 0 5px 5px; margin: 0; }
 .install-step { min-width: 0; }
 .docs-text-link { display: inline-block; font: 13px/1.7 var(--font-code), monospace; color: var(--color-accent); }
