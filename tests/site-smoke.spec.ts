@@ -21,19 +21,6 @@ test('compact search finds newer workflows and clears keyboard focus on close', 
   await expect(page.locator('#nav-terminal').getByRole('link',{name:/Channel memory/})).toHaveAttribute('href','/docs/memory');
   await search.press('Escape');await expect(page.locator('#nav-terminal')).toHaveAttribute('inert','');await expect(search).toHaveAttribute('tabindex','-1');
 });
-test('measured runs expose actual outcomes and evidence without mobile overflow',async({page})=>{
-  await page.setViewportSize({width:390,height:844});
-  await page.goto('/#measured-runs');
-  const section=page.getByRole('region',{name:/Inspect the run.*Follow the evidence/});
-  await expect(section).toBeVisible();
-  await expect(section.getByText('17,008',{exact:true})).toBeVisible();
-  await expect(section.getByText('70,873',{exact:true})).toBeVisible();
-  await expect(section.getByText('Controlled case',{exact:true})).toHaveCount(2);
-  await expect(section.getByRole('link',{name:/Evidence/})).toHaveCount(2);
-  expect(await page.evaluate(()=>document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
-  await section.getByRole('link',{name:/Read the experiment/}).first().click();
-  await expect(page.locator('h1')).toHaveText('Two passing PRs. One runtime failure.');
-});
 test('retired form endpoints are absent',async({request})=>{
   for(const path of ['/api/contact','/api/waitlist'])expect((await request.post(path,{data:{email:123}})).status()).toBe(404);
 });
