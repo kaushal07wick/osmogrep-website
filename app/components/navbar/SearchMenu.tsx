@@ -31,8 +31,8 @@ export default function SearchMenu({
   const [sel, setSel] = useState(0);
 
   useEffect(() => {
-    if (open) loadIndex().then(setIndex);
-  }, [open]);
+    if (open) { inputRef.current?.focus(); loadIndex().then(setIndex); }
+  }, [open, inputRef]);
   useEffect(() => setSel(0), [query]);
 
   const rows = useMemo<Row[]>(() => {

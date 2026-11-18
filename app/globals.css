@@ -274,8 +274,12 @@ html, * { scrollbar-width: none; }
 .nav-dissolve { opacity: 0; transition: opacity 0ms; }
 .group:hover .nav-dissolve, .group:focus-visible .nav-dissolve { opacity: 1; }
 
-/* The search field sits inside its own dark panel; the caret and growing underline show focus. */
-.nav-search, .nav-search:focus-visible { outline: none; }
+/* Focus remains visible against the dark search panel. */
+.nav-search:focus-visible { outline: 2px solid #fb923c; outline-offset: 5px; }
+.site-content { scroll-margin-top: 80px; }
+.site-content:focus { outline: none; }
+.docs-skip { position: absolute; left: 16px; top: -80px; z-index: 10; padding: 12px 18px; border: 1px solid var(--color-accent); background: var(--color-paper); color: var(--color-ink); font: 13px var(--font-code), monospace; }
+.docs-skip:focus { top: 8px; }
 
 /* Frame: the site's one box style. Pixel-stitch dashed border + solid corner ticks.
    Pure CSS, no extra markup: add .frame to any card, panel or box. */

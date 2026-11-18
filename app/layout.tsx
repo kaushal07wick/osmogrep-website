@@ -73,7 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" data-theme="light" className={`${body.variable} ${ui.variable}`}>
       <body className="antialiased min-h-screen flex flex-col">
         <Navbar />
-        <div className="flex-1">{children}</div>
+        <div id="site-content" className="site-content flex-1" tabIndex={-1}>{children}</div>
         <Footer />
       </body>
     </html>

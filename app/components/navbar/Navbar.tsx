@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import LogoMark from '../LogoMark';
@@ -34,16 +34,21 @@ export default function Navbar() {
   const [features, setFeatures] = useState(false);
   const [query, setQuery] = useState('');
 
-  const closeAll = () => {
+  const closeAll = useCallback(() => {
     setSearch(false);
     setFeatures(false);
     setQuery('');
-  };
-  const openSearch = () => {
+  }, []);
+  const closeSearch = useCallback(() => {
+    // A modal makes the trigger inert until the native dialog has closed.
+    header.current?.querySelector<HTMLDialogElement>('#docs-search[open]')?.close();
+    closeAll();
+    searchButton.current?.focus();
+  }, [closeAll]);
+  const openSearch = useCallback(() => {
     setFeatures(false);
     setSearch(true);
-    requestAnimationFrame(() => input.current?.focus());
-  };
+  }, []);
   const go = (href: string) => {
     closeAll();
     if (href.startsWith('http')) location.assign(href);
@@ -54,7 +59,7 @@ export default function Navbar() {
   };
   const justHoverOpened = () => Date.now() - hoverOpenedAt.current < HOVER_CLICK_GRACE_MS;
 
-  useEffect(closeAll, [pathname]);
+  useEffect(closeAll, [pathname, closeAll]);
 
   // Shortcut hint matches the platform: ⌘K on Apple devices, Ctrl K elsewhere.
   const [shortcut, setShortcut] = useState('⌘K');
@@ -70,19 +75,18 @@ export default function Navbar() {
     };
     document.addEventListener('mousedown', onDown);
     return () => document.removeEventListener('mousedown', onDown);
-  }, [search, features]);
+  }, [search, features, closeAll]);
 
   // ⌘K / Ctrl+K toggles search anywhere; `/` opens it outside form fields; Esc closes.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        if (search) closeAll();
+        if (search) closeSearch();
         else openSearch();
       } else if (e.key === 'Escape' && (search || features)) {
-        if (search) searchButton.current?.focus();
-        else featuresButton.current?.focus();
-        closeAll();
+        if (search) closeSearch();
+        else { closeAll(); featuresButton.current?.focus(); }
       } else if (e.key === '/' && !search && !(e.target as HTMLElement).closest('input, textarea, select, [contenteditable="true"]')) {
         e.preventDefault();
         openSearch();
@@ -90,18 +94,19 @@ export default function Navbar() {
     };
     addEventListener('keydown', onKey);
     return () => removeEventListener('keydown', onKey);
-  }, [search, features]);
+  }, [search, features, closeSearch, closeAll, openSearch]);
 
   return (
     <header
       ref={header}
       className={`nav-bleed sticky top-0 z-[250] w-full${isDocs ? ' nav-docs' : ''}`}
+      onBlurCapture={event => { if (event.relatedTarget instanceof Node && !header.current?.contains(event.relatedTarget)) closeAll(); }}
       onMouseLeave={() => {
         setFeatures(false);
         if (!isDocs && !query) setSearch(false); // keep a typed search or docs dialog open
       }}
     >
-      {isDocs && <a className="docs-skip" href="#docs-content">Skip to content</a>}
+      <a className="docs-skip" href={isDocs ? '#docs-content' : '#site-content'}>Skip to content</a>
       <nav
         className="relative flex h-14 w-full border-b border-grid bg-paper/95 text-sm backdrop-blur-sm"
         // Pointing at anything in the bar other than the features cell closes the features panel.
@@ -122,6 +127,12 @@ export default function Navbar() {
           type="button"
           aria-expanded={features}
           aria-controls="nav-features"
+          onKeyDown={event => {
+            if (!['ArrowDown', 'ArrowUp'].includes(event.key)) return;
+            event.preventDefault(); setFeatures(true); setSearch(false);
+            const last = event.key === 'ArrowUp';
+            requestAnimationFrame(() => { const links = header.current?.querySelectorAll<HTMLAnchorElement>('#nav-features a'); if (links?.length) links[last ? links.length - 1 : 0].focus(); });
+          }}
           onMouseEnter={() => { setHovered('features'); hoverOpen(features); setFeatures(true); setSearch(false); }}
           onMouseLeave={() => setHovered(null)}
           onClick={() => { setFeatures(justHoverOpened() || !features); setSearch(false); }}
@@ -165,12 +176,12 @@ export default function Navbar() {
       </nav>
 
       {!isDocs && features && (
-        <div id="nav-features" className="absolute inset-x-0 top-full hidden md:block" onClick={(event) => { if ((event.target as Element).closest('a')) closeAll(); }}>
+        <nav id="nav-features" aria-label="Features" className="absolute inset-x-0 top-full hidden md:block" onClick={(event) => { if ((event.target as Element).closest('a')) closeAll(); }}>
           <FeaturesPanel />
-        </div>
+        </nav>
       )}
 
-      {isDocs ? <DocsSearch open={search} query={query} onQuery={setQuery} onPick={go} inputRef={input} onClose={() => { closeAll(); searchButton.current?.focus(); }} /> : <SearchMenu open={search} query={query} onQuery={setQuery} onPick={go} inputRef={input} />}
+      {isDocs ? <DocsSearch open={search} query={query} onQuery={setQuery} onPick={go} inputRef={input} onClose={closeSearch} /> : <SearchMenu open={search} query={query} onQuery={setQuery} onPick={go} inputRef={input} />}
     </header>
   );
 }

@@ -54,7 +54,7 @@ export default function DocsShell({ children }: { children: React.ReactNode }) {
     timelines.forEach(list=>{Array.from(list.children).forEach((step,index)=>(step as HTMLElement).style.setProperty("--step-index",String(index)));observer.observe(list);});
     return()=>observer.disconnect();
   },[pathname,children]);
-  return <main className="docs-shell" id="docs-content" tabIndex={-1}>
+  return <main className="docs-shell">
     <aside ref={sidebar} className="docs-sidebar">
       <p className="docs-wordmark"><LuBookOpen aria-hidden="true" />Documentation</p>
       <details ref={mobile} className="docs-mobile-nav">

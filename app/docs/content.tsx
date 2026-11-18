@@ -15,7 +15,7 @@ export function DocArticle({ slug, children }: { slug: string; children: React.R
   const previous = docs[index - 1], next = docs[index + 1];
   return <>
     <nav className="docs-breadcrumb" aria-label="Breadcrumb"><Link href="/docs">Docs</Link><span aria-hidden="true">/</span><span>{doc.group}</span></nav>
-    <article className="docs-article">
+    <article className="docs-article" id="docs-content" tabIndex={-1}>
       <header><h1>{doc.title}</h1><p className="docs-lead">{doc.description}</p></header>
       <div className="docs-prose">{children}</div>
     </article>

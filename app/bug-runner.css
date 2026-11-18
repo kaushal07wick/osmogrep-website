@@ -392,6 +392,7 @@ body:has(.missing-page) > footer {
 .bug-runner:has(canvas:focus-visible) .bug-runner-hud {
   box-shadow: 0 2px 0 #c64a08;
 }
+.bug-runner-stage:has(canvas:focus-visible) { outline: 2px solid #c64a08; outline-offset: -4px; }
 .bug-runner-hud {
   position: absolute;
   top: 27px;

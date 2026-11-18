@@ -1,6 +1,7 @@
 /* Shared reading layout for every guide; content-specific diagrams keep their own styles. */
 .docs-shell { display: grid; grid-template-columns: 224px minmax(0, 1fr) 180px; gap: 44px; max-width: 1500px; margin: 0 auto; padding: 46px 32px 100px; background: var(--color-paper); align-items: start; }
-.docs-shell:focus { outline: none; }
+.docs-article:focus { outline: none; }
+.docs-article { scroll-margin-top: 90px; }
 .docs-sidebar, .docs-on-this-page { position: sticky; top: 90px; align-self: start; max-height: calc(100dvh - 116px); overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #c7c3b8 transparent; }
 .docs-sidebar { display: flex; flex-direction: column; overflow: hidden; }
 .docs-desktop-nav { min-height: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: thin; scrollbar-color: #c7c3b8 transparent; }
@@ -73,8 +74,6 @@
 .docs-pagination span { display: block; margin-bottom: 8px; color: #777267; font: 11px var(--font-code), monospace; }
 .docs-pagination strong { font: 13px/1.6 var(--font-body), monospace; }
 .docs-pagination a:hover { border-color: #aaa294; background: #fff; }
-.docs-skip { position: absolute; left: 16px; top: -80px; z-index: 10; padding: 12px 18px; border: 1px solid var(--color-accent); background: var(--color-paper); color: var(--color-ink); font: 13px var(--font-code), monospace; }
-.docs-skip:focus { top: 8px; }
 @media (max-width: 1200px) { .docs-shell { grid-template-columns: 210px minmax(0, 1fr); gap: 38px; padding-inline: 26px; } .docs-on-this-page { display: none; } .docs-main { max-width: 800px; } }
 @media (max-width: 900px) {
   .docs-shell { display: block; max-width: 800px; padding: 20px 24px 70px; }
