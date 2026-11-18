@@ -1,5 +1,5 @@
 import { getAllPostsMeta, getPostBySlug } from './blog.ts';
-import { majorUpdates } from './changelog.ts';
+import { majorUpdates, type ProductUpdate } from './changelog.ts';
 import { features } from './features.ts';
 import { docs, docHref } from './docs.ts';
 import { searchShortcuts } from './searchShortcuts.ts';
@@ -13,13 +13,13 @@ const pages: SearchDoc[] = [
 
 const stripMarkdown = (md: string) => md.replace(/<!--[\s\S]*?-->/g, ' ').replace(/```[\s\S]*?```/g, ' ').replace(/[#>*_`[\]()-]/g, ' ').replace(/\s+/g, ' ').trim();
 
-export function buildSearchIndex(): SearchDoc[] {
+export function buildSearchIndex(updates: ProductUpdate[] = majorUpdates): SearchDoc[] {
   const index: SearchDoc[] = [
     ...pages,
     ...searchShortcuts,
     ...docs.map(doc => ({ kind: 'docs' as const, title: doc.title, href: docHref(doc.slug), text: `${doc.description} ${'keywords' in doc ? doc.keywords : ''}`.trim() })),
     ...features.map((f): SearchDoc => ({ kind: 'feature', title: f.title, href: f.href, text: f.desc })),
-    ...majorUpdates.map((u): SearchDoc => ({ kind: 'changelog', title: `${u.version}: ${u.title}`, href: `/changelog#${u.id}`, text: `${u.product}. ${u.date}. ${u.summary} ${u.changes.join(' ')}` })),
+    ...updates.map((u): SearchDoc => ({ kind: 'changelog', title: `${u.version}: ${u.title}`, href: `/changelog#${u.id}`, text: `${u.product}. ${u.date}. ${u.summary} ${u.changes.join(' ')}` })),
     ...getAllPostsMeta().map((m): SearchDoc => ({
       kind: 'blog',
       title: m.title,

@@ -1,0 +1,21 @@
+name: Major changelog policy
+on:
+  push:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled, edited]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  public-notes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: node --test scripts/changelog-policy.test.mjs
+      - run: node scripts/changelog.check.mjs
+        env:
+          CHANGELOG_BASE_SHA: ${{ github.event.pull_request.base.sha || github.event.before }}
+          CHANGELOG_MAJOR: ${{ contains(github.event.pull_request.labels.*.name, 'changelog:major') }}

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "terminal-0-4-3",
+    "product": "Terminal",
+    "version": "v0.4.3",
+    "date": "2026-11-18",
+    "title": "Focused controls and discoverable workflows",
+    "summary": "The terminal release brings a smaller command tray, searchable advanced actions and grouped Settings.",
+    "changes": [
+      "Sixteen essential controls, with advanced actions available through search.",
+      "Discover bug replays, fix comparisons, team contracts and app checks from normal requests.",
+      "Coordinate with a named live teammate and rename conversations from Settings or Ctrl+R.",
+      "Release notes include local deterministic acceptance results and the limits of the local-model smoke test. The npm launcher tarball is attached; registry publication is pending."
+    ],
+    "commits": ["97edfad0123f1b6ddff270e2105176a815e4a80d"],
+    "link": { "label": "v0.4.3 release notes", "href": "https://github.com/kaushal07wick/OsmoGrep/releases/tag/v0.4.3" }
+  }
+]

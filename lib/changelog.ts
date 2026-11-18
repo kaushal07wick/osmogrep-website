@@ -1,3 +1,7 @@
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
+import { validateNotes } from '../scripts/changelog-policy.mjs';
+
 export type ProductUpdate = {
   id: string;
   product: 'Cloud' | 'Terminal' | 'Website';
@@ -10,7 +14,7 @@ export type ProductUpdate = {
   link?: { label: string; href: string };
 };
 
-export const majorUpdates: ProductUpdate[] = [
+const historicalUpdates: ProductUpdate[] = [
   {
     id: 'engineering-docs', product: 'Website', version: 'Documentation', date: 'November 17, 2026',
     title: 'Product docs, from first review to verification',
@@ -130,3 +134,6 @@ export const majorUpdates: ProductUpdate[] = [
     commits: ['9ce92c4', '68d0010', 'e44ba00', '6a5770b'],
   },
 ];
+
+const publicNotes = validateNotes(JSON.parse(readFileSync(join(process.cwd(), 'public/changelog.json'), 'utf8'))) as ProductUpdate[];
+export const majorUpdates: ProductUpdate[] = [...publicNotes, ...historicalUpdates];

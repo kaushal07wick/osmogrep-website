@@ -10,7 +10,8 @@
   "scripts": {
     "clean": "node -e \"require('fs').rmSync('.next',{recursive:true,force:true})\"",
     "dev": "pnpm clean && next dev",
-    "build": "pnpm clean && next build",
+    "build": "node scripts/changelog.check.mjs && pnpm clean && next build",
+    "check:changelog": "node --test scripts/changelog-policy.test.mjs && node scripts/changelog.check.mjs",
     "dev:fresh": "pnpm clean && next dev",
     "start": "next start",
     "lint": "next lint",

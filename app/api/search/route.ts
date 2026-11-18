@@ -1,7 +1,8 @@
 import { buildSearchIndex } from '../../../lib/search';
+import { loadUpdates } from '../../../lib/changelog-feed';
 
-export const dynamic = 'force-static';
+export const revalidate = 300;
 
-export function GET() {
-  return Response.json(buildSearchIndex());
+export async function GET() {
+  return Response.json(buildSearchIndex(await loadUpdates()));
 }
