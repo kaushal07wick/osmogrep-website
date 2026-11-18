@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import CopyCommandBlock from '../CopyCommandBlock';
-import { SiNpm, SiPnpm } from 'react-icons/si';
+import { SiNpm, SiPnpm, SiHomebrew } from 'react-icons/si';
 import styles from './CopyInstall.module.css';
 
 const METHODS = [
   { id: 'npm', icon: SiNpm, cmd: 'npm install -g osmogrep', note: 'Node.js 22.19+' },
   { id: 'pnpm', icon: SiPnpm, cmd: 'pnpm add -g osmogrep', note: 'Node.js 22.19+' },
+  { id: 'brew', icon: SiHomebrew, cmd: 'brew install kaushal07wick/tap/osmogrep', note: 'Mac arm64 · Linux x64' },
   { id: 'curl', icon: null, cmd: 'curl -fsSL https://osmogrep.com/install.sh | sh', note: 'macOS · Linux' },
   { id: 'cargo', icon: null, cmd: 'cargo install --git https://github.com/kaushal07wick/OsmoGrep --locked', note: 'Rust 1.89+' },
   { id: 'source', icon: null, cmd: 'git clone https://github.com/kaushal07wick/OsmoGrep && cd OsmoGrep && cargo install --path . --locked', note: 'Rust 1.89+' },

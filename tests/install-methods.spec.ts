@@ -14,6 +14,13 @@ test('homepage install methods copy the selected command and show success or ret
   await expect(copy).toContainText('pnpm add -g osmogrep'); await expect(copy).not.toContainText('Copied');
   await copy.click();
   expect(await page.evaluate(() => (window as Window & { installedCommand?: string }).installedCommand)).toBe('pnpm add -g osmogrep');
+  const brew = install.getByRole('button', { name: 'brew', exact: true });
+  await brew.focus(); await brew.press('Enter');
+  await expect(brew).toHaveAttribute('aria-pressed', 'true');
+  await expect(copy).toContainText('brew install kaushal07wick/tap/osmogrep');
+  expect(await install.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
+  await copy.click();
+  expect(await page.evaluate(() => (window as Window & { installedCommand?: string }).installedCommand)).toBe('brew install kaushal07wick/tap/osmogrep');
   await page.evaluate(() => Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async () => { throw Error('Clipboard denied'); } } }));
   await copy.click(); await expect(copy).toContainText('Retry copy');
   await install.getByRole('button', { name: 'cargo', exact: true }).click();
@@ -24,7 +31,7 @@ test('installer fits a phone and respects reduced motion', async ({ page }) => {
   await page.setViewportSize({ width: 375, height: 844 }); await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.goto('/');
   const install = page.locator('.copy-install');
-  for (const name of ['npm', 'pnpm', 'curl', 'cargo', 'source']) {
+  for (const name of ['npm', 'pnpm', 'brew', 'curl', 'cargo', 'source']) {
     await install.getByRole('button', { name, exact: true }).click();
     expect(await install.evaluate(element => element.scrollWidth <= element.clientWidth)).toBe(true);
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
