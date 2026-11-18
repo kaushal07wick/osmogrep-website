@@ -7,8 +7,9 @@
 .tab[aria-pressed=true],.tab:hover{color:#b74408}.tab[aria-pressed=true]::after{transform:scaleX(1)}
 .tab:focus-visible{outline:2px solid #b74408;outline-offset:-4px}
 .note{margin-left:auto;padding-left:10px;color:#716c64;white-space:nowrap;font-size:11px}
-.frame:global(.copy-install) .command:global(.copy-command){align-items:center;min-height:78px;margin:0;padding:18px 20px;gap:16px;border:0;border-radius:0;background:#f5f3ec;color:var(--color-ink);font:14px/1.8 var(--font-code),monospace;transition:background .15s}
-.frame .command:global(.copy-command):hover{background:#f0ede3}.frame .command:global(.copy-command):focus-visible{outline:2px solid #b74408;outline-offset:-4px}
+.frame:global(.copy-install) .command:global(.copy-command){align-items:center;min-height:78px;margin:0;padding:18px 20px;gap:16px;border:0;border-radius:0;background-color:#f5f3ec;color:var(--color-ink);font:14px/1.8 var(--font-code),monospace;transition:background-color .15s}
+.tabs,.frame .command:global(.copy-command){background-image:linear-gradient(#faf9f58c,#faf9f58c),var(--tx-dither-image);background-size:auto,var(--tx-dither-size)}
+.frame .command:global(.copy-command):hover{background-color:#f0ede3}.frame .command:global(.copy-command):focus-visible{outline:2px solid #b74408;outline-offset:-4px}
 .frame .command :global(.copy-command-status){align-items:center;justify-content:center;min-width:82px;min-height:36px;padding:8px 11px;border:1px solid #b74408;background:#b74408;color:#fff;font-size:11px;line-height:1.5;transition:color .15s,background .15s,border-color .15s}
 .frame .command:hover :global(.copy-command-status){background:#963405;border-color:#963405;color:#fff}.frame .command[data-copy-state=copied] :global(.copy-command-status){background:#24713b;border-color:#24713b;color:#fff}.frame .command[data-copy-state=error] :global(.copy-command-status){background:#9b3929;border-color:#9b3929;color:#fff}
 @container(max-width:450px){.note{display:none}}
