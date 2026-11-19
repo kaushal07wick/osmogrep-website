@@ -1,0 +1,419 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-11-19",
+  "classification": "Issue-guided OSS repair and production cloud validation; not autonomous discovery or repair.",
+  "repository": "tinygrad/tinygrad",
+  "upstreamIssue": "https://github.com/tinygrad/tinygrad/pull/19205",
+  "fix": "https://github.com/kaushal07wick/tinygrad/pull/1",
+  "upstreamRevision": "daf2bfb1260ecbbf2b71ca9b48c6442426cfdf96",
+  "evaluationBase": "7d9d56d7715795e789b1febebf5e22a00fb86c0a",
+  "environment": {
+    "provider": "E2B via OsmoGrep production runtime_check",
+    "device": "CPU:X86",
+    "python": "3.11",
+    "numpy": "2.2.6",
+    "pipBootstrap": "24.3.1 wheel from PyPI"
+  },
+  "authorship": {
+    "repair": "Claude Code, attributed in the public PR and evaluator report",
+    "osmogrep": "Executed cloud validation; model review found no issue and model repair produced no patch"
+  },
+  "results": {
+    "suite": {
+      "total": 94,
+      "withoutFix": {
+        "passed": 83,
+        "failed": 1,
+        "skipped": 10
+      },
+      "withFix": {
+        "passed": 84,
+        "failed": 0,
+        "skipped": 10
+      },
+      "files": [
+        "test/runtime/test_jit.py",
+        "test/runtime/test_symbolic_jit.py",
+        "test/runtime/test_pickle.py"
+      ],
+      "identicalFileBlobs": [
+        {
+          "path": "test/runtime/test_jit.py",
+          "gitBlob": "7498b0b92cd62f73129af74005c4bdc89c915d6a"
+        },
+        {
+          "path": "test/runtime/test_symbolic_jit.py",
+          "gitBlob": "818226770dc9e090d7b7eb7c07d4498f85f7a706"
+        },
+        {
+          "path": "test/runtime/test_pickle.py",
+          "gitBlob": "9e012575c4e52594bae5f2f30201e72c73951cdb"
+        }
+      ]
+    },
+    "extraCases": {
+      "count": 5,
+      "withoutFixFailed": 5,
+      "withFixPassed": 5,
+      "writtenAfterRepair": true,
+      "identicalFileGitBlob": "05d2527f232ec1b5fc0a282dfe5144a1e2352b33"
+    },
+    "staticChecks": {
+      "mypyFiles": 219,
+      "ruffFiles": [
+        "tinygrad/engine/jit.py",
+        "test/runtime/test_jit.py"
+      ],
+      "cleanOnBothHeads": true
+    }
+  },
+  "usage": {
+    "modelCalls": 8,
+    "reportedTokens": 45183,
+    "scope": "Source review and unsuccessful model repair only. All runtime_check jobs used zero model calls. Excludes Claude Code authoring and this article."
+  },
+  "runs": [
+    {
+      "label": "Source review",
+      "outcome": "No findings; no execution.",
+      "jobId": "8a8ac474-6493-4bdb-b8bc-40732b3f5178",
+      "kind": "source_review",
+      "headSha": "48b926224cd15459cf91d9f1c7f2bb0eb955aa64",
+      "pullRequest": "https://github.com/kaushal07wick/tinygrad/pull/1",
+      "githubCommentId": "7005280345",
+      "startedAt": "2026-11-19T09:34:58.195Z",
+      "finishedAt": "2026-11-19T09:36:22.242Z",
+      "jobStatus": "succeeded",
+      "testVerdict": "completed",
+      "experimentStatus": null,
+      "modelCalls": [
+        {
+          "stage": "source",
+          "model": "gpt-5.2",
+          "status": "reported",
+          "inputTokens": 4001,
+          "totalTokens": 4153,
+          "outputTokens": 152,
+          "reasoningTokens": 112,
+          "cachedInputTokens": 0
+        },
+        {
+          "stage": "source",
+          "model": "gpt-5.2",
+          "status": "reported",
+          "inputTokens": 4410,
+          "totalTokens": 4498,
+          "outputTokens": 88,
+          "reasoningTokens": 48,
+          "cachedInputTokens": 0
+        },
+        {
+          "stage": "source",
+          "model": "gpt-5.2",
+          "status": "reported",
+          "inputTokens": 4359,
+          "totalTokens": 8049,
+          "outputTokens": 3690,
+          "reasoningTokens": 2310,
+          "cachedInputTokens": 0
+        }
+      ],
+      "commands": [],
+      "rawReportSHA256": "65fe96909644f40a4d061fb20720aa0a48b84853a538f3d32632372126f34e20",
+      "githubReport": "https://github.com/kaushal07wick/tinygrad/pull/1#issuecomment-7005280345"
+    },
+    {
+      "label": "Setup attempt",
+      "outcome": "Blocked: evaluation recipe required unavailable venv support.",
+      "jobId": "4188719c-ff43-4efa-a9e9-e6077376c6cb",
+      "kind": "runtime_check",
+      "headSha": "48b926224cd15459cf91d9f1c7f2bb0eb955aa64",
+      "pullRequest": "https://github.com/kaushal07wick/tinygrad/pull/1",
+      "githubCommentId": "7005320059",
+      "startedAt": "2026-11-19T09:36:46.351Z",
+      "finishedAt": "2026-11-19T09:37:06.458Z",
+      "jobStatus": "succeeded",
+      "testVerdict": "blocked",
+      "experimentStatus": null,
+      "modelCalls": [],
+      "commands": [],
+      "rawReportSHA256": "9568cadbf2b5d1ce41564d75fc62ac76980462c1a39164c0ab71ec6aaca2100b",
+      "githubReport": "https://github.com/kaushal07wick/tinygrad/pull/1#issuecomment-7005320059"
+    },
+    {
+      "label": "Setup attempt",
+      "outcome": "Blocked: no pip; bootstrap host unavailable.",
+      "jobId": "91851ace-d7f6-4a53-8f1d-d720c1aa7438",
+      "kind": "runtime_check",
+      "headSha": "a29caba58e009c45139b6ba90fd8c79774cc516c",
+      "pullRequest": "https://github.com/kaushal07wick/tinygrad/pull/1",
+      "githubCommentId": "7005346419",
+      "startedAt": "2026-11-19T09:38:02.531Z",
+      "finishedAt": "2026-11-19T09:38:16.617Z",
+      "jobStatus": "succeeded",
+      "testVerdict": "blocked",
+      "experimentStatus": null,
+      "modelCalls": [],
+      "commands": [],
+      "rawReportSHA256": "cc4b08aa144bb7d0538b3e9da5c8f871b7b9c215cb868fd03b165c35861e65d8",
+      "githubReport": "https://github.com/kaushal07wick/tinygrad/pull/1#issuecomment-7005346419"
+    },
+    {
+      "label": "Environment probe",
+      "outcome": "Intentionally blocked diagnostic probe.",
+      "jobId": "0e991d7e-b462-4741-a523-8cbe2b0d154d",
+      "kind": "runtime_check",
+      "headSha": "86350b0c82486a6dca67f20bac701fb386618d7c",
+      "pullRequest": "https://github.com/kaushal07wick/tinygrad/pull/2",
+      "githubCommentId": "7005375539",
+      "startedAt": "2026-11-19T09:39:22.890Z",
+      "finishedAt": "2026-11-19T09:39:46.254Z",
+      "jobStatus": "succeeded",
+      "testVerdict": "blocked",
+      "experimentStatus": null,
+      "modelCalls": [],
+      "commands": [],
+      "rawReportSHA256": "30e45ab1205e46632ae9454ac95c54d495ea948700d5e3bf55ea30ae3a11cb65",
+      "githubReport": "https://github.com/kaushal07wick/tinygrad/pull/2#issuecomment-7005375539"
+    },
+    {
+      "label": "Suite with repair",
+      "outcome": "84 passed, 10 skipped.",
+      "jobId": "93af286b-b30b-4dac-9e8f-a1bfb8e3a5dc",
+      "kind": "runtime_check",
+      "headSha": "217d01643c210c4d4f8f21993c58f60f3ee062cb",
+      "pullRequest": "https://github.com/kaushal07wick/tinygrad/pull/1",
+      "githubCommentId": "7005402563",
+      "startedAt": "2026-11-19T09:40:38.060Z",
+      "finishedAt": "2026-11-19T09:41:29.254Z",
+      "jobStatus": "succeeded",
+      "testVerdict": "passed",
+      "experimentStatus": null,
+      "modelCalls": [],
+      "commands": [
+        {
+          "command": "DEV=CPU:X86 python3 -m unittest test.runtime.test_jit test.runtime.test_symbolic_jit test.runtime.test_pickle",
+          "exitCode": 0,
+          "commandDurationMs": 30577,
+          "unittestSummary": "Ran 94 tests in 28.531s\n\nOK (skipped=10)",
+          "extraCases": [],
+          "typecheck": null,
+          "lint": null
+        }
+      ],
+      "rawReportSHA256": "7d3014be5e01824961dfc3a9223ef4015d60663943f47a5e6c27624eb9f42418",
+      "githubReport": "https://github.com/kaushal07wick/tinygrad/pull/1#issuecomment-7005402563"
+    },
+    {
+      "label": "Suite without repair",
+      "outcome": "83 passed, 1 failed, 10 skipped.",
+      "jobId": "6e375c8f-4279-4a56-8425-0abe5b85513e",
+      "kind": "runtime_check",
+      "headSha": "0337949d8e8af75464e5fd7775bbd4d4b6033f86",
+      "pullRequest": "https://github.com/kaushal07wick/tinygrad/pull/3",
+      "githubCommentId": "7005440502",
+      "startedAt": "2026-11-19T09:42:24.580Z",
+      "finishedAt": "2026-11-19T09:43:07.392Z",
+      "jobStatus": "succeeded",
+      "testVerdict": "failed",
+      "experimentStatus": null,
+      "modelCalls": [],
+      "commands": [
+        {
+          "command": "DEV=CPU:X86 python3 -m unittest test.runtime.test_jit test.runtime.test_symbolic_jit test.runtime.test_pickle",
+          "exitCode": 1,
+          "commandDurationMs": 23173,
+          "unittestSummary": "Ran 94 tests in 21.663s\n\nFAILED (failures=1, skipped=10)",
+          "extraCases": [],
+          "typecheck": null,
+          "lint": null
+        }
+      ],
+      "rawReportSHA256": "7e7a1a80ea6abc1ce9226ffa7371e0b4f72db468f522ddd2b042b68bb752972e",
+      "githubReport": "https://github.com/kaushal07wick/tinygrad/pull/3#issuecomment-7005440502"
+    },
+    {
+      "label": "Additional checks v1",
+      "outcome": "Stale workspace; invalid evaluator test cases.",
+      "jobId": "4caeba4c-6b96-4db3-b46e-e4200531375a",
+      "kind": "runtime_check",
+      "headSha": "74262e609b1b424f89d3cee732ed2ab5f9666fcd",
+      "pullRequest": "https://github.com/kaushal07wick/tinygrad/pull/4",
+      "githubCommentId": "7005591972",
+      "startedAt": "2026-11-19T09:49:14.857Z",
+      "finishedAt": "2026-11-19T09:50:25.126Z",
+      "jobStatus": "succeeded",
+      "testVerdict": "stale",
+      "experimentStatus": null,
+      "modelCalls": [],
+      "commands": [
+        {
+          "command": "bash osmogrep_extra_check.sh",
+          "exitCode": 1,
+          "commandDurationMs": 48929,
+          "unittestSummary": "Ran 94 tests in 24.161s\nOK (skipped=10)\nextra=1 mypy=0 ruff=1\n",
+          "extraCases": [
+            "PASS case_pickle_returns_current_input",
+            "PASS case_aliased_input_returned",
+            "FAIL case_symbolic_view_of_input",
+            "PASS case_assign_return_input",
+            "FAIL case_return_input_view_and_output",
+            "FAIL case_earlier_inputs_untouched",
+            "FAIL case_symbolic_view_of_input",
+            "PASS case_global_return_unchanged"
+          ],
+          "typecheck": "Success: no issues found in 219 source files",
+          "lint": null
+        }
+      ],
+      "rawReportSHA256": "cd765930f8b30b6c86c3c1ce9a94ee6632d708822b0175e6ab75663de47b6b64",
+      "githubReport": "https://github.com/kaushal07wick/tinygrad/pull/4#issuecomment-7005591972"
+    },
+    {
+      "label": "Additional checks v2 with repair",
+      "outcome": "5 passed; mypy and ruff clean.",
+      "jobId": "e33b0781-c32b-44e9-b73a-e3eee971b964",
+      "kind": "runtime_check",
+      "headSha": "7e96fc90ea787d21b1f812fdc9f151bb14b330b2",
+      "pullRequest": "https://github.com/kaushal07wick/tinygrad/pull/4",
+      "githubCommentId": "7005645022",
+      "startedAt": "2026-11-19T09:51:41.103Z",
+      "finishedAt": "2026-11-19T09:52:35.826Z",
+      "jobStatus": "succeeded",
+      "testVerdict": "passed",
+      "experimentStatus": null,
+      "modelCalls": [],
+      "commands": [
+        {
+          "command": "bash osmogrep_extra_check.sh",
+          "exitCode": 0,
+          "commandDurationMs": 25311,
+          "unittestSummary": null,
+          "extraCases": [
+            "PASS case_pickle_returns_current_input",
+            "PASS case_aliased_input_returned",
+            "PASS case_symbolic_view_of_input",
+            "PASS case_return_input_view_and_output",
+            "PASS case_earlier_inputs_untouched"
+          ],
+          "typecheck": "Success: no issues found in 219 source files",
+          "lint": "All checks passed!"
+        }
+      ],
+      "rawReportSHA256": "d0c5066aa8b52a8dd6692d7f886feaa4e98fb6271490f346143a88515eb5a35b",
+      "githubReport": "https://github.com/kaushal07wick/tinygrad/pull/4#issuecomment-7005645022"
+    },
+    {
+      "label": "Additional checks v2 without repair",
+      "outcome": "5 failed; mypy and ruff clean.",
+      "jobId": "850e0b48-2016-4d9c-812e-494e03099687",
+      "kind": "runtime_check",
+      "headSha": "4efae3bd952441d1aa133059e4c2559e9986bbd2",
+      "pullRequest": "https://github.com/kaushal07wick/tinygrad/pull/5",
+      "githubCommentId": "7005650496",
+      "startedAt": "2026-11-19T09:52:36.763Z",
+      "finishedAt": "2026-11-19T09:53:17.812Z",
+      "jobStatus": "succeeded",
+      "testVerdict": "failed",
+      "experimentStatus": null,
+      "modelCalls": [],
+      "commands": [
+        {
+          "command": "bash osmogrep_extra_check.sh",
+          "exitCode": 1,
+          "commandDurationMs": 19355,
+          "unittestSummary": null,
+          "extraCases": [
+            "FAIL case_pickle_returns_current_input",
+            "FAIL case_aliased_input_returned",
+            "FAIL case_symbolic_view_of_input",
+            "FAIL case_return_input_view_and_output",
+            "FAIL case_earlier_inputs_untouched"
+          ],
+          "typecheck": "Success: no issues found in 219 source files",
+          "lint": "All checks passed!"
+        }
+      ],
+      "rawReportSHA256": "debd384ef9d80b7cfe913733bac17d6ec38de70185cafd2ae027b7c853b805d0",
+      "githubReport": "https://github.com/kaushal07wick/tinygrad/pull/5#issuecomment-7005650496"
+    },
+    {
+      "label": "Model repair attempt",
+      "outcome": "Incomplete investigation; no repair or VM.",
+      "jobId": "bb1deffd-4177-4a93-bf6f-a81add1739ea",
+      "kind": "runtime_fix",
+      "headSha": "0337949d8e8af75464e5fd7775bbd4d4b6033f86",
+      "pullRequest": "https://github.com/kaushal07wick/tinygrad/pull/3",
+      "githubCommentId": "7005470664",
+      "startedAt": "2026-11-19T09:43:46.407Z",
+      "finishedAt": "2026-11-19T09:45:03.768Z",
+      "jobStatus": "succeeded",
+      "testVerdict": "limited",
+      "experimentStatus": "incomplete_investigation",
+      "modelCalls": [
+        {
+          "stage": "investigator",
+          "model": "gpt-5.2",
+          "status": "reported",
+          "inputTokens": 3169,
+          "totalTokens": 3587,
+          "outputTokens": 418,
+          "reasoningTokens": 375,
+          "cachedInputTokens": 0
+        },
+        {
+          "stage": "investigator",
+          "model": "gpt-5.2",
+          "status": "reported",
+          "inputTokens": 5593,
+          "totalTokens": 6773,
+          "outputTokens": 1180,
+          "reasoningTokens": 1140,
+          "cachedInputTokens": 0
+        },
+        {
+          "stage": "investigator",
+          "model": "gpt-5.2",
+          "status": "reported",
+          "inputTokens": 6369,
+          "totalTokens": 7339,
+          "outputTokens": 970,
+          "reasoningTokens": 18,
+          "cachedInputTokens": 0
+        },
+        {
+          "stage": "advisor",
+          "model": "gpt-5.4-mini",
+          "status": "reported",
+          "inputTokens": 5165,
+          "totalTokens": 5225,
+          "outputTokens": 60,
+          "reasoningTokens": 18,
+          "cachedInputTokens": 0
+        },
+        {
+          "stage": "advisor",
+          "model": "gpt-5.4-mini",
+          "status": "reported",
+          "inputTokens": 4824,
+          "totalTokens": 5559,
+          "outputTokens": 735,
+          "reasoningTokens": 12,
+          "cachedInputTokens": 0
+        }
+      ],
+      "commands": [],
+      "rawReportSHA256": "237b2294aa2f5fdde3dbdc0f4d7debbf69b66cd7a7833ad8e9569c0389d151f1",
+      "githubReport": "https://github.com/kaushal07wick/tinygrad/pull/3#issuecomment-7005470664"
+    }
+  ],
+  "limitations": [
+    "Known upstream bug with a pre-existing proposed fix, not a new discovery.",
+    "Evaluation base adds a setup recipe; it is not intended for upstream.",
+    "One CPU configuration and three test files; GPU and remaining suite not tested.",
+    "Initial frozen reproducer was defective; corrected additional checks were authored after repair.",
+    "Returned tensor Python identity changes after capture; gradient state is not carried to the new wrapper.",
+    "Production target cleanup is not independently attested: saved catcherEvidence sandbox lists are empty and the separately checked E2B account may differ from production.",
+    "No Greptile head-to-head comparison or general performance claim."
+  ]
+}

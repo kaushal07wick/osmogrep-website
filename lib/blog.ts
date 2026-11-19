@@ -12,6 +12,7 @@ export type BlogPostMeta = {
   excerpt: string;
   cover: string;
   card?: string;
+  coverAlt?: string;
   category: string;
   readingMinutes: number;
 };
@@ -59,6 +60,7 @@ function parseFrontmatter(raw: string): { meta: Frontmatter; content: string } {
     if (key === 'excerpt') meta.excerpt = value;
     if (key === 'cover') meta.cover = value;
     if (key === 'card') meta.card = value;
+    if (key === 'coverAlt') meta.coverAlt = value;
     if (key === 'category') meta.category = value;
   });
 

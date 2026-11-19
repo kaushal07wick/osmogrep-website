@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 550" role="img" aria-labelledby="title desc">
+<title id="title">A returned tensor must follow each call's input</title><desc id="desc">Before repair, execution uses the current input but the return refers to the captured buffer. After repair, execution and the return template use the same bound input slot, including alias staging.</desc>
+<defs><pattern id="dots" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="1" height="1" fill="#d7d5cf"/></pattern><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0 7 4 0 8" fill="none" stroke="context-stroke"/></marker></defs>
+<rect width="1000" height="550" fill="#f8f7f3"/><rect width="1000" height="550" fill="url(#dots)" opacity=".45"/>
+<g font-family="monospace" fill="#191919"><text x="38" y="40" font-size="13" letter-spacing="2">RETURN REFERENCES / ILLUSTRATED CONTROL FLOW</text>
+<rect x="26" y="65" width="460" height="455" fill="#fff" stroke="#d7d5cf"/><rect x="514" y="65" width="460" height="455" fill="#fff" stroke="#d7d5cf"/>
+<rect x="26" y="65" width="5" height="455" fill="#b44122"/><rect x="514" y="65" width="5" height="455" fill="#237047"/>
+<text x="52" y="106" font-size="13" fill="#a03b21">BEFORE / CAPTURE-TIME RETURN</text><text x="540" y="106" font-size="13" fill="#237047">AFTER / BIND THE RETURN TEMPLATE</text>
+<g fill="#f8f7f3" stroke="#cbc8bf"><rect x="58" y="146" width="177" height="57"/><rect x="275" y="146" width="177" height="57"/><rect x="58" y="264" width="177" height="62"/><rect x="275" y="264" width="177" height="62"/>
+<rect x="546" y="146" width="176" height="57"/><rect x="762" y="146" width="176" height="57"/><rect x="546" y="264" width="176" height="62"/><rect x="762" y="264" width="176" height="62"/></g>
+<g font-size="15" text-anchor="middle"><text x="146" y="180">captured input</text><text x="363" y="180">current input</text><text x="146" y="290">returned Tensor</text><text x="146" y="311" font-size="12" fill="#a03b21">old buffer</text><text x="363" y="301">run_linear</text>
+<text x="634" y="180">current input</text><text x="850" y="180">PARAM slot</text><text x="634" y="301">run_linear</text><text x="850" y="290">return template</text><text x="850" y="311" font-size="12" fill="#237047">current buffer</text></g>
+<g fill="none" stroke-width="2" marker-end="url(#arrow)"><path d="M146 264V205" stroke="#b44122" stroke-dasharray="5 5"/><path d="M363 203V261" stroke="#77766e"/><path d="M722 175H758" stroke="#237047"/><path d="M634 203V261" stroke="#237047"/><path d="M850 203V261" stroke="#237047"/></g>
+<path d="M58 365H452M546 365H938" stroke="#dedbd3"/>
+<g font-size="14"><text x="58" y="402">Execution and return diverge.</text><text x="58" y="430" fill="#68635c">The old caller object stays captured.</text><text x="546" y="402">One buffer binding for both paths.</text><text x="546" y="430" fill="#68635c">Caller-owned tensors stay untouched.</text></g>
+<text x="58" y="482" font-size="12" fill="#a03b21">FRESH INPUT → STALE RETURN</text><text x="546" y="482" font-size="12" fill="#237047">STAGED INPUT → REBOUND RETURN</text>
+</g></svg>

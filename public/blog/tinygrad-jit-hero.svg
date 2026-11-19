@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+<title id="title">When a JIT returns yesterday's input</title><desc id="desc">An illustrated captured buffer persists across calls. A repair rebinds the return through the current input slot. Recorded CPU suite: 84 passed, zero failures, ten skipped.</desc>
+<defs><pattern id="dither" width="6" height="6" patternUnits="userSpaceOnUse"><rect x="0" y="0" width="1" height="1" fill="#a49e91"/></pattern><pattern id="darkdots" width="8" height="8" patternUnits="userSpaceOnUse"><rect width="1" height="1" fill="#e5dfd1" opacity=".14"/></pattern></defs>
+<rect width="1200" height="675" fill="#f5f2e9"/><rect width="1200" height="675" fill="url(#dither)" opacity=".26"/>
+<path d="M32 54V30H56M1144 30H1168V54M32 621V645H56M1144 645H1168V621" fill="none" stroke="#191919" stroke-width="3"/>
+<g font-family="monospace" fill="#191919"><text x="67" y="86" font-size="15" letter-spacing="3" fill="#b74408">OSMOGREP / ENGINEERING NOTES</text>
+<text x="65" y="163" font-size="47" font-weight="700" letter-spacing="-2">When a JIT returns</text><text x="65" y="220" font-size="47" font-weight="700" letter-spacing="-2">yesterday’s input.</text>
+<text x="68" y="265" font-size="17" fill="#68635c">tinygrad · capture, aliasing &amp; return binding</text>
+<rect x="67" y="309" width="544" height="246" fill="#fff" stroke="#d4cfc3"/>
+<rect x="67" y="309" width="5" height="246" fill="#ef5a00"/><text x="94" y="347" font-size="13" letter-spacing="2" fill="#68635c">REPEATED CALL / RETURNED VALUES</text>
+<text x="96" y="397" font-size="13" fill="#a03b21">OBSERVED WITHOUT REPAIR</text><text x="95" y="438" font-size="29" font-weight="700" fill="#a03b21">[11, 11, 11, 11]</text>
+<path d="M94 462H583" stroke="#e3dfd6"/><text x="96" y="492" font-size="13" fill="#237047">EXPECTED BY THE REGRESSION TEST</text><text x="95" y="531" font-size="29" font-weight="700" fill="#237047">[21, 21, 21, 21]</text>
+<rect x="650" y="82" width="482" height="473" fill="#1b1d1b"/><rect x="650" y="82" width="482" height="473" fill="url(#darkdots)"/>
+<g fill="#f5f2e9"><text x="682" y="124" font-size="13" letter-spacing="2" fill="#d1cabe">BIND ON EVERY INVOCATION</text>
+<g stroke="#686e61" fill="#272d27"><rect x="704" y="166" width="162" height="64"/><rect x="917" y="166" width="162" height="64"/><rect x="771" y="292" width="240" height="66"/><rect x="771" y="415" width="240" height="66"/></g>
+<g font-size="16" text-anchor="middle"><text x="785" y="203">current input</text><text x="998" y="203">PARAM slot</text><text x="891" y="320">shared buffer list</text><text x="891" y="343" font-size="12" fill="#b7c5b4">includes alias staging</text><text x="891" y="443">return template</text><text x="891" y="466" font-size="12" fill="#b7c5b4">bind to this call</text></g>
+<g fill="none" stroke="#f18846" stroke-width="2"><path d="M866 198H917"/><path d="M998 230V260H891V292"/><path d="M785 230V260H891"/><path d="M891 358V415"/></g>
+<rect x="883" y="381" width="16" height="8" fill="#f18846"/><text x="891" y="520" text-anchor="middle" font-size="12" letter-spacing="1" fill="#d1cabe">SOURCE FIX + CLOUD VERIFICATION</text></g>
+<path d="M67 590H1132" stroke="#c9c3b7"/>
+<text x="68" y="625" font-size="14" fill="#68635c">RECORDED CPU SUITE</text><text x="420" y="625" font-size="17" font-weight="700" fill="#237047">84 passed</text><text x="650" y="625" font-size="17" font-weight="700">0 failed</text><text x="880" y="625" font-size="17" fill="#68635c">10 skipped</text>
+</g></svg>
