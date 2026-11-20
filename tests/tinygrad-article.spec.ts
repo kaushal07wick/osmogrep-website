@@ -31,7 +31,11 @@ test('tinygrad article exposes attributed evidence and working before/after diag
   expect(evidence.results.suite.withFix).toEqual({ passed: 84, failed: 0, skipped: 10 });
   expect(evidence.results.suite.identicalFileBlobs).toHaveLength(3);
   expect(evidence.runs).toHaveLength(10);
-  await expect(page.getByRole('link', { name: 'Model repair attempt and recorded blocker' })).toHaveAttribute('href', /issuecomment-7005470664$/);
+  const sources=page.getByRole('figure',{name:'Tinygrad source and evidence links'});
+  await expect(sources.getByRole('link',{name:'Model repair attempt and recorded blocker'})).toHaveAttribute('href',/issuecomment-7005470664$/);
+  await expect(sources.getByRole('link',{name:'JIT implementation · pinned source'})).toHaveAttribute('href',/217d01643c210c4d4f8f21993c58f60f3ee062cb.*#L48-L96$/);
+  await expect(sources.getByRole('link',{name:'Download the 10-job ledger'})).toHaveAttribute('download','');
+  await expect(sources.getByRole('link')).toHaveCount(12);
 });
 
 test('tinygrad figures remain keyboard operable on a phone with reduced motion', async ({ page }) => {

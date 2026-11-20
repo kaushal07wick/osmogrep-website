@@ -1,12 +1,12 @@
 'use client';
 
 import { useId, useState } from 'react';
-import { FiArrowUpRight, FiCheck, FiCpu, FiGitPullRequest, FiLayers, FiMinus, FiX } from 'react-icons/fi';
+import { FiArrowUpRight, FiCheck, FiCode, FiCpu, FiFileText, FiGitPullRequest, FiLayers, FiMinus, FiX } from 'react-icons/fi';
 import { SiGithub, SiPython } from 'react-icons/si';
 import evidence from '../../../public/data/tinygrad-jit-verification.json';
 import './tinygrad-figure.css';
 
-export type TinygradFigureKind = 'summary' | 'binding' | 'results';
+export type TinygradFigureKind = 'summary' | 'binding' | 'results' | 'sources';
 
 function Summary() {
   return <figure className="tinygrad-figure tg-summary frame" aria-label="Tinygrad verification at a glance">
@@ -63,6 +63,37 @@ function Results() {
   </figure>;
 }
 
+function Sources() {
+  const commit='217d01643c210c4d4f8f21993c58f60f3ee062cb';
+  const source=`https://github.com/kaushal07wick/tinygrad/blob/${commit}`;
+  const report=(label:string)=>evidence.runs.find(run=>run.label===label)!.githubReport;
+  const groups=[
+    {title:'Read the code',icon:FiCode,links:[
+      {label:'Upstream bug report · #19205',href:evidence.upstreamIssue},
+      {label:'Repair PR · full diff',href:evidence.fix+'/files'},
+      {label:'JIT implementation · pinned source',href:source+'/tinygrad/engine/jit.py#L48-L96'},
+      {label:'Regression test · pinned source',href:source+'/test/runtime/test_jit.py#L26-L39'},
+    ]},
+    {title:'Inspect the runs',icon:FiGitPullRequest,links:[
+      {label:'Main suite · with repair',href:report('Suite with repair')},
+      {label:'Main suite · without repair',href:report('Suite without repair')},
+      {label:'Five extra cases · with repair',href:report('Additional checks v2 with repair')},
+      {label:'Five extra cases · without repair',href:report('Additional checks v2 without repair')},
+    ]},
+    {title:'Audit and replay',icon:FiFileText,links:[
+      {label:'Model repair attempt and recorded blocker',href:report('Model repair attempt')},
+      {label:'Evaluation recipe · pinned base',href:`https://github.com/kaushal07wick/tinygrad/blob/${evidence.evaluationBase}/.osmogrep.json`},
+      {label:'Additional test program · pinned source',href:'https://github.com/kaushal07wick/tinygrad/blob/7e96fc90ea787d21b1f812fdc9f151bb14b330b2/osmogrep_extra_check.py'},
+      {label:'Download the 10-job ledger',href:'/data/tinygrad-jit-verification.json'},
+    ]},
+  ];
+  return <figure className="tinygrad-figure tg-sources frame" aria-label="Tinygrad source and evidence links">
+    <div className="tg-heading"><div><span className="tg-eyebrow"><SiGithub aria-hidden="true"/> Follow the evidence</span><h3>Code, runs and replay files.</h3></div></div>
+    <div className="tg-source-grid">{groups.map(group=><section key={group.title} aria-label={group.title}><h4><group.icon aria-hidden="true"/>{group.title}</h4>{group.links.map(link=><a key={link.href} href={link.href} {...(link.href.startsWith('https:')?{target:'_blank',rel:'noreferrer'}:{download:true})}><span>{link.label}</span><FiArrowUpRight aria-hidden="true"/></a>)}</section>)}</div>
+    <figcaption>Implementation and test links use the tested commit <strong>217d016</strong>. These public reports can be read without access to the OsmoGrep dashboard.</figcaption>
+  </figure>;
+}
+
 export default function TinygradFigure({kind}:{kind:TinygradFigureKind}) {
-  return kind==='summary'?<Summary/>:kind==='binding'?<Binding/>:<Results/>;
+  return kind==='summary'?<Summary/>:kind==='binding'?<Binding/>:kind==='results'?<Results/>:<Sources/>;
 }

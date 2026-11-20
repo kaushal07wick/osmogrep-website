@@ -30,7 +30,7 @@ Three objects matter:
 
 The old return path handled **symbolic variable rebinding**, but an input-backed return could retain its **capture-time buffer**. Reusing the computation did not make that return reference current.
 
-The added test exposes the distinction:
+The [added regression test](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/test/runtime/test_jit.py#L26-L39) exposes the distinction:
 
 ```python
 @TinyJit
@@ -49,9 +49,9 @@ The fix preserves a **return template**, replacing concrete input-buffer referen
 
 <!-- tinygrad-figure:binding -->
 
-**At capture:** `_own_input_views()` finds returns that depend on input storage. It creates JIT-owned Tensor wrappers and stores their parameterized UOp templates. Caller-owned Tensor objects are not repurposed.
+**At capture:** [`_own_input_views()`](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/tinygrad/engine/jit.py#L48-L58) finds returns that depend on input storage. It creates JIT-owned Tensor wrappers and stores their parameterized UOp templates. Caller-owned Tensor objects are not repurposed.
 
-**At replay:** `_rebound_ret` combines those input-return templates with symbolic bindings. The execution and return paths use the **same `bufs` list**:
+**At replay:** [`_rebound_ret`](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/tinygrad/engine/jit.py#L76-L81) combines those input-return templates with symbolic bindings. The execution and return paths use the **same `bufs` list**:
 
 ```python
 run_linear(linear, {**self.var_vals, **var_vals},
@@ -63,9 +63,9 @@ for t,u,vals,params in self._rebound_ret:
 
 This is an excerpt from the [actual patch](https://github.com/kaushal07wick/tinygrad/pull/1/files), not a standalone implementation.
 
-**Why alias staging matters:** a previous JIT output can become a later input. Execution may stage that aliased buffer through a copy. Binding the return to the raw input instead of the buffer actually passed to `run_linear` would split the two paths again.
+**Why alias staging matters:** a previous JIT output can become a later input. Execution may stage that aliased buffer through a copy. Binding the return to the raw input instead of the buffer actually passed to [`run_linear`](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/tinygrad/engine/jit.py#L83-L96) would split the two paths again.
 
-**Why serialization matters:** `CapturedJit.__reduce__` retains the return templates, so a pickled JIT can rebuild the binding. Source delta: **+28 / −8 lines** in `tinygrad/engine/jit.py`, plus **15 lines** for `test_jit_return_input`.
+**Why serialization matters:** [`CapturedJit.__reduce__`](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/tinygrad/engine/jit.py#L71) retains the return templates, so a pickled JIT can rebuild the binding. Source delta: **+28 / −8 lines** in `tinygrad/engine/jit.py`, plus **15 lines** for `test_jit_return_input`.
 
 ## The result: one failing test becomes green
 
@@ -130,9 +130,4 @@ This is a **real OSS repair with cloud validation**. It establishes neither auto
 DEV=CPU:X86 python3 -m unittest test.runtime.test_jit test.runtime.test_symbolic_jit test.runtime.test_pickle
 ```
 
-- [Repair PR and source diff](https://github.com/kaushal07wick/tinygrad/pull/1)
-- [Passing suite with the repair](https://github.com/kaushal07wick/tinygrad/pull/1#issuecomment-7005402563)
-- [Failing suite without the repair](https://github.com/kaushal07wick/tinygrad/pull/3#issuecomment-7005440502)
-- [Additional checks: with repair](https://github.com/kaushal07wick/tinygrad/pull/4#issuecomment-7005645022) · [without repair](https://github.com/kaushal07wick/tinygrad/pull/5#issuecomment-7005650496)
-- [Model repair attempt and recorded blocker](https://github.com/kaushal07wick/tinygrad/pull/3#issuecomment-7005470664)
-- [Download the complete job ledger](/data/tinygrad-jit-verification.json)
+<!-- tinygrad-figure:sources -->

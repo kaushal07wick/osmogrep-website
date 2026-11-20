@@ -140,7 +140,7 @@ assert(tinygradPost.content.includes('Gradient state is not carried'));
 assert(tinygradPost.content.includes('45,183'));
 console.log('Tinygrad article checked: attributed repair, exact counts, identical test blobs, complete attempt ledger, model usage, post-repair checks and scope.');
 
-for (const kind of ['summary','binding','results']) assert.equal(tinygradPost.html.split(`data-tinygrad-figure="${kind}"`).length-1,1);
+for (const kind of ['summary','binding','results','sources']) assert.equal(tinygradPost.html.split(`data-tinygrad-figure="${kind}"`).length-1,1);
 assert(!markdownToHtml('<!-- tinygrad-figure:<script> -->').includes('<script>'));
 assert(markdownToHtml('```text\n<!-- tinygrad-figure:binding -->\n```').includes('&lt;!-- tinygrad-figure:binding --&gt;'));
 assert(existsSync('public/blog/tinygrad-logo.svg'));
