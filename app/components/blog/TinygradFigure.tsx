@@ -8,11 +8,14 @@ import './tinygrad-figure.css';
 
 export type TinygradFigureKind = 'summary' | 'binding' | 'results';
 
+const suiteWithRepair = evidence.runs.find(run => run.label === 'Suite with repair')!;
+const jobSeconds = (run: typeof suiteWithRepair) => ((Date.parse(run.finishedAt) - Date.parse(run.startedAt)) / 1000).toFixed(1);
+
 function Summary() {
   return <figure className="tinygrad-figure tg-summary frame" aria-label="Tinygrad verification at a glance">
     <div className="tg-repository"><span className="tg-logo"><img src="/blog/tinygrad-logo.svg" alt="tinygrad official logo" width="90" height="42" /></span><div><a href="https://github.com/tinygrad/tinygrad" target="_blank" rel="noreferrer"><SiGithub aria-hidden="true"/> tinygrad/tinygrad <FiArrowUpRight aria-hidden="true"/></a><span>JIT input-return repair · recorded 19 Nov 2026</span></div><span className="tg-device"><FiCpu aria-hidden="true"/> CPU:X86</span></div>
-    <div className="tg-metrics"><div><strong>{evidence.results.suite.total}</strong><span>tests reported</span></div><div><strong><span className="tg-fail">1</span><span className="tg-metric-arrow">→</span><span className="tg-pass">0</span></strong><span>failures after repair</span></div><div><strong>{evidence.results.suite.withFix.skipped}</strong><span>skipped on both heads</span></div><div><strong className="tg-pass">5 / 5</strong><span>additional cases pass</span></div></div>
-    <figcaption><strong>Repair:</strong> Claude Code. <strong>Cloud verification:</strong> OsmoGrep + E2B. Additional cases were written after the fix.</figcaption>
+    <div className="tg-metrics"><div><strong>{evidence.results.suite.total}</strong><span>tests reported</span></div><div><strong><span className="tg-fail">1</span><span className="tg-metric-arrow">→</span><span className="tg-pass">0</span></strong><span>failures after repair</span></div><div><strong>{jobSeconds(suiteWithRepair)}s</strong><span>passing suite job</span></div><div><strong className="tg-pass">5 / 5</strong><span>additional cases pass</span></div></div>
+    <figcaption><strong>Repair:</strong> Claude Code. <strong>Cloud verification:</strong> OsmoGrep + E2B. Ten tests skipped on both heads. Additional cases were written after the fix.</figcaption>
   </figure>;
 }
 
@@ -56,10 +59,11 @@ function Results() {
     <div className="tg-heading"><div><span className="tg-eyebrow"><SiPython aria-hidden="true"/> Recorded cloud execution</span><h3>One test changes the verdict.</h3></div><div className="tg-switch" role="group" aria-label="Test result revision"><button type="button" aria-pressed={!fixed} onClick={()=>setFixed(false)}>Without repair</button><button type="button" aria-pressed={fixed} onClick={()=>setFixed(true)}>With repair</button></div></div>
     <div className="tg-result-numbers" aria-live="polite"><span className="tg-pass"><FiCheck aria-hidden="true"/><strong>{result.passed}</strong> passed</span><span className={result.failed?'tg-fail':''}><FiX aria-hidden="true"/><strong>{result.failed}</strong> failed</span><span><FiMinus aria-hidden="true"/><strong>{result.skipped}</strong> skipped</span></div>
     <div className="tg-test-bar" aria-label={`${result.passed} passed, ${result.failed} failed, ${result.skipped} skipped`}><span className="tg-bar-pass" style={{flex:result.passed}}/>{result.failed>0&&<span className="tg-bar-fail" style={{flex:result.failed}}/>}<span className="tg-bar-skip" style={{flex:result.skipped}}/></div>
+    <div className="tg-result-numbers tg-run-timing" aria-label="Selected run timing"><span><strong>{jobSeconds(run)}s</strong> job elapsed</span><span><strong>{(run.commands[0].commandDurationMs / 1000).toFixed(1)}s</strong> test command</span></div>
     <div className="tg-log-label"><span>unittest · 3 files · CPU:X86</span><span>exit {run.commands[0].exitCode}</span></div>
     <pre className="tg-recorded-log" tabIndex={0} aria-label={`${fixed?'With':'Without'} repair recorded test output`}><code>{run.commands[0].unittestSummary}</code></pre>
     <a className="tg-evidence-link" href={run.githubReport} target="_blank" rel="noreferrer"><FiGitPullRequest aria-hidden="true"/> Read the actual GitHub test report <FiArrowUpRight aria-hidden="true"/></a>
-    <figcaption>The same three test-file blobs on both heads. Ten tests are skipped in both runs. These execution jobs made zero model calls; compute still ran.</figcaption>
+    <figcaption>The same three test-file blobs on both heads. Ten tests are skipped in both runs. Job elapsed uses recorded start and finish timestamps. Command time is measured separately; neither measures time spent writing the fix.</figcaption>
   </figure>;
 }
 

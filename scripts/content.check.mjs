@@ -128,17 +128,22 @@ for(const counts of [tinygrad.results.suite.withoutFix,tinygrad.results.suite.wi
 assert.equal(tinygrad.results.suite.identicalFileBlobs.length,3);
 assert.equal(tinygrad.results.extraCases.writtenAfterRepair,true);
 assert.equal(tinygrad.runs.length,10);
-const tinygradCalls=tinygrad.runs.flatMap(run=>run.modelCalls);
-assert.equal(tinygradCalls.length,tinygrad.usage.modelCalls);
-assert.equal(tinygradCalls.reduce((sum,call)=>sum+call.totalTokens,0),tinygrad.usage.reportedTokens);
-assert(tinygrad.runs.filter(run=>run.kind==='runtime_check').every(run=>run.modelCalls.length===0));
+assert.equal(tinygrad.schemaVersion,2);
+assert(!('usage' in tinygrad));
+assert(tinygrad.runs.every(run=>!('modelCalls' in run)));
+const comparedRuns=['Suite without repair','Suite with repair','Additional checks v2 without repair','Additional checks v2 with repair'].map(label=>tinygrad.runs.find(run=>run.label===label));
+assert(comparedRuns.every(Boolean));
+assert.deepEqual(comparedRuns.map(run=>Date.parse(run.finishedAt)-Date.parse(run.startedAt)),[42812,51194,41049,54723]);
+assert.equal(comparedRuns.reduce((sum,run)=>Date.parse(run.finishedAt)-Date.parse(run.startedAt)+sum,0),189778);
+assert.equal(comparedRuns.reduce((sum,run)=>sum+run.commands[0].commandDurationMs,0),98416);
 assert(tinygrad.runs.some(run=>run.outcome.includes('Stale'))&&tinygrad.runs.some(run=>run.outcome.includes('Blocked')));
 assert(tinygrad.runs.every(run=>/^https:\/\/github.com\/kaushal07wick\/tinygrad\//.test(run.githubReport)));
 for(const asset of [tinygradPost.cover,tinygradPost.card,'/blog/tinygrad-jit-binding.svg'])assert(existsSync('public'+asset));
 assert(tinygradPost.content.includes('Claude Code authored the repair. OsmoGrep executed the verification.'));
 assert(tinygradPost.content.includes('Gradient state is not carried'));
-assert(tinygradPost.content.includes('45,183'));
-console.log('Tinygrad article checked: attributed repair, exact counts, identical test blobs, complete attempt ledger, model usage, post-repair checks and scope.');
+assert(tinygradPost.content.includes('3 minutes 9.8 seconds') && tinygradPost.content.includes('98.4 seconds'));
+assert(!/model calls|reported tokens|credits|45,183/i.test(tinygradPost.content));
+console.log('Tinygrad article checked: attributed repair, exact counts, identical test blobs, complete attempt ledger, measured durations, post-repair checks and scope.');
 
 for (const kind of ['summary','binding','results']) assert.equal(tinygradPost.html.split(`data-tinygrad-figure="${kind}"`).length-1,1);
 assert(!markdownToHtml('<!-- tinygrad-figure:<script> -->').includes('<script>'));

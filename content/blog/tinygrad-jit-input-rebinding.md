@@ -79,6 +79,19 @@ The main comparison used **`DEV=CPU:X86`**, the same declared command and identi
 
 <!-- tinygrad-figure:results -->
 
+The passing suite job took **51.2 seconds** from its recorded start to finish. Its test command took **30.6 seconds**; Python’s unittest runner reported **28.531 seconds** inside that command. These are three different timing boundaries, not interchangeable measurements.
+
+Across the **four comparison jobs**, OsmoGrep ran the suite on both revisions, executed the five additional cases on both revisions, and checked types and lint in the additional-check commands:
+
+| Cloud run | Observed result | Job elapsed | Command elapsed |
+|---|---|---|---|
+| [Suite without repair](https://github.com/kaushal07wick/tinygrad/pull/3#issuecomment-7005440502) | 83 pass · 1 fail · 10 skip | 42.8s | 23.2s |
+| [Suite with repair](https://github.com/kaushal07wick/tinygrad/pull/1#issuecomment-7005402563) | 84 pass · 10 skip | 51.2s | 30.6s |
+| [Additional checks without repair](https://github.com/kaushal07wick/tinygrad/pull/5#issuecomment-7005650496) | 5 fail · types and lint clean | 41.0s | 19.4s |
+| [Additional checks with repair](https://github.com/kaushal07wick/tinygrad/pull/4#issuecomment-7005645022) | 5 pass · types and lint clean | 54.7s | 25.3s |
+
+Together, those four jobs account for **3 minutes 9.8 seconds of cumulative job time**, including **98.4 seconds of command execution**. The totals use unrounded records. They exclude earlier blocked or stale jobs, source review, the unsuccessful automated repair and time spent authoring the patch. **End-to-end repair time was not measured.** These single runs verify behavior; they do not establish a performance improvement.
+
 The **other 93 tests** have identical outcomes: **83 pass and 10 skip**. Those skips cover backend-specific or known-pending cases; they are not counted as passes. The new return-input test supplies the difference between the two heads.
 
 **mypy stays clean across 219 source files**, and **ruff stays clean on the two PR files**, with and without the fix. Static checks are useful here, but neither establishes that the returned data belongs to the current invocation.
@@ -90,8 +103,6 @@ To repeat the bounded suite, use the [pinned evaluation recipe](https://github.c
 The patch worked in the measured checks, but OsmoGrep’s own repair workflow did not produce it. Its source review found no issue and requested no execution. A later [repair attempt stopped before execution](https://github.com/kaushal07wick/tinygrad/pull/3#issuecomment-7005470664): the model marked a hypothesis ready while citing only one revision, so the coordinator rejected it under the two-revision evidence rule.
 
 That suggests a task-framing gap. An **introduced regression** needs a justified base-pass → changed-code-fail comparison. An **existing bug exposed by a test** needs the reported failure reproduced first, followed by repair and rerunning the same test. Both need existing checks preserved. An explicit existing-bug path is a next design step; weakening the regression guard would not provide it.
-
-The review and unsuccessful repair used **eight model calls and 45,183 reported tokens**. All cloud test jobs used **zero model calls**. Those figures exclude Claude Code’s authoring work and do not represent the cost of an autonomous repair.
 
 ## What remains open
 

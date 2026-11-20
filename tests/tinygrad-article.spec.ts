@@ -24,6 +24,13 @@ test('tinygrad article exposes attributed evidence and working before/after diag
   await results.getByRole('button', { name: 'Without repair', exact: true }).click();
   await expect(results.getByRole('code')).toContainText('FAILED (failures=1, skipped=10)');
   await expect(results.getByRole('link', { name: /Read the actual GitHub test report/ })).toHaveAttribute('href', /issuecomment-7005440502$/);
+  await expect(page.getByRole('figure', { name: 'Tinygrad verification at a glance' })).toContainText('51.2s');
+  await expect(results.getByLabel('Selected run timing')).toContainText('42.8s');
+  await expect(results.getByLabel('Selected run timing')).toContainText('23.2s');
+  const timings=page.getByRole('table');
+  await expect(timings.getByRole('row')).toHaveCount(5);
+  await expect(page.getByText('3 minutes 9.8 seconds of cumulative job time', {exact:true})).toBeVisible();
+  await expect(page.locator('article')).not.toContainText(/model calls|reported tokens|credits|45,183/i);
   const evidenceLink=page.getByRole('link', { name: 'execution record', exact: true });
   const response=await page.request.get((await evidenceLink.getAttribute('href'))!);
   expect(response.ok()).toBe(true);
@@ -31,6 +38,9 @@ test('tinygrad article exposes attributed evidence and working before/after diag
   expect(evidence.results.suite.withFix).toEqual({ passed: 84, failed: 0, skipped: 10 });
   expect(evidence.results.suite.identicalFileBlobs).toHaveLength(3);
   expect(evidence.runs).toHaveLength(10);
+  expect(evidence.schemaVersion).toBe(2);
+  expect(evidence).not.toHaveProperty('usage');
+  expect(evidence.runs.every((run: Record<string, unknown>) => !('modelCalls' in run))).toBe(true);
   await expect(page.getByRole('link',{name:'repair attempt stopped before execution'})).toHaveAttribute('href',/issuecomment-7005470664$/);
   await expect(page.getByRole('link',{name:'_own_input_views()'})).toHaveAttribute('href',/217d01643c210c4d4f8f21993c58f60f3ee062cb.*#L48-L58$/);
 
