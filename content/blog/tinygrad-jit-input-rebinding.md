@@ -10,27 +10,15 @@ coverAlt: "Official tinygrad logo beside two illustrated buffer stacks. The old 
 category: "Runtime verification"
 ---
 
-**The computation used the current input. The returned tensor did not.** A captured tinygrad function retained an earlier input reference, producing stale values on subsequent calls.
+**A JIT can run the right computation and still return the wrong tensor.** That was the problem we worked through in [tinygrad](https://github.com/tinygrad/tinygrad): repeated calls used fresh inputs, but an input-backed return could stay attached to capture-time storage.
 
-We repaired the return-binding path and checked it in OsmoGrep’s production E2B runner. **Claude Code authored the repair. OsmoGrep executed the verification.** Its review and repair models did not produce this fix.
+The bug was already reported in [upstream PR #19205](https://github.com/tinygrad/tinygrad/pull/19205), which also proposes a fix. We implemented a repair in [our fork](https://github.com/kaushal07wick/tinygrad/pull/1) and checked it through OsmoGrep’s production E2B runner. **Claude Code authored the repair. OsmoGrep executed the verification.** Its review and repair models did not produce this fix.
 
 <!-- tinygrad-figure:summary -->
 
-[Read the repair PR](https://github.com/kaushal07wick/tinygrad/pull/1) · [Download the execution record](/data/tinygrad-jit-verification.json)
+## The input moved. The return did not.
 
-## The bug: stale references during JIT replay
-
-**JIT capture** records work for reuse. **Replay** executes that captured work with another invocation’s inputs. tinygrad already rebound execution inputs; returned tensors backed by those inputs needed the same treatment.
-
-Three objects matter:
-
-- **Tensor:** the Python object returned to the caller.
-- **UOp graph:** tinygrad’s intermediate representation of the value, including views and buffer references.
-- **Buffer:** the realized storage containing the tensor’s data.
-
-The old return path handled **symbolic variable rebinding**, but an input-backed return could retain its **capture-time buffer**. Reusing the computation did not make that return reference current.
-
-The [added regression test](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/test/runtime/test_jit.py#L26-L39) exposes the distinction:
+The function that exposes the problem is small:
 
 ```python
 @TinyJit
@@ -39,19 +27,29 @@ def f(a):
   return a, a[1:3]
 ```
 
-It supplies **five fresh inputs**, checks the returned tensor and slice, then checks that earlier caller-owned inputs remain unchanged. Without the repair, it returns `[11, 11, 11, 11]` where the assertion expects `[21, 21, 21, 21]`: **4/4 elements mismatch**.
+Each invocation receives a freshly realized tensor containing different values. The function increments it, then returns the tensor and a slice. A caller reasonably expects both returns to reflect **this invocation’s input**.
 
-This was already reported in [upstream PR #19205](https://github.com/tinygrad/tinygrad/pull/19205), which proposes its own fix. Our evaluation uses upstream `daf2bfb1260ecbbf2b71ca9b48c6442426cfdf96`. It is an **issue-guided repair**, not a new discovery.
+The [added regression test](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/test/runtime/test_jit.py#L26-L39) repeats that five times. Without the repair, one call returns `[11, 11, 11, 11]` where the assertion expects `[21, 21, 21, 21]`: **4/4 elements mismatch**. The [cloud run without the fix](https://github.com/kaushal07wick/tinygrad/pull/3#issuecomment-7005440502) records the actual assertion failure.
 
-## The repair: parameterize the return graph
+The test also retains earlier inputs and checks them afterward. Correcting the current return must not silently rebind a Tensor that an earlier caller still owns.
 
-The fix preserves a **return template**, replacing concrete input-buffer references with **PARAM slots**. Each replay binds those slots to that invocation’s buffers.
+## A Tensor is not its storage
+
+Understanding the failure means separating three layers. A **Tensor** is a Python wrapper. Its **UOp graph** is tinygrad’s intermediate representation of the value, including views and buffer references. A **Buffer** is the realized storage holding its data.
+
+**Capture** records work for reuse; **replay** executes that work with another invocation’s inputs. The captured execution already rebound its input buffers. The return path handled symbolic variables, but an input-backed Tensor could retain a reference to the **capture-time buffer**.
+
+That is why checking only the computation misses the problem. Input rebinding and return rebinding have to agree.
 
 <!-- tinygrad-figure:binding -->
 
-**At capture:** [`_own_input_views()`](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/tinygrad/engine/jit.py#L48-L58) finds returns that depend on input storage. It creates JIT-owned Tensor wrappers and stores their parameterized UOp templates. Caller-owned Tensor objects are not repurposed.
+## Bind the return to the same inputs as execution
 
-**At replay:** [`_rebound_ret`](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/tinygrad/engine/jit.py#L76-L81) combines those input-return templates with symbolic bindings. The execution and return paths use the **same `bufs` list**:
+The repair keeps a **return template** instead of treating a capture-time input reference as permanent.
+
+At capture, [`_own_input_views()`](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/tinygrad/engine/jit.py#L48-L58) finds returned tensors whose graphs depend on input storage. It creates **JIT-owned wrappers** and replaces concrete input-buffer references in their templates with **PARAM slots**. Earlier caller-owned Tensor objects remain untouched.
+
+On replay, [`_rebound_ret`](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/tinygrad/engine/jit.py#L76-L81) combines those templates with symbolic bindings. Execution and the return path then share the same `bufs` list:
 
 ```python
 run_linear(linear, {**self.var_vals, **var_vals},
@@ -61,73 +59,44 @@ for t,u,vals,params in self._rebound_ret:
                        **{p:bufs[p.arg.slot] for p in params}}, walk=True)
 ```
 
-This is an excerpt from the [actual patch](https://github.com/kaushal07wick/tinygrad/pull/1/files), not a standalone implementation.
+This is an excerpt from the [source patch](https://github.com/kaushal07wick/tinygrad/pull/1/files), which changes `tinygrad/engine/jit.py` by **+28 / −8 lines** and adds a **15-line test**.
 
-**Why alias staging matters:** a previous JIT output can become a later input. Execution may stage that aliased buffer through a copy. Binding the return to the raw input instead of the buffer actually passed to [`run_linear`](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/tinygrad/engine/jit.py#L83-L96) would split the two paths again.
+The shared buffer list matters for **aliasing**. A previous JIT output can become a later input, and execution may stage that aliased input through a copy. Returning a reference bound to the raw input rather than the buffer actually used by [`run_linear`](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/tinygrad/engine/jit.py#L83-L96) would split the paths again.
 
-**Why serialization matters:** [`CapturedJit.__reduce__`](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/tinygrad/engine/jit.py#L71) retains the return templates, so a pickled JIT can rebuild the binding. Source delta: **+28 / −8 lines** in `tinygrad/engine/jit.py`, plus **15 lines** for `test_jit_return_input`.
+Serialization needs the same care. The updated [`CapturedJit.__reduce__`](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/tinygrad/engine/jit.py#L71) retains the templates so a pickled JIT can rebuild its return bindings.
 
-## The result: one failing test becomes green
+## Check the paths a simple example misses
 
-The comparison uses **identical test-file blobs**, the same declared command and **`DEV=CPU:X86`**. Select a revision to inspect its recorded unittest summary.
+We extended the comparison beyond the basic return value: **pickled JITs**, **aliased inputs**, **symbolic views**, **a returned view beside a computed output**, and **earlier inputs left untouched**.
+
+All five corrected cases [pass with the repair](https://github.com/kaushal07wick/tinygrad/pull/4#issuecomment-7005645022) and [fail without it](https://github.com/kaushal07wick/tinygrad/pull/5#issuecomment-7005650496). The [additional test program](https://github.com/kaushal07wick/tinygrad/blob/7e96fc90ea787d21b1f812fdc9f151bb14b330b2/osmogrep_extra_check.py) has the same Git blob on both compared heads.
+
+**These checks were written after the repair.** Our first frozen reproducer had three invalid cases: two constructed virtual inputs that tinygrad rejects, and one performed no work for the JIT to capture. The corrected cases strengthen the behavioral comparison; they are not a pre-repair holdout.
+
+## What changed in the cloud runs
+
+The main comparison used **`DEV=CPU:X86`**, the same declared command and identical test-file blobs for [JIT](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/test/runtime/test_jit.py), [symbolic JIT](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/test/runtime/test_symbolic_jit.py) and [pickle](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/test/runtime/test_pickle.py) tests. Select a revision below to inspect the recorded summary.
 
 <!-- tinygrad-figure:results -->
 
-The **other 93 tests** have the same outcome on both heads: **83 pass, 10 skip**. The skips are backend-specific or known-pending cases; they are not counted as passes.
+The **other 93 tests** have identical outcomes: **83 pass and 10 skip**. Those skips cover backend-specific or known-pending cases; they are not counted as passes. The new return-input test supplies the difference between the two heads.
 
-| Test file | Coverage exercised |
-| --- | --- |
-| `test/runtime/test_jit.py` | JIT execution and the new input-return case |
-| `test/runtime/test_symbolic_jit.py` | Symbolic JIT behavior |
-| `test/runtime/test_pickle.py` | Serialization behavior |
+**mypy stays clean across 219 source files**, and **ruff stays clean on the two PR files**, with and without the fix. Static checks are useful here, but neither establishes that the returned data belongs to the current invocation.
 
-## Beyond the happy path: five edge cases
+To repeat the bounded suite, use the [pinned evaluation recipe](https://github.com/kaushal07wick/tinygrad/blob/7d9d56d7715795e789b1febebf5e22a00fb86c0a/.osmogrep.json) and the tested revisions in the [execution record](/data/tinygrad-jit-verification.json). The base is upstream `daf2bfb` plus evaluation-only setup commits; those commits are not intended for upstream.
 
-**All five corrected additional cases fail without the repair and pass with it.** Static checks alone remain green on both versions, making them insufficient to detect this behavior.
+## Where automated repair stopped
 
-| Additional case | Invariant checked |
-| --- | --- |
-| **Pickled JIT** | Input-return binding survives serialization |
-| **Aliased input** | A prior output fed back as input follows staging |
-| **Symbolic view** | Returned view follows the current input and binding |
-| **View + computed output** | Both results stay consistent with this invocation |
-| **Earlier inputs** | Later calls never rebind earlier caller-owned tensors |
+The patch worked in the measured checks, but OsmoGrep’s own repair workflow did not produce it. Its source review found no issue and requested no execution. A later [repair attempt stopped before execution](https://github.com/kaushal07wick/tinygrad/pull/3#issuecomment-7005470664): the model marked a hypothesis ready while citing only one revision, so the coordinator rejected it under the two-revision evidence rule.
 
-**mypy:** clean across **219 source files**. **ruff:** clean on the two PR files. The additional-check file is byte-identical between the compared heads, with Git blob `05d2527f232ec1b5fc0a282dfe5144a1e2352b33`.
+That suggests a task-framing gap. An **introduced regression** needs a justified base-pass → changed-code-fail comparison. An **existing bug exposed by a test** needs the reported failure reproduced first, followed by repair and rerunning the same test. Both need existing checks preserved. An explicit existing-bug path is a next design step; weakening the regression guard would not provide it.
 
-**Provenance:** these five checks were written **after the repair**. The first frozen reproducer had three invalid cases; the corrected checks are not a pre-repair holdout.
-
-## What the repair model missed
-
-OsmoGrep’s review of the proposed fix found no issue and requested no execution. Its `runtime_fix` attempt on the **test-only PR** stopped before a VM started: the hypothesis cited only one revision, so it failed the existing two-revision evidence check.
-
-The engineering gap is a distinction between two tasks:
-
-| Task | Proof needed |
-| --- | --- |
-| **Introduced regression** | Base passes → changed code fails → repair passes |
-| **Existing bug** | Reproduce the reported failure → repair → same test passes |
-
-An explicit existing-bug path is a **next design step**, not a capability demonstrated here. The two-revision guard should remain intact for introduced-regression claims.
-
-**Model accounting:** eight calls, **45,183 reported tokens**, for the review and unsuccessful repair attempt. Every cloud test job used **zero model calls**. These counts exclude Claude Code’s authoring work and do not price an autonomous repair.
+The review and unsuccessful repair used **eight model calls and 45,183 reported tokens**. All cloud test jobs used **zero model calls**. Those figures exclude Claude Code’s authoring work and do not represent the cost of an autonomous repair.
 
 ## What remains open
 
-**Object identity changes.** After capture, the returned input is a JIT-owned wrapper sharing input storage, rather than the original Python object. **Gradient state is not carried** to that wrapper; gradient compatibility remains untested.
+The patch changes **Python object identity** after capture: the return is a JIT-owned wrapper sharing input storage, rather than the original Python object. **Gradient state is not carried** to that wrapper. Gradient compatibility, GPU backends and the rest of tinygrad’s suite remain untested.
 
-**Coverage is bounded:** one CPU configuration, three test files and the additional checks. No GPU, full-suite or cross-backend guarantee is established. The fork patch has not been merged upstream.
+The [ten-job ledger](/data/tinygrad-jit-verification.json) also retains the recipe failures, stale run and incomplete cleanup evidence. Two early recipes assumed unavailable venv/pip support; a later run became stale because mypy wrote cache files into the workspace. Saved jobs have empty sandbox-evidence lists, and the separately checked E2B account was not confirmed as production’s account.
 
-**Failed attempts remain visible.** Two early recipes assumed unavailable venv/pip support. A later run was marked stale because mypy wrote cache files into the workspace. The corrected setup uses NumPy 2.2.6 and a pinned pip 24.3.1 wheel. Evaluation-only setup commits are not intended for upstream.
-
-**Cleanup evidence is incomplete.** Saved jobs have empty sandbox-evidence lists; the separately checked E2B account was not confirmed as production’s account. The [ten-job ledger](/data/tinygrad-jit-verification.json) retains the unsuccessful attempts and these limits.
-
-This is a **real OSS repair with cloud validation**. It establishes neither autonomous discovery/repair nor a Greptile comparison.
-
-## Reproduce and inspect
-
-```sh
-DEV=CPU:X86 python3 -m unittest test.runtime.test_jit test.runtime.test_symbolic_jit test.runtime.test_pickle
-```
-
-<!-- tinygrad-figure:sources -->
+The result is a **real OSS repair with cloud validation**, bounded to the tested CPU configuration. It is not an autonomous-discovery result or a Greptile comparison. The [public PR](https://github.com/kaushal07wick/tinygrad/pull/1) contains the source change and test; the linked run reports show what happened when each version executed.

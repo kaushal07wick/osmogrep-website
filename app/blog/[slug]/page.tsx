@@ -34,7 +34,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       <header className="journal-article-header"><p className="editorial-kicker">Engineering / {post.category}</p><h1>{post.title}</h1><p className="journal-deck">{post.excerpt}</p><PostMeta {...post} /></header>
       {post.cover.startsWith("/blog/") && <figure className="journal-article-cover">{post.card ? <Image src={post.cover} alt={post.coverAlt || "Conceptual illustration of a changed component feeding connected resource chambers, with one accumulating unreleased capacity."} width={1672} height={941} sizes="(max-width: 900px) 94vw, 840px" priority /> : <img src={post.cover} alt={post.title} width="1200" height="630" fetchPriority="high" />}</figure>}
       <details className="journal-contents"><summary>In this article <span>{post.sections.length} sections</span></summary><nav aria-label="Article contents"><ol>{post.sections.map(section => <li key={section.id}><a href={`#${section.id}`}>{section.title}</a></li>)}</ol></nav></details>
-      <div className="journal-body">{post.html.split(/(<div data-(?:runtime|tinygrad)-figure="(?:causal|experiment|compute|summary|binding|results|sources)"><\/div>)/g).map((part, index) => {
+      <div className="journal-body">{post.html.split(/(<div data-(?:runtime|tinygrad)-figure="(?:causal|experiment|compute|summary|binding|results)"><\/div>)/g).map((part, index) => {
         const figure = part.match(/^<div data-(runtime|tinygrad)-figure="([a-z]+)"><\/div>$/);
         if (figure?.[1] === 'runtime') return <RuntimeFigure key={index} kind={figure[2] as 'causal' | 'experiment' | 'compute'} />;
         if (figure?.[1] === 'tinygrad') return <TinygradFigure key={index} kind={figure[2] as TinygradFigureKind} />;

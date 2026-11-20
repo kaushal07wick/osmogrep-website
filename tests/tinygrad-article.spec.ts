@@ -24,18 +24,16 @@ test('tinygrad article exposes attributed evidence and working before/after diag
   await results.getByRole('button', { name: 'Without repair', exact: true }).click();
   await expect(results.getByRole('code')).toContainText('FAILED (failures=1, skipped=10)');
   await expect(results.getByRole('link', { name: /Read the actual GitHub test report/ })).toHaveAttribute('href', /issuecomment-7005440502$/);
-  const evidenceLink=page.getByRole('link', { name: 'Download the execution record', exact: true });
+  const evidenceLink=page.getByRole('link', { name: 'execution record', exact: true });
   const response=await page.request.get((await evidenceLink.getAttribute('href'))!);
   expect(response.ok()).toBe(true);
   const evidence=await response.json();
   expect(evidence.results.suite.withFix).toEqual({ passed: 84, failed: 0, skipped: 10 });
   expect(evidence.results.suite.identicalFileBlobs).toHaveLength(3);
   expect(evidence.runs).toHaveLength(10);
-  const sources=page.getByRole('figure',{name:'Tinygrad source and evidence links'});
-  await expect(sources.getByRole('link',{name:'Model repair attempt and recorded blocker'})).toHaveAttribute('href',/issuecomment-7005470664$/);
-  await expect(sources.getByRole('link',{name:'JIT implementation · pinned source'})).toHaveAttribute('href',/217d01643c210c4d4f8f21993c58f60f3ee062cb.*#L48-L96$/);
-  await expect(sources.getByRole('link',{name:'Download the 10-job ledger'})).toHaveAttribute('download','');
-  await expect(sources.getByRole('link')).toHaveCount(12);
+  await expect(page.getByRole('link',{name:'repair attempt stopped before execution'})).toHaveAttribute('href',/issuecomment-7005470664$/);
+  await expect(page.getByRole('link',{name:'_own_input_views()'})).toHaveAttribute('href',/217d01643c210c4d4f8f21993c58f60f3ee062cb.*#L48-L58$/);
+
 });
 
 test('tinygrad figures remain keyboard operable on a phone with reduced motion', async ({ page }) => {
