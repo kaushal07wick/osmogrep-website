@@ -101,6 +101,6 @@ A [separate single-PR experiment](/blog/from-pull-request-to-runtime-regression)
 
 For these captured changes, execution identified a specific compatibility failure that neither individual revision exhibited under the same experiment. The failure is visible before deploying their combination. That is a useful, bounded form of proactive regression analysis.
 
-It does not establish broad detection accuracy, false-positive rates, arbitrary service setup, production telemetry coverage or an advantage over another reviewer. There is one selected interaction case, no negative-control population and no statistical estimate. No Greptile result is included.
+It does not establish broad detection accuracy, false-positive rates, arbitrary service setup, production telemetry coverage or an advantage over another reviewer. There is one selected interaction case, no negative-control population and no statistical estimate.
 
 The next evaluation question is whether the same process finds legitimate interactions in independent repositories under a fixed budget. Those results should retain failed setups, invalid hypotheses and unsuccessful repairs alongside successes. [Inspect the complete interaction evidence](/data/pr-interaction.json).

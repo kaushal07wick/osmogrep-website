@@ -6,7 +6,7 @@ import { SiGithub, SiPython } from 'react-icons/si';
 import evidence from '../../../public/data/tinygrad-jit-verification.json';
 import './tinygrad-figure.css';
 
-export type TinygradFigureKind = 'summary' | 'binding' | 'results';
+export type TinygradFigureKind = 'summary' | 'binding' | 'results' | 'console';
 
 const suiteWithRepair = evidence.runs.find(run => run.label === 'Suite with repair')!;
 const jobSeconds = (run: typeof suiteWithRepair) => ((Date.parse(run.finishedAt) - Date.parse(run.startedAt)) / 1000).toFixed(1);
@@ -15,7 +15,7 @@ function Summary() {
   return <figure className="tinygrad-figure tg-summary frame" aria-label="Tinygrad verification at a glance">
     <div className="tg-repository"><span className="tg-logo"><img src="/blog/tinygrad-logo.svg" alt="tinygrad official logo" width="90" height="42" /></span><div><a href="https://github.com/tinygrad/tinygrad" target="_blank" rel="noreferrer"><SiGithub aria-hidden="true"/> tinygrad/tinygrad <FiArrowUpRight aria-hidden="true"/></a><span>JIT input-return repair · recorded 19 Nov 2026</span></div><span className="tg-device"><FiCpu aria-hidden="true"/> CPU:X86</span></div>
     <div className="tg-metrics"><div><strong>{evidence.results.suite.total}</strong><span>tests reported</span></div><div><strong><span className="tg-fail">1</span><span className="tg-metric-arrow">→</span><span className="tg-pass">0</span></strong><span>failures after repair</span></div><div><strong>{jobSeconds(suiteWithRepair)}s</strong><span>passing suite job</span></div><div><strong className="tg-pass">5 / 5</strong><span>additional cases pass</span></div></div>
-    <figcaption><strong>Repair:</strong> Claude Code. <strong>Cloud verification:</strong> OsmoGrep + E2B. Ten tests skipped on both heads. Additional cases were written after the fix.</figcaption>
+    <figcaption><strong>Workflow:</strong> PR patch → OsmoGrep cloud verification → GitHub evidence. Ten tests skipped on both heads. Additional cases were written after the fix.</figcaption>
   </figure>;
 }
 
@@ -67,6 +67,14 @@ function Results() {
   </figure>;
 }
 
+function Console() {
+  return <figure className="tinygrad-figure tg-console frame" aria-label="Actual OsmoGrep production run">
+    <div className="tg-heading"><div><span className="tg-eyebrow"><FiCpu aria-hidden="true"/> OsmoGrep · production dashboard</span><h3>A run you can inspect.</h3></div><a className="tg-evidence-link" href="/blog/tinygrad-osmogrep-with-repair.png" target="_blank" rel="noreferrer">Open full size <FiArrowUpRight aria-hidden="true"/></a></div>
+    <a href="/blog/tinygrad-osmogrep-with-repair.png" target="_blank" rel="noreferrer" aria-label="Enlarge the actual OsmoGrep dashboard screenshot"><img src="/blog/tinygrad-osmogrep-with-repair.png" alt="Actual OsmoGrep production dashboard for tinygrad PR 1: recorded checks passed, 395 test and fixture files unchanged, 51.2 seconds elapsed." width="1244" height="680" loading="lazy"/></a>
+    <figcaption>Captured from the saved production run. The PR supplies the patch; this job runs and records its checks. <a href={suiteWithRepair.githubReport} target="_blank" rel="noreferrer">Read the same run’s public report ↗</a></figcaption>
+  </figure>;
+}
+
 export default function TinygradFigure({kind}:{kind:TinygradFigureKind}) {
-  return kind==='summary'?<Summary/>:kind==='binding'?<Binding/>:<Results/>;
+  return kind==='summary'?<Summary/>:kind==='binding'?<Binding/>:kind==='console'?<Console/>:<Results/>;
 }

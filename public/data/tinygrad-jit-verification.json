@@ -15,7 +15,7 @@
     "pipBootstrap": "24.3.1 wheel from PyPI"
   },
   "authorship": {
-    "repair": "Claude Code, attributed in the public PR and evaluator report",
+    "repair": "Patch authored with a separate coding agent, as recorded in the public PR and evaluator report",
     "osmogrep": "Executed cloud validation; model review found no issue and model repair produced no patch"
   },
   "results": {
@@ -161,7 +161,12 @@
         }
       ],
       "rawReportSHA256": "7d3014be5e01824961dfc3a9223ef4015d60663943f47a5e6c27624eb9f42418",
-      "githubReport": "https://github.com/kaushal07wick/tinygrad/pull/1#issuecomment-7005402563"
+      "githubReport": "https://github.com/kaushal07wick/tinygrad/pull/1#issuecomment-7005402563",
+      "setupDurationMs": 4342,
+      "originalTests": {
+        "status": "unchanged",
+        "filesChecked": 395
+      }
     },
     {
       "label": "Suite without repair",
@@ -317,6 +322,6 @@
     "Initial frozen reproducer was defective; corrected additional checks were authored after repair.",
     "Returned tensor Python identity changes after capture; gradient state is not carried to the new wrapper.",
     "Production target cleanup is not independently attested: saved catcherEvidence sandbox lists are empty and the separately checked E2B account may differ from production.",
-    "No Greptile head-to-head comparison or general performance claim."
+    "Single-case results; no general performance claim."
   ]
 }

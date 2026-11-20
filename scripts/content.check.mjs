@@ -139,14 +139,18 @@ assert.equal(comparedRuns.reduce((sum,run)=>sum+run.commands[0].commandDurationM
 assert(tinygrad.runs.some(run=>run.outcome.includes('Stale'))&&tinygrad.runs.some(run=>run.outcome.includes('Blocked')));
 assert(tinygrad.runs.every(run=>/^https:\/\/github.com\/kaushal07wick\/tinygrad\//.test(run.githubReport)));
 for(const asset of [tinygradPost.cover,tinygradPost.card,'/blog/tinygrad-jit-binding.svg'])assert(existsSync('public'+asset));
-assert(tinygradPost.content.includes('Claude Code authored the repair. OsmoGrep executed the verification.'));
+assert(tinygradPost.content.includes('The [patch in our fork]') && tinygradPost.content.includes('authored with a separate coding agent; OsmoGrep ran the verification.'));
+assert(!/greptile/i.test(JSON.stringify(tinygrad)+tinygradPost.content));
+assert.equal(tinygrad.runs.find(run=>run.label==='Suite with repair').originalTests.filesChecked,395);
 assert(tinygradPost.content.includes('Gradient state is not carried'));
 assert(tinygradPost.content.includes('3 minutes 9.8 seconds') && tinygradPost.content.includes('98.4 seconds'));
 assert(!/model calls|reported tokens|credits|45,183/i.test(tinygradPost.content));
 console.log('Tinygrad article checked: attributed repair, exact counts, identical test blobs, complete attempt ledger, measured durations, post-repair checks and scope.');
 
-for (const kind of ['summary','binding','results']) assert.equal(tinygradPost.html.split(`data-tinygrad-figure="${kind}"`).length-1,1);
+for (const kind of ['summary','binding','results','console']) assert.equal(tinygradPost.html.split(`data-tinygrad-figure="${kind}"`).length-1,1);
 assert(!markdownToHtml('<!-- tinygrad-figure:<script> -->').includes('<script>'));
 assert(markdownToHtml('```text\n<!-- tinygrad-figure:binding -->\n```').includes('&lt;!-- tinygrad-figure:binding --&gt;'));
 assert(existsSync('public/blog/tinygrad-logo.svg'));
-console.log('Tinygrad figures checked: three explicit typed markers, escaped invalid markers and official logo asset.');
+console.log('Tinygrad figures checked: four explicit typed markers, escaped invalid markers and official logo asset.');
+
+assert(existsSync('public/blog/tinygrad-osmogrep-with-repair.png'));

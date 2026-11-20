@@ -12,7 +12,7 @@ category: "Runtime verification"
 
 **A JIT can run the right computation and still return the wrong tensor.** That was the problem we worked through in [tinygrad](https://github.com/tinygrad/tinygrad): repeated calls used fresh inputs, but an input-backed return could stay attached to capture-time storage.
 
-The bug was already reported in [upstream PR #19205](https://github.com/tinygrad/tinygrad/pull/19205), which also proposes a fix. We implemented a repair in [our fork](https://github.com/kaushal07wick/tinygrad/pull/1) and checked it through OsmoGrep’s production E2B runner. **Claude Code authored the repair. OsmoGrep executed the verification.** Its review and repair models did not produce this fix.
+The bug was already reported in [upstream PR #19205](https://github.com/tinygrad/tinygrad/pull/19205), which also proposes a fix. **We fixed tinygrad’s JIT input-return bug and verified the repair through OsmoGrep’s production cloud runner.** The [patch in our fork](https://github.com/kaushal07wick/tinygrad/pull/1) was authored with a separate coding agent; OsmoGrep ran the verification. Here is the code change, the execution path and the evidence it produced.
 
 <!-- tinygrad-figure:summary -->
 
@@ -73,6 +73,16 @@ All five corrected cases [pass with the repair](https://github.com/kaushal07wick
 
 **These checks were written after the repair.** Our first frozen reproducer had three invalid cases: two constructed virtual inputs that tinygrad rejects, and one performed no work for the JIT to capture. The corrected cases strengthen the behavioral comparison; they are not a pre-repair holdout.
 
+## Inside an OsmoGrep verification run
+
+The unit of execution is a **specific Git revision**, rather than a moving branch. For the repaired suite run, OsmoGrep checked revision `217d016` using the repository’s [evaluation recipe](https://github.com/kaushal07wick/tinygrad/blob/7d9d56d7715795e789b1febebf5e22a00fb86c0a/.osmogrep.json). The recipe declared dependency setup and the exact test command to run in an **E2B cloud VM**.
+
+The runner installed dependencies, executed the tests with `DEV=CPU:X86`, and recorded command output, exit codes and durations. It also compared the original test/fixture snapshot: **395 files remained unchanged**. The completed job was saved to the dashboard and its [result published back to GitHub](https://github.com/kaushal07wick/tinygrad/pull/1#issuecomment-7005402563).
+
+<!-- tinygrad-figure:console -->
+
+The screenshot’s **34.9-second command total** includes **4.3 seconds of dependency setup** and the **30.6-second test command**. The **51.2-second job interval** covers the recorded start through completion. This was a verification job for the patch supplied in the PR; its “No repair patch” field means the job did not generate another patch.
+
 ## What changed in the cloud runs
 
 The main comparison used **`DEV=CPU:X86`**, the same declared command and identical test-file blobs for [JIT](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/test/runtime/test_jit.py), [symbolic JIT](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/test/runtime/test_symbolic_jit.py) and [pickle](https://github.com/kaushal07wick/tinygrad/blob/217d01643c210c4d4f8f21993c58f60f3ee062cb/test/runtime/test_pickle.py) tests. Select a revision below to inspect the recorded summary.
@@ -110,4 +120,4 @@ The patch changes **Python object identity** after capture: the return is a JIT-
 
 The [ten-job ledger](/data/tinygrad-jit-verification.json) also retains the recipe failures, stale run and incomplete cleanup evidence. Two early recipes assumed unavailable venv/pip support; a later run became stale because mypy wrote cache files into the workspace. Saved jobs have empty sandbox-evidence lists, and the separately checked E2B account was not confirmed as production’s account.
 
-The result is a **real OSS repair with cloud validation**, bounded to the tested CPU configuration. It is not an autonomous-discovery result or a Greptile comparison. The [public PR](https://github.com/kaushal07wick/tinygrad/pull/1) contains the source change and test; the linked run reports show what happened when each version executed.
+The result is a **real OSS repair with cloud validation**, bounded to the tested CPU configuration. The [public PR](https://github.com/kaushal07wick/tinygrad/pull/1) contains the source change and test; the linked run reports show what happened when each version executed.

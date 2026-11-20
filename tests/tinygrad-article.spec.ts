@@ -8,7 +8,9 @@ test('tinygrad article exposes attributed evidence and working before/after diag
   await page.getByRole('link', { name: new RegExp(title) }).click();
   await expect(page).toHaveURL(new RegExp(slug));
   await expect(page.getByRole('heading', { level: 1 })).toHaveText(title);
-  await expect(page.getByText('Claude Code authored the repair. OsmoGrep executed the verification.', { exact: true })).toBeVisible();
+  await expect(page.getByText('We fixed tinygrad’s JIT input-return bug and verified the repair through OsmoGrep’s production cloud runner.', { exact: true })).toBeVisible();
+  await expect(page.getByRole('figure',{name:'Actual OsmoGrep production run'}).getByRole('img')).toBeVisible();
+  await expect(page.getByRole('link',{name:'Enlarge the actual OsmoGrep dashboard screenshot'})).toHaveAttribute('href','/blog/tinygrad-osmogrep-with-repair.png');
   await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', /tinygrad-jit-hero-v2.png/);
   await expect(page.getByRole('img', { name: /Official tinygrad logo beside two illustrated buffer stacks/ })).toBeVisible();
   await expect(page.getByRole('img', { name: 'tinygrad official logo', exact: true })).toBeVisible();
@@ -30,7 +32,7 @@ test('tinygrad article exposes attributed evidence and working before/after diag
   const timings=page.getByRole('table');
   await expect(timings.getByRole('row')).toHaveCount(5);
   await expect(page.getByText('3 minutes 9.8 seconds of cumulative job time', {exact:true})).toBeVisible();
-  await expect(page.locator('article')).not.toContainText(/model calls|reported tokens|credits|45,183/i);
+  await expect(page.locator('article')).not.toContainText(/model calls|reported tokens|credits|45,183|greptile|claude code/i);
   const evidenceLink=page.getByRole('link', { name: 'execution record', exact: true });
   const response=await page.request.get((await evidenceLink.getAttribute('href'))!);
   expect(response.ok()).toBe(true);

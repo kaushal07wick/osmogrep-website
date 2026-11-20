@@ -13,5 +13,15 @@
   "illustrations": [
     "/blog/tinygrad-jit-hero-v2.svg",
     "/blog/tinygrad-jit-card-v2.svg"
+  ],
+  "screenshots": [
+    {
+      "asset": "/blog/tinygrad-osmogrep-with-repair.png",
+      "source": "https://app.osmogrep.com/dashboard/reviews/93af286b-b30b-4dac-9e8f-a1bfb8e3a5dc",
+      "publicReport": "https://github.com/kaushal07wick/tinygrad/pull/1#issuecomment-7005402563",
+      "capturedAt": "2026-11-20T17:53:38.977Z",
+      "method": "Read-only authenticated production Firefox capture, cropped to review content",
+      "changes": "Cropped to review content; no run data altered."
+    }
   ]
 }
