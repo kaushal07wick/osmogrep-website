@@ -1,0 +1,17 @@
+{
+  "logo": {
+    "source": "https://github.com/tinygrad/tinygrad/blob/daf2bfb1260ecbbf2b71ca9b48c6442426cfdf96/docs/logo_tiny_dark.svg",
+    "asset": "/blog/tinygrad-logo.svg",
+    "license": "tinygrad repository MIT license",
+    "unchanged": true,
+    "licenseFile": "/blog/tinygrad-logo-LICENSE.txt"
+  },
+  "diagrams": {
+    "source": "Code-native SVG illustrations of the published repair, not captured memory traces",
+    "values": "Observed failing test: returned [11,11,11,11], expected [21,21,21,21]"
+  },
+  "illustrations": [
+    "/blog/tinygrad-jit-hero-v2.svg",
+    "/blog/tinygrad-jit-card-v2.svg"
+  ]
+}

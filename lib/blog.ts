@@ -157,6 +157,13 @@ function renderMarkdown(markdown: string) {
       continue;
     }
 
+    const tinygradFigure = trimmed.match(/^<!-- tinygrad-figure:(summary|binding|results) -->$/);
+    if (tinygradFigure) {
+      flushList();
+      html.push(`<div data-tinygrad-figure="${tinygradFigure[1]}"></div>`);
+      continue;
+    }
+
     const figure = trimmed.match(/^<!-- runtime-figure:(causal|experiment|compute) -->$/);
     if (figure) {
       flushList();
